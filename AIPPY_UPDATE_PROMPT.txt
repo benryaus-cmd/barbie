@@ -1,4 +1,4 @@
-APPLY THE NEXT BARBIE UPDATE — SOCIAL SUMMER
+APPLY THE NEXT BARBIE UPDATE — GOLDEN HOUR
 
 Use the EXISTING Node/Vite manifest importer from the previous successful Barbie update. This is a local config edit followed by the normal Vite build. The Node code performs the HTTP requests, verification, staging and direct source writes DURING THAT BUILD. Do not ask the conversational model to retrieve or transcribe the remote files, and do not recreate the already-finished gameplay.
 
@@ -12,21 +12,21 @@ Set the EXISTING github-import.config.json to the following active request (keep
   "mode": "manifest",
   "repository": "benryaus-cmd/barbie",
   "branch": "main",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/19aba589f2bbdf36314ce1f5e86355d5fca37d38/aippy-import-manifest.json",
-  "manifestSha256": "bbc8a98cc2ddc93cc2c8edae4af8b01ffba222f20943e3fcd49b22b2de9f6916",
-  "sourceCommit": "19a0d5ae5919ad6416e8c474fb66c2eabc389820",
-  "requestId": "barbie-social-19a0d5a-manifest-v2"
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3df377e4456d9db9148cfe138609b883fa2c5c8f/aippy-import-manifest.json",
+  "manifestSha256": "c6045f4dd063df0a747823de072f14d7d58d44f93660ad287175cc2642d2c812",
+  "sourceCommit": "3cf105aa3ac67e82c6ee328fdca46450151d9745",
+  "requestId": "barbie-golden-3cf105a-manifest-v3"
 }
 ```
 
 Manifest URL:
-https://raw.githubusercontent.com/benryaus-cmd/barbie/19aba589f2bbdf36314ce1f5e86355d5fca37d38/aippy-import-manifest.json
+https://raw.githubusercontent.com/benryaus-cmd/barbie/3df377e4456d9db9148cfe138609b883fa2c5c8f/aippy-import-manifest.json
 Expected manifest SHA-256:
-bbc8a98cc2ddc93cc2c8edae4af8b01ffba222f20943e3fcd49b22b2de9f6916
+c6045f4dd063df0a747823de072f14d7d58d44f93660ad287175cc2642d2c812
 Exact game source commit:
-19a0d5ae5919ad6416e8c474fb66c2eabc389820
+3cf105aa3ac67e82c6ee328fdca46450151d9745
 
-Run the normal project build now. The existing importer must use ONLY the pinned manifest, never current main or a recursive tree selector. Its awaited config hook must finish downloading and verifying all77 game files before later plugins scan sources and before Vite compiles. Preserve binary bytes and the full staging/backup/rollback transaction. Await all in-flight workers before cleanup on error. A failed request must not compile partial source.
+Run the normal project build now. The existing importer must use ONLY the pinned manifest, never current main or a recursive tree selector. Its awaited config hook must finish downloading and verifying all83 game files before later plugins scan sources and before Vite compiles. Preserve binary bytes and the full staging/backup/rollback transaction. Await all in-flight workers before cleanup on error. A failed request must not compile partial source.
 
 Keep the existing manifest-mode assets behavior: merge exactly the ten supplied keys into the real src/config/assets.json, retaining unrelated host assets; verify assets.ts and only create its wrapper if absent. No new runtime dependencies are required beyond this game's existing original set. Do not replace package.json, install packages inside a Vite hook, downgrade toolchains, or impose Node22. Keep modern compatible Node20/22 support.
 
@@ -34,12 +34,12 @@ Preserve Vite/Aippy plugins, main.tsx, hidden project viewer, secret Settings-ti
 
 A second ordinary build with this SAME completed requestId must skip all imports and preserve later Aippy edits. Do not mutate the active config from inside the build. Use a fresh requestId only for another explicitly requested update.
 
-The finished source includes: eight separate tops/eight bottoms and stackable extras; named residents and conversations; actual3D surf/pour stages; puppy petting/toys; pool water/floaters; sunset and patio light show; real poses and camera follow; actual scene photos and a fictional offline DreamFeed with follower unlocks. Apply it exactly. In particular, src/ui/Sheets.tsx forwards BOTH onPose and onCapture to PhotoGame; do not drop those callbacks or substitute a generic dance. The feed is local game simulation, not a real Instagram connection.
+The finished source includes: saved custom outfit sets; nine salon hairstyles and hair dye; five makeup looks; twelve stackable accessory types; Ken and expressive group/paired photos; native-dropdown-free photo pose menus and drag/pinch/zoom; Mochi sleeping at home with follow/home/whistle commands; actual aimed/charged five-shot netball; reduced drink rewards and capped DreamFeed follower multipliers; exact district ground collision and walkable house stairs; richer sunset materials, salon and resort detailing. Apply it exactly. Keep src/ui/Sheets.tsx forwarding BOTH onPose and onCapture to PhotoGame. The offline feed is game simulation, not an Instagram connection. No save reset.
 
 After the build, report the ACTUAL result and receipt (.github-import-state/receipt.json): exact manifest URL/hash, source commit, requestId and verified file count. Confirm these source hashes:
-- src/App.tsx: 45b38bac1d0cb16029a43bdb6423947895111f16727b9ade6e97e2976e921fb4
-- src/game/avatar.ts: 6d3c6cca0280f46606bf2b4737df0d12fbb8a5c56c2c3835d34b63df011cb8cc
-- src/game/activity-stage.ts: 3615b8aeb16a3693cec36c734be592fd1b211b92891fa1bcf73196137bee7d9b
-- src/ui/Sheets.tsx: 41bf251a41bd1939b591eed353ec3017a3ab4e9f42d67d6309bc1b6086dd7562
+- src/App.tsx: 70f0ffe9e6d4a4905a7f0e80a7e67808dfdfeab69910d30fca1ecb757c4bdac5
+- src/game/avatar.ts: 8da26969f7a96f5e077296fe2e69854d470a7fc63cbb0b6db2e59c01ff010168
+- src/game/activity-stage.ts: c952b2e98308d43faaac9a87700fdcd442ab76d917c7100d5408b15820c94e5e
+- src/ui/Sheets.tsx: f89c079585a6f32292eaf31fc99bea46c80488ed71ced97382f31fa538c507b6
 
-Check all ten manifest asset values reached the working registry and an unrelated pre-existing key survived if one existed. Check at a short portrait viewport: wardrobe options scroll beneath fixed tabs; runway/photo controls do not dim or cover the doll; tiara and sunglasses stay equipped together; the photo challenge saves posed scene images; surfing moves the board/doll; pouring grades release precision; settings and hidden ZIP utility remain working. Report any actual failure rather than generating replacement game files.
+Check all ten manifest asset values reached the working registry and an unrelated pre-existing key survived if one existed. At a short portrait viewport check: every menu icon remains in bounds; salon/wardrobe options scroll; custom sets restore hair, makeup, clothing, colours, shoes and extras; photo shutter stays visible; inline pose menus work without native select windows; group photos retain the player, Ken/friends and paired poses; camera drag/zoom changes the actual scene; Mochi starts at bed and follows/returns/recalls on command; netball uses visible ball-flight scoring; a perfect drink session pays30 base style points, not300; follower tiers multiply actual rewards; district edges and stairs remain walkable. Preserve settings and hidden ZIP utilities. Report actual failures rather than rebuilding or inventing replacement game files.

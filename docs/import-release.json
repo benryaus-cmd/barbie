@@ -1,10 +1,10 @@
 {
-  "sourceCommit": "19a0d5ae5919ad6416e8c474fb66c2eabc389820",
-  "manifestCommit": "19aba589f2bbdf36314ce1f5e86355d5fca37d38",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/19aba589f2bbdf36314ce1f5e86355d5fca37d38/aippy-import-manifest.json",
-  "manifestSha256": "bbc8a98cc2ddc93cc2c8edae4af8b01ffba222f20943e3fcd49b22b2de9f6916",
-  "requestId": "barbie-social-19a0d5a-manifest-v2",
-  "gameFiles": 77,
+  "sourceCommit": "3cf105aa3ac67e82c6ee328fdca46450151d9745",
+  "manifestCommit": "3df377e4456d9db9148cfe138609b883fa2c5c8f",
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3df377e4456d9db9148cfe138609b883fa2c5c8f/aippy-import-manifest.json",
+  "manifestSha256": "c6045f4dd063df0a747823de072f14d7d58d44f93660ad287175cc2642d2c812",
+  "requestId": "barbie-golden-3cf105a-manifest-v3",
+  "gameFiles": 83,
   "assetKeys": [
     "dreamland_pop_music",
     "collector_card_art_1",

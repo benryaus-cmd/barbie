@@ -1,0 +1,795 @@
+{
+  "passed": true,
+  "viewport": "360x520",
+  "quality": "low",
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "checks": [
+    "salon hair/color + makeup",
+    "premium colour purchase/apply",
+    "three new layered extras",
+    "named complete set save/load + reload",
+    "Ken-specific chat + friendship",
+    "two co-stars and third invitation cap",
+    "independent co-star pose + paired hug",
+    "real photo drag + visible zoom",
+    "nonblank real JPEG capture + DreamFeed publish",
+    "pet follow command + actual player travel",
+    "pet returns to bed + visibly sleeping mesh",
+    "whistle brings pet back",
+    "actual five shot netball: aim, charge, flight, ring score",
+    "netball collect pays 50 once",
+    "three actual hold/release drink pours",
+    "precision score converted to reduced payout capped at 30"
+  ],
+  "errors": [],
+  "screenshots": [
+    ".test-output/v3-world.png",
+    ".test-output/v3-salon.png",
+    ".test-output/v3-makeup.png",
+    ".test-output/v3-saved-look.png",
+    ".test-output/v3-ken-chat.png",
+    ".test-output/v3-two-costars.png",
+    ".test-output/v3-photo-orbit-zoom.png",
+    ".test-output/v3-paired-hug.png",
+    ".test-output/v3-paired-capture.jpg",
+    ".test-output/v3-dreamfeed.png",
+    ".test-output/v3-pet-follow.png",
+    ".test-output/v3-pet-home-sleep.png",
+    ".test-output/v3-pet-whistle.png",
+    ".test-output/v3-netball-flight.png",
+    ".test-output/v3-netball-complete.png",
+    ".test-output/v3-pour-live.png",
+    ".test-output/v3-pour-complete.png"
+  ],
+  "details": {
+    "savedLook": {
+      "id": "mvwjmr2g",
+      "name": "Golden Coast",
+      "look": {
+        "top": "sunset",
+        "bottom": "palazzo",
+        "accessories": [
+          "sunhat",
+          "round-shades",
+          "bracelets"
+        ],
+        "topColor": "#e8c77b",
+        "bottomColor": "#53dbe4",
+        "hairColor": "#388c94",
+        "makeup": "bold"
+      },
+      "hair": "braids",
+      "shoes": "sandals"
+    },
+    "walletAfterFashion": 1290,
+    "photo": {
+      "groupPositions": [
+        {
+          "name": "Ken",
+          "position": [
+            7.919983787536621,
+            0.01982107162475577,
+            -12.949982833862304
+          ],
+          "visible": true
+        },
+        {
+          "name": "Barbie",
+          "position": [
+            6.079983787536621,
+            0.01982107162475577,
+            -12.949982833862304
+          ],
+          "visible": true
+        }
+      ],
+      "imageQuality": {
+        "width": 288,
+        "height": 257,
+        "variance": 1166.4895552530506
+      },
+      "groupIds": [
+        "ken",
+        "barbie"
+      ],
+      "pair": "hug",
+      "companionPose": "kiss",
+      "followers": 18,
+      "radiusBefore": 4.699999999999999,
+      "radiusAfter": 3.4818456372040743
+    },
+    "pet": {
+      "followingScene": {
+        "camera": [
+          5.999966798013001,
+          3.376916419423305,
+          -26.339544856226603
+        ],
+        "quaternion": [
+          -0.17310725345226508,
+          5.547873656747605e-07,
+          9.750982495953222e-08,
+          0.9849029793852265
+        ],
+        "player": [
+          5.999959468841553,
+          0.8671374320983887,
+          -32.845211029052734
+        ],
+        "avatar": [
+          5.999959468841553,
+          0.03713743209838859,
+          -32.845211029052734
+        ],
+        "pet": [
+          5.100410304374583,
+          0.0378446521409029,
+          -32.29023690217319
+        ],
+        "petBody": [
+          0,
+          -3.6636248609275183e-10,
+          0
+        ],
+        "yaw": 0
+      },
+      "afterWhistle": {
+        "camera": [
+          5.719986171722412,
+          1.41683851480484,
+          -28.145611572265626
+        ],
+        "quaternion": [
+          -0.1442468655010081,
+          0,
+          0,
+          0.9895417332245944
+        ],
+        "player": [
+          5.999986171722412,
+          0.8668385148048401,
+          -32.845611572265625
+        ],
+        "avatar": [
+          5.999986171722412,
+          0.03683851480484,
+          -32.845611572265625
+        ],
+        "pet": [
+          5.179656075325481,
+          0.03702451819034653,
+          -32.66650205818354
+        ],
+        "petBody": [
+          0,
+          -2.3119993842353264e-06,
+          0
+        ],
+        "yaw": 0
+      }
+    },
+    "netball": {
+      "shots": [
+        {
+          "round": 1,
+          "aim": 1.8041124150158794e-16,
+          "charge": 0.6320000000000005,
+          "score": 10,
+          "scored": true,
+          "feedback": "Through the net! +10 points"
+        },
+        {
+          "round": 2,
+          "aim": -1.8041124150158794e-16,
+          "charge": 0.6400000000000005,
+          "score": 20,
+          "scored": true,
+          "feedback": "Through the net! +10 points"
+        },
+        {
+          "round": 3,
+          "aim": -0.02333333333333315,
+          "charge": 0.6400000000000005,
+          "score": 30,
+          "scored": true,
+          "feedback": "Through the net! +10 points"
+        },
+        {
+          "round": 4,
+          "aim": -1.8041124150158794e-16,
+          "charge": 0.6320000000000005,
+          "score": 40,
+          "scored": true,
+          "feedback": "Through the net! +10 points"
+        },
+        {
+          "round": 5,
+          "aim": 1.8041124150158794e-16,
+          "charge": 0.6400000000000005,
+          "score": 50,
+          "scored": true,
+          "feedback": "Through the net! +10 points"
+        }
+      ],
+      "payout": 50
+    },
+    "pourRounds": [
+      {
+        "round": 1,
+        "fill": 0.6475000000000014,
+        "target": 0.64,
+        "score": 100,
+        "feedback": "Perfect pour! +100"
+      },
+      {
+        "round": 2,
+        "fill": 0.7999999999999982,
+        "target": 0.79,
+        "score": 200,
+        "feedback": "Perfect pour! +100"
+      },
+      {
+        "round": 3,
+        "fill": 0.5466666666666663,
+        "target": 0.55,
+        "score": 300,
+        "feedback": "Three glasses served! 300 precision points"
+      }
+    ],
+    "pour": {
+      "rounds": [
+        {
+          "round": 1,
+          "fill": 0.6475000000000014,
+          "target": 0.64,
+          "score": 100,
+          "feedback": "Perfect pour! +100"
+        },
+        {
+          "round": 2,
+          "fill": 0.7999999999999982,
+          "target": 0.79,
+          "score": 200,
+          "feedback": "Perfect pour! +100"
+        },
+        {
+          "round": 3,
+          "fill": 0.5466666666666663,
+          "target": 0.55,
+          "score": 300,
+          "feedback": "Three glasses served! 300 precision points"
+        }
+      ],
+      "score": 300,
+      "payout": 30
+    }
+  },
+  "limitations": [
+    "Panel entry uses test-only spot/resident events; this is not an island navigation or proximity-discovery test.",
+    "Pet location setup uses a test-only physics teleport; pet travel and sleep then use actual frame updates.",
+    "Netball/pour timing reads real session state to release real pointer/keyboard controls; no score, clock, physics or production source is modified.",
+    "SwiftShader desktop Chromium at 360x520 is not physical mobile hardware. Surf was covered by v2 and is omitted here."
+  ],
+  "supplemental": {
+    "fashionSocialBonus": {
+      "passed": true,
+      "viewport": "360x520",
+      "quality": "low",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "checks": [
+        "salon hair/color + makeup",
+        "premium colour purchase/apply",
+        "three new layered extras",
+        "named complete set save/load + reload",
+        "Ken-specific chat + friendship",
+        "two co-stars and third invitation cap",
+        "independent co-star pose + paired hug",
+        "real photo drag + visible zoom",
+        "nonblank real JPEG capture + DreamFeed publish",
+        "seeded 500-follower tier: home \u00d71.50 label and actual 10\u219215 wallet/earned award"
+      ],
+      "errors": [],
+      "screenshots": [
+        ".test-output/v3-world.png",
+        ".test-output/v3-salon.png",
+        ".test-output/v3-makeup.png",
+        ".test-output/v3-saved-look.png",
+        ".test-output/v3-ken-chat.png",
+        ".test-output/v3-two-costars.png",
+        ".test-output/v3-photo-orbit-zoom.png",
+        ".test-output/v3-paired-hug.png",
+        ".test-output/v3-paired-capture.jpg",
+        ".test-output/v3-dreamfeed.png",
+        ".test-output/v3-seeded-follower-tier.png"
+      ],
+      "details": {
+        "sunhatProbes": {
+          "saved-look": {
+            "look": {
+              "top": "sunset",
+              "bottom": "palazzo",
+              "accessories": [
+                "sunhat",
+                "round-shades",
+                "bracelets"
+              ],
+              "topColor": "#e8c77b",
+              "bottomColor": "#53dbe4",
+              "hairColor": "#388c94",
+              "makeup": "bold"
+            },
+            "found": true,
+            "visible": true,
+            "effectiveVisible": true,
+            "ancestors": [
+              {
+                "name": "Riviera sunhat",
+                "visible": true
+              },
+              {
+                "name": "head",
+                "visible": true
+              },
+              {
+                "name": "waist",
+                "visible": true
+              },
+              {
+                "name": "pelvis",
+                "visible": true
+              },
+              {
+                "name": "doll",
+                "visible": true
+              },
+              {
+                "name": "Group",
+                "visible": true
+              },
+              {
+                "name": "Scene",
+                "visible": true
+              }
+            ],
+            "meshes": [
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 126
+              },
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 2184
+              },
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 1800
+              }
+            ],
+            "worldPosition": [
+              7.006415154864592,
+              1.8895035615963365,
+              -13.014306551539809
+            ]
+          },
+          "fashion-reload": {
+            "look": {
+              "top": "sunset",
+              "bottom": "palazzo",
+              "accessories": [
+                "sunhat",
+                "round-shades",
+                "bracelets"
+              ],
+              "topColor": "#e8c77b",
+              "bottomColor": "#53dbe4",
+              "hairColor": "#388c94",
+              "makeup": "bold"
+            },
+            "found": true,
+            "visible": true,
+            "effectiveVisible": true,
+            "ancestors": [
+              {
+                "name": "Riviera sunhat",
+                "visible": true
+              },
+              {
+                "name": "head",
+                "visible": true
+              },
+              {
+                "name": "waist",
+                "visible": true
+              },
+              {
+                "name": "pelvis",
+                "visible": true
+              },
+              {
+                "name": "doll",
+                "visible": true
+              },
+              {
+                "name": "Group",
+                "visible": true
+              },
+              {
+                "name": "Scene",
+                "visible": true
+              }
+            ],
+            "meshes": [
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 126
+              },
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 2184
+              },
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 1800
+              }
+            ],
+            "worldPosition": [
+              6.994212420087269,
+              1.893012648105653,
+              -12.99072987717252
+            ]
+          },
+          "two-costars": {
+            "look": {
+              "top": "sunset",
+              "bottom": "palazzo",
+              "accessories": [
+                "sunhat",
+                "round-shades",
+                "bracelets"
+              ],
+              "topColor": "#e8c77b",
+              "bottomColor": "#53dbe4",
+              "hairColor": "#388c94",
+              "makeup": "bold"
+            },
+            "found": true,
+            "visible": true,
+            "effectiveVisible": true,
+            "ancestors": [
+              {
+                "name": "Riviera sunhat",
+                "visible": true
+              },
+              {
+                "name": "head",
+                "visible": true
+              },
+              {
+                "name": "waist",
+                "visible": true
+              },
+              {
+                "name": "pelvis",
+                "visible": true
+              },
+              {
+                "name": "doll",
+                "visible": true
+              },
+              {
+                "name": "Group",
+                "visible": true
+              },
+              {
+                "name": "Scene",
+                "visible": true
+              }
+            ],
+            "meshes": [
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 126
+              },
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 2184
+              },
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 1800
+              }
+            ],
+            "worldPosition": [
+              7.026578952374178,
+              1.8934288349571722,
+              -13.01904805407118
+            ]
+          },
+          "seeded-tier-reload": {
+            "look": {
+              "top": "sunset",
+              "bottom": "palazzo",
+              "accessories": [
+                "sunhat",
+                "round-shades",
+                "bracelets"
+              ],
+              "topColor": "#e8c77b",
+              "bottomColor": "#53dbe4",
+              "hairColor": "#388c94",
+              "makeup": "bold"
+            },
+            "found": true,
+            "visible": true,
+            "effectiveVisible": true,
+            "ancestors": [
+              {
+                "name": "Riviera sunhat",
+                "visible": true
+              },
+              {
+                "name": "head",
+                "visible": true
+              },
+              {
+                "name": "waist",
+                "visible": true
+              },
+              {
+                "name": "pelvis",
+                "visible": true
+              },
+              {
+                "name": "doll",
+                "visible": true
+              },
+              {
+                "name": "Group",
+                "visible": true
+              },
+              {
+                "name": "Scene",
+                "visible": true
+              }
+            ],
+            "meshes": [
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 126
+              },
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 2184
+              },
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 1800
+              }
+            ],
+            "worldPosition": [
+              6.994487479254994,
+              1.892262124261667,
+              -12.993105936321731
+            ]
+          }
+        },
+        "savedLook": {
+          "id": "mvwjqjc3",
+          "name": "Golden Coast",
+          "look": {
+            "top": "sunset",
+            "bottom": "palazzo",
+            "accessories": [
+              "sunhat",
+              "round-shades",
+              "bracelets"
+            ],
+            "topColor": "#e8c77b",
+            "bottomColor": "#53dbe4",
+            "hairColor": "#388c94",
+            "makeup": "bold"
+          },
+          "hair": "braids",
+          "shoes": "sandals"
+        },
+        "walletAfterFashion": 1290,
+        "photo": {
+          "groupPositions": [
+            {
+              "name": "Ken",
+              "position": [
+                7.919983787536621,
+                0.01982107162475577,
+                -12.949982833862304
+              ],
+              "visible": true
+            },
+            {
+              "name": "Barbie",
+              "position": [
+                6.079983787536621,
+                0.01982107162475577,
+                -12.949982833862304
+              ],
+              "visible": true
+            }
+          ],
+          "imageQuality": {
+            "width": 288,
+            "height": 257,
+            "variance": 1062.1181640627328
+          },
+          "groupIds": [
+            "ken",
+            "barbie"
+          ],
+          "pair": "hug",
+          "companionPose": "kiss",
+          "followers": 18,
+          "radiusBefore": 4.699999999999999,
+          "radiusAfter": 3.4818456372040743
+        },
+        "followerTier": {
+          "fixture": "500 followers seeded into the existing social save; not organically earned",
+          "baseTokenReward": 10,
+          "walletDelta": 15,
+          "earnedDelta": 15,
+          "multiplier": 1.5,
+          "tierText": "YOUR DREAMLAND STORY \u00b7 500 FOLLOWERS \u00b7 \u00d71.50 POINTS"
+        }
+      },
+      "limitations": [
+        "Panel entry uses test-only spot/resident events; this is not an island navigation or proximity-discovery test.",
+        "Pet location setup uses a test-only physics teleport; pet travel and sleep then use actual frame updates.",
+        "Netball/pour timing reads real session state to release real pointer/keyboard controls; no score, clock, physics or production source is modified.",
+        "SwiftShader desktop Chromium at 360x520 is not physical mobile hardware. Surf was covered by v2 and is omitted here."
+      ]
+    },
+    "finalAndroidSafePhotoMenus": {
+      "passed": true,
+      "viewport": "360x520",
+      "quality": "low",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "checks": [
+        "Ken-specific chat + friendship",
+        "two co-stars and third invitation cap",
+        "independent co-star pose + paired hug",
+        "real photo drag + visible zoom",
+        "nonblank real JPEG capture + DreamFeed publish"
+      ],
+      "errors": [],
+      "screenshots": [
+        ".test-output/v3-world.png",
+        ".test-output/v3-ken-chat.png",
+        ".test-output/v3-two-costars.png",
+        ".test-output/v3-photo-orbit-zoom.png",
+        ".test-output/v3-paired-hug.png",
+        ".test-output/v3-paired-capture.jpg",
+        ".test-output/v3-dreamfeed.png"
+      ],
+      "details": {
+        "sunhatProbes": {
+          "two-costars": {
+            "look": {
+              "top": "beach",
+              "bottom": "wrap",
+              "accessories": [],
+              "topColor": "#ffb3d6",
+              "bottomColor": "#fffaf3"
+            },
+            "found": true,
+            "visible": false,
+            "effectiveVisible": false,
+            "ancestors": [
+              {
+                "name": "Riviera sunhat",
+                "visible": false
+              },
+              {
+                "name": "head",
+                "visible": true
+              },
+              {
+                "name": "waist",
+                "visible": true
+              },
+              {
+                "name": "pelvis",
+                "visible": true
+              },
+              {
+                "name": "doll",
+                "visible": true
+              },
+              {
+                "name": "Group",
+                "visible": true
+              },
+              {
+                "name": "Scene",
+                "visible": true
+              }
+            ],
+            "meshes": [
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 126
+              },
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 2184
+              },
+              {
+                "type": "Mesh",
+                "visible": true,
+                "vertices": 1800
+              }
+            ],
+            "worldPosition": [
+              7.02657895237391,
+              1.8887722291134665,
+              -13.019048054071273
+            ]
+          }
+        },
+        "photo": {
+          "groupPositions": [
+            {
+              "name": "Ken",
+              "position": [
+                7.919983787536621,
+                0.01982107162475577,
+                -12.949982833862304
+              ],
+              "visible": true
+            },
+            {
+              "name": "Barbie",
+              "position": [
+                6.079983787536621,
+                0.01982107162475577,
+                -12.949982833862304
+              ],
+              "visible": true
+            }
+          ],
+          "imageQuality": {
+            "width": 288,
+            "height": 257,
+            "variance": 988.6092807983441
+          },
+          "groupIds": [
+            "ken",
+            "barbie"
+          ],
+          "pair": "hug",
+          "companionPose": "kiss",
+          "followers": 12,
+          "radiusBefore": 4.699999999999999,
+          "radiusAfter": 3.4818456372040743
+        }
+      },
+      "limitations": [
+        "Panel entry uses test-only spot/resident events; this is not an island navigation or proximity-discovery test.",
+        "Pet location setup uses a test-only physics teleport; pet travel and sleep then use actual frame updates.",
+        "Netball/pour timing reads real session state to release real pointer/keyboard controls; no score, clock, physics or production source is modified.",
+        "SwiftShader desktop Chromium at 360x520 is not physical mobile hardware. Surf was covered by v2 and is omitted here."
+      ]
+    },
+    "hiddenViewerZip": true
+  }
+}
