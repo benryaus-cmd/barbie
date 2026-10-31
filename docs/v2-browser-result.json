@@ -18,5 +18,11 @@
     "real surf full ride",
     "real pour3rounds",
     "save reload"
-  ]
+  ],
+  "photoChallengeCaptureRegression": {
+    "passed": true,
+    "savedActualAppPhotos": 6,
+    "testedAfterReviewFix": true
+  },
+  "hiddenZipExport": "passed with new gameplay modules"
 }

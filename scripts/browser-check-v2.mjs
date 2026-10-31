@@ -17,7 +17,10 @@ try{
  await page.goto(url);
  await page.getByRole('button',{name:/step into/i}).click();await wait(1400);
  await page.screenshot({path:'.test-output/v2-world.png'});
- if(process.env.DREAMLAND_TEST_FOCUS==='utilities'){
+ if(process.env.DREAMLAND_TEST_FOCUS==='visuals'){
+  await spot('surf');await wait(1400);await page.screenshot({path:'.test-output/v2-surf.png'});await page.getByRole('button',{name:'Leave activity'}).click();
+  await spot('smoothie');const pour=await page.getByRole('button',{name:'Hold to pour, release at target band'}).boundingBox();await page.mouse.move(pour.x+pour.width/2,pour.y+pour.height/2);await page.mouse.down();await wait(1100);await page.screenshot({path:'.test-output/v2-pour.png'});await page.mouse.up();console.log('Captured current surf and pour scenes');
+ }else if(process.env.DREAMLAND_TEST_FOCUS==='utilities'){
   await page.getByRole('button',{name:'Open settings'}).click();
   for(let i=0;i<10;i++)await page.getByRole('heading',{name:'Settings',exact:true}).dispatchEvent('pointerdown',{pointerId:1});
   await page.locator('input[type=password]').fill('gg');await page.getByRole('button',{name:'Unlock',exact:true}).click();

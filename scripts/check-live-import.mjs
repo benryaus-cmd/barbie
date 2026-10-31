@@ -32,5 +32,5 @@ try {
  const receipt=JSON.parse(await readFile(path.join(root,'.github-import-state/receipt.json')));
  assert.equal(receipt.sourceCommit,release.sourceCommit);
  await writeFile('.test-output/live-import-result.json',JSON.stringify({passed:true,sourceCommit:release.sourceCommit,manifestSha256:release.manifestSha256,verifiedGameFiles:manifest.files.length,verifiedAssetKeys:manifest.assetConfigUpdate.keys.length,unrelatedAssetPreserved:true,entryPreserved:true,repeatPreservedLocalEdit:true},null,2));
- console.log('PASS: live commit-pinned GitHub import, all60 files verified, ten asset keys, unrelated asset and host entry preserved, repeated request preserves later edits.');
+ console.log(`PASS: live commit-pinned GitHub import, all${manifest.files.length} files verified, ten asset keys, unrelated asset and host entry preserved, repeated request preserves later edits.`);
 } finally {await rm(root,{recursive:true,force:true})}
