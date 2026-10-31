@@ -1,8 +1,8 @@
 {
   "passed": true,
-  "sourceCommit": "3cf105aa3ac67e82c6ee328fdca46450151d9745",
-  "manifestSha256": "c6045f4dd063df0a747823de072f14d7d58d44f93660ad287175cc2642d2c812",
-  "verifiedGameFiles": 83,
+  "sourceCommit": "be880253a096e742681afc264eb3ceb90514277d",
+  "manifestSha256": "ae040f78887353a3b75eebcd4b903fd8390c47aeb86677825beb738e0572af9a",
+  "verifiedGameFiles": 86,
   "verifiedAssetKeys": 10,
   "unrelatedAssetPreserved": true,
   "entryPreserved": true,

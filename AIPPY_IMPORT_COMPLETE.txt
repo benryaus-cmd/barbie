@@ -1,15 +1,15 @@
-UPDATE THIS CURRENT AIPPY PROJECT IN PLACE — BARBIE: ULTIMATE DREAMLAND / GOLDEN HOUR
+UPDATE THIS CURRENT AIPPY PROJECT IN PLACE — BARBIE: ULTIMATE DREAMLAND / RESORT LIFE
 
 Use Node at Vite BUILD TIME to apply the exact files in this verified manifest directly to their matching project paths. This is a specification for local source/config changes and the normal Vite build. The Node plugin performs the HTTP/filesystem work during that build. Do not ask the conversational model to browse, clone or manually transcribe remote game files.
 
 Manifest URL:
-https://raw.githubusercontent.com/benryaus-cmd/barbie/3df377e4456d9db9148cfe138609b883fa2c5c8f/aippy-import-manifest.json
+https://raw.githubusercontent.com/benryaus-cmd/barbie/c6e961751eb0fc0688118ac3c120daf65ce3ab14/aippy-import-manifest.json
 
 Expected manifest SHA-256:
-c6045f4dd063df0a747823de072f14d7d58d44f93660ad287175cc2642d2c812
+ae040f78887353a3b75eebcd4b903fd8390c47aeb86677825beb738e0572af9a
 
 Expected game source commit:
-3cf105aa3ac67e82c6ee328fdca46450151d9745
+be880253a096e742681afc264eb3ceb90514277d
 
 1. INSPECT AND REUSE THE HOST
 
@@ -27,16 +27,16 @@ Set github-import.config.json to this (keep unrelated existing fields only if ne
   "mode": "manifest",
   "repository": "benryaus-cmd/barbie",
   "branch": "main",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3df377e4456d9db9148cfe138609b883fa2c5c8f/aippy-import-manifest.json",
-  "manifestSha256": "c6045f4dd063df0a747823de072f14d7d58d44f93660ad287175cc2642d2c812",
-  "sourceCommit": "3cf105aa3ac67e82c6ee328fdca46450151d9745",
-  "requestId": "barbie-golden-3cf105a-manifest-v3"
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/c6e961751eb0fc0688118ac3c120daf65ce3ab14/aippy-import-manifest.json",
+  "manifestSha256": "ae040f78887353a3b75eebcd4b903fd8390c47aeb86677825beb738e0572af9a",
+  "sourceCommit": "be880253a096e742681afc264eb3ceb90514277d",
+  "requestId": "barbie-resort-be88025-manifest-v4"
 }
 ```
 
 Manifest mode MUST NOT resolve current main, use a recursive Git-tree selector, insist on importing src/main.tsx, or protect every file in src/components/. This manifest deliberately updates src/components/GameView.tsx, src/components/SettingsModal.tsx and src/components/settings.css. The updated SettingsModal preserves the original secret Settings-title tap/password flow while adding real quality, audio, accessibility and About controls. The viewer components, src/dev/**, src/types/** and src/main.tsx remain protected.
 
-The manifest contains 83 game files. Its explicit assetConfigUpdate merges EXACTLY the ten supplied original asset keys into the real src/config/assets.json, preserving every unrelated existing key (including radio streams). Its verified assets.ts wrapper is create-if-missing: preserve an existing host wrapper. Keep a working default assets export for imported modules. No downloaded third-party character models are required: the substantially upgraded articulated doll is genuine source in src/game/avatar.ts.
+The manifest contains 86 game files. Its explicit assetConfigUpdate merges EXACTLY the ten supplied original asset keys into the real src/config/assets.json, preserving every unrelated existing key (including radio streams). Its verified assets.ts wrapper is create-if-missing: preserve an existing host wrapper. Keep a working default assets export for imported modules. No downloaded third-party character models are required: the substantially upgraded articulated doll is genuine source in src/game/avatar.ts.
 
 3. USE THE VERIFIED MANIFEST TRANSACTION
 

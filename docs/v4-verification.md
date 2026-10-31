@@ -20,3 +20,9 @@ Volleyball against Coco has actual3D movement, timed returns, aimed/powered outg
 ## Limits
 
 Tests use desktop Chromium/SwiftShader at phone viewport sizes, not physical Android hardware. Test-only transforms expose state reads and teleport to actual locations; the controller, score, clock, renderer and production callbacks remain unchanged. The volleyball browser run proves player return/NPC scoring/finite collection; deterministic tests additionally cover a controlled player win. Existing remote BGM delivery is not verified in this environment. New props are original procedural3D geometry with shared textures and bounded instancing; no commercial character asset import is claimed.
+
+## Immutable import
+
+Actual Node/Vite importer smoke test passes against the pinned GitHub manifest:86 game files match their exact sizes/SHA-256 hashes, all ten asset keys merge into the real registry, unrelated radio and host entry survive, and a later local App edit survives a repeated completed request. The fresh temporary host verifies88 destinations including assets.json and a missing assets.ts wrapper. The real Aippy project still applies the supplied activation prompt and runs its own normal build. Current immutable identifiers/proof are in docs/import-release.json and docs/import-verification.json.
+
+Hidden Settings-title unlock and actual ZIP download were retested after the layout changes. The exported ZIP includes CameraControls.tsx, vistas.ts, activity-stage.ts and gameplay tokens.ts.
