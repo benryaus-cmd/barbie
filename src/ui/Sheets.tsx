@@ -1,3 +1,4 @@
+import type { Look, PoseId } from '@/game/lifestyle-types';
 import type { AccessoryId, HairId, OutfitId, ShoesId } from '@/game/types';
 import { DanceTilesGame } from '@/ui/DanceTilesGame';
 import { DjGame } from '@/ui/DjGame';
@@ -13,6 +14,7 @@ import { VolleyGame } from '@/ui/VolleyGame';
 import { WardrobeSheet } from '@/ui/WardrobeSheet';
 
 export type PanelId =
+  | 'camera' | 'emotes' | 'resident' | 'pour'
   | 'none'
   | 'wardrobe'
   | 'boutique'
@@ -30,6 +32,10 @@ export type PanelId =
 
 type SheetsProps = {
   panel: PanelId;
+  look:Look; ownedFashion:string[]; followers:number;
+  onFashion:(slot:'top'|'bottom'|'accessory',id:string)=>void;
+  onColor:(slot:'top'|'bottom',color:string)=>void;
+  onPose:(pose:PoseId)=>void; onCapture:()=>void;
   points: number;
   earned: number;
   notice: string | null;
@@ -53,7 +59,7 @@ type SheetsProps = {
 };
 
 export function Sheets({
-  panel,
+  panel, look, ownedFashion, followers, onFashion, onColor, onPose, onCapture,
   points,
   earned,
   notice,
@@ -75,10 +81,12 @@ export function Sheets({
   onMood,
   onBonus,
 }: SheetsProps) {
+  if (['surf','pour','camera','emotes','resident','pet'].includes(panel)) return null;
   if (panel === 'wardrobe' || panel === 'boutique') {
     return (
       <WardrobeSheet
         title={panel === 'boutique' ? 'Fashion Avenue Boutique' : 'Walk-in Closet'}
+        look={look} ownedFashion={ownedFashion} followers={followers} onFashion={onFashion} onColor={onColor}
         outfit={outfit}
         hair={hair}
         accessory={accessory}
@@ -97,7 +105,7 @@ export function Sheets({
 
   if (panel === 'runway') {
     return (
-      <RunwayGame
+      <RunwayGame onPose={onPose}
         onClose={onClose}
         onMilestone={onMilestone}
         onFinish={score => onAward(score)}
@@ -165,7 +173,7 @@ export function Sheets({
 
   if (panel === 'photo') {
     return (
-      <PhotoGame onClose={onClose} onMilestone={onMilestone} onFinish={score => onAward(score)} />
+      <PhotoGame onPose={onPose} onCapture={onCapture} onClose={onClose} onMilestone={onMilestone} onFinish={score => onAward(score)} />
     );
   }
 

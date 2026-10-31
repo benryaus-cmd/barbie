@@ -14,8 +14,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit",
-    "test": "node --test tests/profile.test.mjs tests/preferences.test.mjs tests/importer.test.mjs && node tests/joystick-runtime.cjs && node tests/stage-controls-runtime.cjs",
-    "test:browser": "npm run build && node scripts/browser-check.mjs"
+    "test": "node --test tests/profile.test.mjs tests/preferences.test.mjs tests/importer.test.mjs tests/lifestyle.test.mjs tests/social.test.mjs tests/activities.test.mjs && node tests/joystick-runtime.cjs && node tests/stage-controls-runtime.cjs && node tests/photo-runtime.cjs && node tests/activity-runtime.cjs && node tests/engine-runtime.cjs",
+    "test:browser": "npm run build && node scripts/browser-check-v2.mjs",
+    "test:fashion": "node tests/fashion-browser.mjs"
   },
   "dependencies": {
     "@ai-sdk/react": "^3.0.269",

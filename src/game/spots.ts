@@ -152,12 +152,12 @@ export const SPOTS: Spot[] = [
   },
   {
     id: 'smoothie',
-    label: 'Smoothie Bar',
-    hint: 'Blend a tropical juice',
+    label: 'Sunset Sips',
+    hint: 'Hold to pour the perfect serve',
     x: 30,
     z: 24,
     radius: 3.4,
-    kind: 'reward',
+    kind: 'activity',
   },
   {
     id: 'surf',

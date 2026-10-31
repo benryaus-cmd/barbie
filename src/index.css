@@ -578,3 +578,30 @@ button:focus-visible { outline: 3px solid #7b36b5; outline-offset: 3px; }
   .rhythm-pad, .beat-progress i, .world-action { transition: none; }
   .panel-sheet { animation: none; }
 }
+
+/* The scene keeps its space; the sheet body owns every overflow path. */
+.dream-panel { min-height:0; }
+.panel-sheet { box-sizing:border-box; min-height:0; padding-bottom:12px; }
+.panel-content { flex:1 1 auto; min-height:0; }
+.dream-panel-wardrobe .panel-sheet { height:44%; max-height:44%; }
+.dream-panel-wardrobe .panel-content { display:flex; flex-direction:column; overflow:hidden; }
+.dream-panel-wardrobe .panel-content > .wardrobe-tabs,
+.dream-panel-wardrobe .panel-content > .wardrobe-notice { flex-shrink:0; }
+.dream-panel-wardrobe .panel-content > [role="tabpanel"] { flex:1 1 auto; min-height:0; overflow-y:auto; overflow-x:hidden; padding:1px 1px 5px; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
+.dream-panel-stage .panel-sheet { max-height:42%; }
+.photo-callout { display:flex; align-items:center; justify-content:center; gap:7px; min-height:28px; margin:0 0 6px; padding:4px 8px; border-radius:9px; background:#fbe5ef; color:#b04477; font-size:10px; }
+.photo-callout strong { color:#b12e6d; }
+.challenge-pose-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.challenge-pose-strip button { display:flex; min-width:0; min-height:53px; flex-direction:column; align-items:center; justify-content:center; gap:2px; border:1px solid #edd5e1; border-radius:13px; background:#fff; color:#b44c80; box-shadow:inset 0 -2px #f5e1eb; }
+.challenge-pose-strip button > span { font-size:24px; line-height:1; font-weight:800; }
+.challenge-pose-strip button small { font-size:9px; font-weight:800; }
+.challenge-pose-strip button:active { color:#fff; background:#d84487; transform:scale(.96); }
+.runway-meter { position:relative; height:34px; overflow:hidden; border:1px solid #ecd6e1; border-radius:11px; background:linear-gradient(90deg,#f7e6ee,#fff,#f7e6ee); }
+.runway-gold { position:absolute; inset-block:0; left:57%; width:18%; border-inline:1px solid #e5b451; background:#f9db88; }
+.runway-spark { position:absolute; top:50%; display:grid; width:29px; height:29px; place-items:center; transform:translate(-50%,-50%); border:2px solid white; border-radius:50%; background:#db4386; color:white; box-shadow:0 2px 5px #a32d6540; }
+.runway-pose { display:flex; align-items:center; justify-content:center; gap:7px; width:100%; min-height:44px; margin-top:7px; border:1px solid #fff; border-radius:13px; background:linear-gradient(#f9dfa0,#ecc064); color:#855b24; font-size:12px; font-weight:900; }
+.runway-pose:active { transform:scale(.98); }
+@media(max-height:680px) { .panel-sheet { padding-bottom:8px; } .dream-panel-wardrobe .panel-sheet { height:44%; max-height:44%; } }
+@media(max-height:560px) { .dream-panel-wardrobe .panel-sheet { height:44%; max-height:44%; } .dream-panel-stage .panel-sheet { max-height:44%; } .panel-heading p { font-size:9px; } .photo-callout { min-height:25px; margin-bottom:4px; } .challenge-pose-strip button { min-height:47px; } .challenge-pose-strip button > span { font-size:21px; } .runway-meter { height:30px; } }
+
+@media(max-height:550px) { .dream-panel-wardrobe .panel-heading h2 { font-size:16px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .dream-panel-wardrobe .panel-heading p { display:none; } .dream-panel-wardrobe .panel-heading { margin-bottom:3px; } .dream-panel-wardrobe .panel-close { width:36px; height:36px; } .dream-panel-wardrobe .panel-handle { margin-bottom:3px; } }

@@ -1,457 +1,159 @@
 import './collection.css';
-import assetsData from "@/config/assets";
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { aippyTweaks } from '@aippy/runtime/tweaks';
-import { useSound } from '@aippy/runtime/audio';
-import { updateScore } from '@aippy/runtime/leaderboard';
-import { GameView, type GameViewHandle } from '@/components/GameView';
-import { SettingsModal } from '@/components/SettingsModal';
+import assetsData from '@/config/assets';
+import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
+import {aippyTweaks} from '@aippy/runtime/tweaks';
+import {useSound} from '@aippy/runtime/audio';
+import {updateScore} from '@aippy/runtime/leaderboard';
+import {GameView,type GameViewHandle} from '@/components/GameView';
+import {SettingsModal} from '@/components/SettingsModal';
 import tweaksConfig from '@/config/tweaksConfig.json';
-import type { GameConfig } from '@/game/create-game';
-import { COLLECTOR_CARDS, loadCollectedCards, saveCollectedCards } from '@/game/card-collection';
-import { loadPreferences, savePreferences } from '@/game/preferences';
-import { loadProfile, saveProfile } from '@/game/profile';
-import { DiscoveryCard } from '@/ui/DiscoveryCard';
-import { ZONES } from '@/game/spots';
-import type {
-  AccessoryId,
-  GameEvent,
-  HairId,
-  NearbySpot,
-  OutfitId,
-  ShoesId,
-  SpotId,
-  VehicleId,
-  ZoneId
-} from '@/game/types';
-import { useSfx } from '@/hooks/useSfx';
-import { ActionButtons } from '@/ui/ActionButtons';
-import { CardAlbum } from '@/ui/CardAlbum';
-import { Celebration } from '@/ui/Celebration';
-import { Hud } from '@/ui/Hud';
-import { Joystick } from '@/ui/Joystick';
-import { Sheets, type PanelId } from '@/ui/Sheets';
-import { StartScreen } from '@/ui/StartScreen';
+import type {GameConfig} from '@/game/create-game';
+import {COLLECTOR_CARDS,loadCollectedCards,saveCollectedCards} from '@/game/card-collection';
+import {loadPreferences,savePreferences} from '@/game/preferences';
+import {loadProfile,saveProfile} from '@/game/profile';
+import {loadLifestyle,saveLifestyle} from '@/game/lifestyle-save';
+import {TOPS,BOTTOMS,EXTRAS,presetLook} from '@/game/fashion';
+import {RESIDENTS} from '@/game/resident-data';
+import {loadSocial,addPhoto,saveSocial} from '@/game/social';
+import type {ActivityState,PetAction,PoseId} from '@/game/lifestyle-types';
+import {ZONES} from '@/game/spots';
+import type {AccessoryId,GameEvent,HairId,NearbySpot,OutfitId,ShoesId,SpotId,VehicleId,ZoneId} from '@/game/types';
+import {useSfx} from '@/hooks/useSfx';
+import {ActionButtons} from '@/ui/ActionButtons';
+import {CardAlbum} from '@/ui/CardAlbum';
+import {Celebration} from '@/ui/Celebration';
+import {DiscoveryCard} from '@/ui/DiscoveryCard';
+import {Hud} from '@/ui/Hud';
+import {Joystick} from '@/ui/Joystick';
+import {Sheets,type PanelId} from '@/ui/Sheets';
+import {StartScreen} from '@/ui/StartScreen';
+import {ActivityPanel} from '@/ui/ActivityPanel';
+import {PhotoStudio} from '@/ui/PhotoStudio';
+import {EmotePanel,PetCompanionPanel,ResidentChat} from '@/ui/LifestylePanels';
 
-const tweaks = aippyTweaks(tweaksConfig);
-const BGM = assetsData.dreamland_pop_music;
-const SOUND_ASSETS = { bgm: BGM };
+const tweaks=aippyTweaks(tweaksConfig);
+const SOUND_ASSETS={bgm:assetsData.dreamland_pop_music};
+const OUTFIT_PRICE:Record<OutfitId,number>={glam:0,beach:0,popstar:40,casual:25};
+const REWARDS:Partial<Record<SpotId,{points:number;title:string}>>={pool:{points:8,title:'Poolside sparkle'},cafe:{points:6,title:'Cupcake break'}};
+const App=()=>{
+ const backgroundColor=tweaks.backgroundColor.useState() as string;
+ const pixelRatio=Number(tweaks.pixelRatio.useState()),walkSpeed=Number(tweaks.walkSpeed.useState()),sparkleFx=Boolean(tweaks.sparkleFx.useState());
+ const [initialProfile]=useState(loadProfile);
+ const [lifestyle,setLifestyle]=useState(()=>loadLifestyle(initialProfile));
+ const lifestyleRef=useRef(lifestyle); lifestyleRef.current=lifestyle;
+ const gameRef=useRef<GameViewHandle|null>(null);
+ const [preferences,setPreferences]=useState(loadPreferences);
+ const sfx=useSfx(preferences.effects),{play,stop}=useSound(SOUND_ASSETS);
+ const [error,setError]=useState<string|null>(null),[started,setStarted]=useState(false);
+ const [points,setPoints]=useState(initialProfile.points),[earned,setEarned]=useState(initialProfile.earned);
+ const walletRef=useRef(points),earnedRef=useRef(earned);
+ const [tokens,setTokens]=useState(0),tokenRef=useRef(0);
+ const [collectedCards,setCollectedCards]=useState<number[]>(loadCollectedCards),collectedRef=useRef(collectedCards);
+ const [albumOpen,setAlbumOpen]=useState(false),[settingsOpen,setSettingsOpen]=useState(false);
+ const [zone,setZone]=useState<ZoneId>('dreamhouse'),[near,setNear]=useState<NearbySpot>(null),[vehicle,setVehicle]=useState<VehicleId|null>(null);
+ const [panel,setPanel]=useState<PanelId>('none'),[notice,setNotice]=useState<string|null>(null);
+ const [outfit,setOutfit]=useState<OutfitId>(initialProfile.outfit),[hair,setHair]=useState<HairId>(initialProfile.hair),[accessory,setAccessory]=useState<AccessoryId>(initialProfile.accessory),[shoes,setShoes]=useState<ShoesId>(initialProfile.shoes),[unlocked,setUnlocked]=useState<OutfitId[]>(initialProfile.unlocked);
+ const [discovery,setDiscovery]=useState<number|null>(null),[toast,setToast]=useState<string|null>(null),[syncing,setSyncing]=useState(false);
+ const [celebration,setCelebration]=useState<{title:string;subtitle:string}|null>(null);
+ const [activity,setActivity]=useState<ActivityState|null>(null),[residentId,setResidentId]=useState<string|null>(null),[photoCompanion,setPhotoCompanion]=useState<string|null>(null);
+ const [followers,setFollowers]=useState(()=>loadSocial().followers);
+ const followersRef=useRef(followers);
+ const rewardTimes=useRef<Partial<Record<SpotId,number>>>({}),lastPetStroke=useRef(0),poseRef=useRef<PoseId>('idle');
+ const overlayOpen=panel!=='none'||albumOpen||settingsOpen||discovery!==null||!started;
+ const commitLifestyle=(next:typeof lifestyle)=>{lifestyleRef.current=next;setLifestyle(next);if(!saveLifestyle(next))setToast('Device storage is full. This session is still playable.');};
+ const spend=(amount:number)=>{if(!Number.isFinite(amount)||amount<0||walletRef.current<amount)return false;walletRef.current-=amount;setPoints(walletRef.current);return true;};
+ const awardPoints=useCallback((amount:number)=>{if(!Number.isFinite(amount)||amount<=0)return;const safe=Math.floor(amount);earnedRef.current+=safe;walletRef.current+=safe;setEarned(earnedRef.current);setPoints(walletRef.current);updateScore(earnedRef.current);sfx.points();},[sfx]);
+ const closePanel=useCallback(()=>{gameRef.current?.setActivity(null);gameRef.current?.setPouring(false);gameRef.current?.setActivityInput(0);gameRef.current?.setPose('idle');gameRef.current?.setPhotoCompanion(null);gameRef.current?.setPetAction('idle');setPanel('none');setNotice(null);},[]);
+ const setPose=useCallback((pose:PoseId)=>{poseRef.current=pose;gameRef.current?.setPose(pose);},[]);
+ const openCamera=(companion:string|null=null)=>{setPhotoCompanion(companion);setPanel('camera');};
 
-const OUTFIT_PRICE: Record<OutfitId, number> = {
-  glam: 0,
-  beach: 0,
-  popstar: 40,
-  casual: 25
+ useEffect(()=>{collectedRef.current=collectedCards;saveCollectedCards(collectedCards);},[collectedCards]);
+ useEffect(()=>{
+  const game=gameRef.current;if(!game)return;
+  game.setMove(0,0);game.setInputEnabled(!overlayOpen);
+  game.setPresentation(panel==='wardrobe'||panel==='boutique'?'style':panel==='camera'||panel==='photo'||panel==='resident'?'photo':panel==='pet'?'pet':['dj','dancefloor','runway','emotes'].includes(panel)?'dance':'world');
+  game.setActivity(panel==='surf'?'surf':panel==='pour'?'pour':null);
+  game.setDancing(panel==='dj'||panel==='dancefloor');
+  if(panel==='resident')game.setPhotoCompanion(residentId);else if(panel!=='camera')game.setPhotoCompanion(null);
+  if(!['photo','runway','camera','emotes','surf','pet'].includes(panel))game.setPose('idle');
+  if(panel!=='pet')game.setPetAction('idle');
+ },[panel,albumOpen,settingsOpen,discovery,started,residentId]);
+ useEffect(()=>{gameRef.current?.setOutfit(outfit);gameRef.current?.setHair(hair);gameRef.current?.setShoes(shoes);gameRef.current?.setLook(lifestyle.look);},[outfit,hair,shoes,lifestyle.look]);
+ useEffect(()=>{saveProfile({points,earned,outfit,hair,accessory,shoes,unlocked});},[points,earned,outfit,hair,accessory,shoes,unlocked]);
+ useEffect(()=>{saveLifestyle(lifestyle);},[lifestyle]);
+ useEffect(()=>{savePreferences(preferences);},[preferences]);
+ useEffect(()=>{if(started&&preferences.music)void play('bgm',{loop:true,volume:.42});else stop('bgm');return()=>stop('bgm');},[preferences.music,started,play,stop]);
+ useEffect(()=>{if(!toast)return;const timer=setTimeout(()=>setToast(null),2800);return()=>clearTimeout(timer);},[toast]);
+ const config=useMemo<GameConfig>(()=>({backgroundColor,pixelRatio:preferences.quality==='low'?.8:preferences.quality==='high'?1.75:Math.min(pixelRatio,1.25),walkSpeed,sparkleFx:sparkleFx&&preferences.sparkles&&preferences.quality!=='low',quality:preferences.quality,cameraSensitivity:preferences.sensitivity}),[backgroundColor,pixelRatio,walkSpeed,sparkleFx,preferences]);
+ const handleEvent=useCallback((event:GameEvent)=>{
+  if(event.type==='zone'){setZone(event.zone);return;}
+  if(event.type==='near'){setNear(event.spot);return;}
+  if(event.type==='vehicle'){setVehicle(event.vehicle);return;}
+  if(event.type==='activity'){setActivity(event.state);return;}
+  if(event.type==='resident'){setResidentId(event.id);setPanel('resident');return;}
+  if(event.type==='collectorCard'){if(collectedRef.current.includes(event.id))return;const next=[...collectedRef.current,event.id];collectedRef.current=next;setCollectedCards(next);setDiscovery(event.id);awardPoints(15);sfx.fanfare();return;}
+  if(event.type==='token'){tokenRef.current+=event.count;setTokens(tokenRef.current);awardPoints(event.points);return;}
+  if(event.id==='smoothie'){setActivity(null);setPanel('pour');return;}
+  if(event.id==='pet'||event.id==='petbed'){setPanel('pet');return;}
+  if(event.id==='mirror'){setPanel('wardrobe');return;}
+  const reward=REWARDS[event.id];if(reward){const now=Date.now();if(now-(rewardTimes.current[event.id]||0)<30000){setToast('Try another corner of Dreamland while this spot recharges.');return;}rewardTimes.current[event.id]=now;awardPoints(reward.points);setCelebration({title:reward.title,subtitle:`+${reward.points} style points`});return;}
+  const panels:Partial<Record<SpotId,PanelId>>={dj:'dj',dancefloor:'dancefloor',runway:'runway',wardrobe:'wardrobe',moodlight:'moodlight',kitchen:'kitchen',slide:'slide',surf:'surf',volley:'volley',photo:'photo',boutique:'boutique'};
+  const target=panels[event.id];if(target){if(target==='surf')setActivity(null);setPanel(target);}
+ },[awardPoints,sfx]);
+ const chooseOutfit=(id:OutfitId)=>{if(!unlocked.includes(id)){if(!spend(OUTFIT_PRICE[id])){setNotice('Earn a few more style points for this look.');return;}setUnlocked([...unlocked,id]);}const look=presetLook(id);const current=lifestyleRef.current;commitLifestyle({...current,look,ownedFashion:[...new Set([...current.ownedFashion,'top:'+look.top,'bottom:'+look.bottom])]});setOutfit(id);sfx.tap();};
+ const chooseFashion=(slot:'top'|'bottom'|'accessory',id:string)=>{
+  const catalog=slot==='top'?TOPS:slot==='bottom'?BOTTOMS:EXTRAS;const item=catalog.find(item=>item.id===id);if(!item)return;
+  const current=lifestyleRef.current,key=`${slot}:${id}`,owned=current.ownedFashion.includes(key);
+  if(!owned){if(followers<(item.followers||0)){setNotice(`Grow your DreamFeed to ${item.followers} followers for this special.`);return;}if(!spend(item.price)){setNotice(`Earn ${item.price-walletRef.current} more style points.`);return;}}
+  const look={...current.look};
+  if(slot==='accessory'){const selected=look.accessories.includes(id as any);look.accessories=selected?look.accessories.filter(x=>x!==id):[...look.accessories,id as any];}
+  else if(slot==='top')look.top=id as any;else look.bottom=id as any;
+  commitLifestyle({...current,look,ownedFashion:owned?current.ownedFashion:[...current.ownedFashion,key]});setNotice(owned?null:`${item.label} is yours.`);sfx.tap();
+ };
+ const changeColor=(slot:'top'|'bottom',color:string)=>{if(!/^#[0-9a-f]{6}$/i.test(color))return;const current=lifestyleRef.current;commitLifestyle({...current,look:{...current.look,[slot==='top'?'topColor':'bottomColor']:color}});};
+ const petAction=(action:PetAction)=>{
+  if(action==='idle'){gameRef.current?.setPetAction(action);return;}
+  const current=lifestyleRef.current;let toys=current.toys;
+  if(action!=='pat'&&!toys.includes(action)){const price={ball:12,frisbee:25,treat:8}[action];if(!spend(price)){setToast('A few more style points will get Mochi that toy.');return;}toys=[...toys,action];}
+  gameRef.current?.setPetAction(action);
+  const now=Date.now();if(now-lastPetStroke.current<700){if(toys!==current.toys)commitLifestyle({...current,toys});return;}lastPetStroke.current=now;
+  const next={...current,toys,petBond:Math.min(100,current.petBond+2)};
+  if(now-(current.lastPetReward||0)>30000){next.lastPetReward=now;awardPoints(5);}
+  commitLifestyle(next);gameRef.current?.setPose('pet');sfx.pet();
+ };
+ const talk=(topic:'meet'|'style'|'plans')=>{if(!residentId)return;const current=lifestyleRef.current;const topics=current.topics[residentId]||[];if(!topics.includes(topic)){commitLifestyle({...current,friends:{...current.friends,[residentId]:Math.min(100,(current.friends[residentId]||0)+8)},topics:{...current.topics,[residentId]:[...topics,topic]}});awardPoints(2);}setPose(topic==='meet'?'wave':topic==='style'?'peace':'heart');};
+ const captureChallenge=()=>{const image=gameRef.current?.capturePhoto();if(!image)return;const next=addPhoto(loadSocial(),{image,pose:poseRef.current,companionId:null,companionName:'Solo',zone:ZONES[zone].name,look:lifestyleRef.current.look});const saved=saveSocial(next);setToast(saved.persisted?'Photo saved to your DreamFeed camera roll.':'This device could not save the photo. Try clearing some space.');};
+ const handleFollowers=(value:number)=>{
+  const gained=value-followersRef.current;followersRef.current=value;setFollowers(value);
+  if(gained<=0)return;
+  const posted=loadSocial().photos.filter(p=>p.post).sort((a,b)=>b.post.publishedAt-a.post.publishedAt)[0];
+  const id=posted?.companionId,current=lifestyleRef.current;
+  if(id==='pet')commitLifestyle({...current,petBond:Math.min(100,current.petBond+4)});
+  else if(id&&RESIDENTS.some(r=>r.id===id))commitLifestyle({...current,friends:{...current.friends,[id]:Math.min(100,(current.friends[id]||0)+6)}});
+ };
+ const resident=RESIDENTS.find(r=>r.id===residentId);
+ return <div className={`app-shell ${preferences.reducedMotion?'reduce-motion':''}`}>
+  {error?<div className="absolute inset-x-4 top-4 z-50 rounded-xl bg-[#2a1030]/80 px-3 py-2 text-xs text-white">{error}</div>:null}
+  <GameView ref={gameRef} config={config} onError={setError} onEvent={handleEvent} initialCollectedCards={collectedCards}/>
+  <div className="ui-layer">{started?<>
+   {!overlayOpen?<div className="flex h-full flex-col justify-between">
+    <Hud points={points} earned={earned} tokens={tokens} cardCount={collectedCards.length} zoneName={ZONES[zone].name} onLeaderboard={()=>{setPanel('leaderboard');sfx.tap();}} onAlbum={()=>setAlbumOpen(true)} onSettings={()=>setSettingsOpen(true)} onCamera={()=>openCamera()} onEmotes={()=>setPanel('emotes')}/>
+    <div className="dream-next pointer-events-auto" role="status"><span className="dream-next-label">YOUR DREAMLAND STORY · {followers} FOLLOWERS</span><button type="button" onClick={()=>openCamera()}>{followers<40?'New look. New friends. Your next great photo →':'Keep creating · special fashion is waiting →'}</button></div>
+    <div className="dream-controls flex items-end justify-between gap-3 px-3 pb-3"><Joystick onChange={(x,y)=>gameRef.current?.setMove(x,y)}/><ActionButtons near={near} riding={Boolean(vehicle)} onJump={()=>{gameRef.current?.jump();sfx.jump();}} onInteract={()=>{gameRef.current?.interact();sfx.tap();}} onWardrobe={()=>{setPanel('wardrobe');sfx.tap();}}/></div>
+   </div>:null}
+   <Sheets panel={panel} points={points} earned={earned} notice={notice} syncing={syncing} outfit={outfit} hair={hair} accessory={accessory} shoes={shoes} unlocked={unlocked} look={lifestyle.look} ownedFashion={lifestyle.ownedFashion} followers={followers} onFashion={chooseFashion} onColor={changeColor} onPose={setPose} onCapture={captureChallenge} onClose={closePanel} onOutfit={chooseOutfit} onHair={id=>{setHair(id);sfx.tap();}} onAccessory={id=>setAccessory(id)} onShoes={id=>{setShoes(id);sfx.tap();}} onAward={score=>{awardPoints(score);sfx.fanfare();closePanel();}} onMilestone={()=>{if(!['photo','runway'].includes(panel))gameRef.current?.celebrate();sfx.hit();}} onPetAction={()=>petAction('pat')} onSync={()=>{setSyncing(true);updateScore(earnedRef.current);setTimeout(()=>setSyncing(false),900);}} onMood={color=>gameRef.current?.setMoodLight(color)} onBonus={awardPoints}/>
+   {panel==='surf'||panel==='pour'?<ActivityPanel kind={panel==='surf'?'surf':'pour'} state={activity} onInput={v=>gameRef.current?.setActivityInput(v)} onPouring={v=>gameRef.current?.setPouring(v)} onClose={closePanel} onCollect={score=>{awardPoints(score);closePanel();sfx.fanfare();}}/>:null}
+   {panel==='camera'?<PhotoStudio initialCompanion={photoCompanion} onClose={closePanel} capture={()=>gameRef.current?.capturePhoto()||null} onPose={setPose} onCompanion={id=>gameRef.current?.setPhotoCompanion(id)} followers={followers} onFollowers={handleFollowers} look={lifestyle.look} zone={ZONES[zone].name}/>:null}
+   {panel==='emotes'?<EmotePanel onClose={closePanel} onPose={setPose}/>:null}
+   {panel==='resident'&&resident?<ResidentChat key={resident.id} resident={resident} bond={lifestyle.friends[resident.id]||0} topics={lifestyle.topics[resident.id]||[]} onTopic={talk} onPhoto={()=>openCamera(resident.id)} onClose={closePanel}/>:null}
+   {panel==='pet'?<PetCompanionPanel bond={lifestyle.petBond} toys={lifestyle.toys} points={points} onAction={petAction} onPhoto={()=>openCamera('pet')} onClose={closePanel}/>:null}
+   {toast?<div className="dream-toast" role="status">{toast}</div>:null}
+   {discovery!==null?<DiscoveryCard id={discovery} onClose={()=>setDiscovery(null)} onAlbum={()=>{setDiscovery(null);setAlbumOpen(true);}}/>:null}
+   {albumOpen?<CardAlbum collected={collectedCards} onClose={()=>setAlbumOpen(false)}/>:null}
+   {celebration?<Celebration title={celebration.title} subtitle={celebration.subtitle} onDone={()=>setCelebration(null)}/>:null}
+  </>:<StartScreen loading={false} onStart={()=>{sfx.tap();setStarted(true);}}/>}
+  <SettingsModal open={settingsOpen} onClose={()=>setSettingsOpen(false)} preferences={preferences} onPreferences={setPreferences}/>
+  </div>
+ </div>;
 };
-
-const OUTFIT_LABEL: Record<OutfitId, string> = {
-  glam: 'Glam Party Dress',
-  beach: 'Beach Day Set',
-  popstar: 'Popstar Outfit',
-  casual: 'Designer Casual'
-};
-
-const REWARDS: Partial<Record<SpotId, { points: number; title: string }>> = {
-  pool: { points: 8, title: 'Poolside Sparkle' },
-  smoothie: { points: 6, title: 'Tropical Smoothie' },
-  cafe: { points: 6, title: 'Cupcake Treat' },
-  petbed: { points: 5, title: 'Puppy Playtime' }
-};
-
-const App = () => {
-  const backgroundColor = tweaks.backgroundColor.useState() as string;
-  const pixelRatio = Number(tweaks.pixelRatio.useState());
-  const walkSpeed = Number(tweaks.walkSpeed.useState());
-  const sparkleFx = Boolean(tweaks.sparkleFx.useState());
-
-  const [initialProfile] = useState(loadProfile);
-  const rewardTimes = useRef<Partial<Record<SpotId, number>>>({});
-  const gameRef = useRef<GameViewHandle | null>(null);
-  const earnedRef = useRef(initialProfile.earned);
-  const tokenRef = useRef(0);
-  const collectedCardsRef = useRef<number[]>([]);
-  const [preferences, setPreferences] = useState(loadPreferences);
-  const sfx = useSfx(preferences.effects);
-  const { play, stop } = useSound(SOUND_ASSETS);
-
-  const [error, setError] = useState<string | null>(null);
-  const [started, setStarted] = useState(false);
-  const [points, setPoints] = useState(initialProfile.points);
-  const [earned, setEarned] = useState(initialProfile.earned);
-  const [tokens, setTokens] = useState(0);
-  const [collectedCards, setCollectedCards] = useState<number[]>(loadCollectedCards);
-  const [albumOpen, setAlbumOpen] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
-  const [zone, setZone] = useState<ZoneId>('dreamhouse');
-  const [near, setNear] = useState<NearbySpot>(null);
-  const [vehicle, setVehicle] = useState<VehicleId | null>(null);
-  const [panel, setPanel] = useState<PanelId>('none');
-  const [notice, setNotice] = useState<string | null>(null);
-  const [outfit, setOutfit] = useState<OutfitId>(initialProfile.outfit);
-  const [hair, setHair] = useState<HairId>(initialProfile.hair);
-  const [accessory, setAccessory] = useState<AccessoryId>(initialProfile.accessory);
-  const [shoes, setShoes] = useState<ShoesId>(initialProfile.shoes);
-  const [unlocked, setUnlocked] = useState<OutfitId[]>(initialProfile.unlocked);
-  const [discovery, setDiscovery] = useState<number | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
-  const [syncing, setSyncing] = useState(false);
-  const [celebration, setCelebration] = useState<{ title: string; subtitle: string } | null>(null);
-
-  useEffect(() => {
-    collectedCardsRef.current = collectedCards;
-    saveCollectedCards(collectedCards);
-  }, [collectedCards]);
-
-  const overlayOpen = panel !== 'none' || albumOpen || settingsOpen || discovery !== null || !started;
-  useEffect(() => {
-    gameRef.current?.setMove(0, 0);
-    gameRef.current?.setInputEnabled(!overlayOpen);
-    gameRef.current?.setPresentation(
-      panel === 'wardrobe' || panel === 'boutique' ? 'style' :
-      panel === 'dj' || panel === 'dancefloor' || panel === 'runway' || panel === 'photo' ? 'dance' : 'world'
-    );
-    gameRef.current?.setDancing(panel === 'dj' || panel === 'dancefloor' || panel === 'runway' || panel === 'photo');
-  }, [panel, albumOpen, settingsOpen, discovery, started]);
-  useEffect(() => {
-    gameRef.current?.setOutfit(outfit);
-    gameRef.current?.setHair(hair);
-    gameRef.current?.setAccessory(accessory);
-    gameRef.current?.setShoes(shoes);
-    saveProfile({ points, earned, outfit, hair, accessory, shoes, unlocked });
-  }, [points, earned, outfit, hair, accessory, shoes, unlocked]);
-  useEffect(() => {
-    if (!toast) return;
-    const timer = setTimeout(() => setToast(null), 2800);
-    return () => clearTimeout(timer);
-  }, [toast]);
-
-  const config = useMemo<GameConfig>(
-    () => ({ backgroundColor, pixelRatio: preferences.quality === 'low' ? .8 : preferences.quality === 'high' ? 1.75 : Math.min(pixelRatio,1.25), walkSpeed, sparkleFx: sparkleFx && preferences.sparkles && preferences.quality !== 'low', quality: preferences.quality, cameraSensitivity: preferences.sensitivity }),
-    [backgroundColor, pixelRatio, walkSpeed, sparkleFx, preferences]
-  );
-
-  useEffect(() => {
-    return () => {
-      stop('bgm');
-    };
-  }, [stop]);
-
-  useEffect(() => {
-    savePreferences(preferences);
-    if (started && preferences.music) void play('bgm', {loop:true, volume:.42});
-    else stop('bgm');
-  }, [preferences.music, started, play, stop]);
-  useEffect(() => { savePreferences(preferences); }, [preferences]);
-
-  const awardPoints = useCallback(
-    (amount: number) => {
-      earnedRef.current += amount;
-      setEarned(earnedRef.current);
-      setPoints(current => current + amount);
-      updateScore(earnedRef.current);
-      sfx.points();
-      if (amount >= 10) gameRef.current?.celebrate();
-    },
-    [sfx]
-  );
-
-  const handleEvent = useCallback(
-    (event: GameEvent) => {
-      if (event.type === 'zone') {
-        setZone(event.zone);
-        return;
-      }
-      if (event.type === 'near') {
-        setNear(event.spot);
-        return;
-      }
-      if (event.type === 'vehicle') {
-        setVehicle(event.vehicle);
-        return;
-      }
-      if (event.type === 'collectorCard') {
-        if (collectedCardsRef.current.includes(event.id)) return;
-        const next = [...collectedCardsRef.current, event.id];
-        collectedCardsRef.current = next;
-        setCollectedCards(next);
-        setDiscovery(event.id);
-        awardPoints(15);
-        gameRef.current?.celebrate();
-        sfx.fanfare();
-        return;
-      }
-      if (event.type === 'token') {
-        tokenRef.current += event.count;
-        setTokens(tokenRef.current);
-        awardPoints(event.points);
-        return;
-      }
-
-      const reward = REWARDS[event.id];
-      if (reward) {
-        const now = Date.now();
-        if (now - (rewardTimes.current[event.id] || 0) < 30000) {
-          setToast('Let this spot recharge — try a new activity!');
-          return;
-        }
-        rewardTimes.current[event.id] = now;
-        awardPoints(reward.points);
-        setCelebration({
-          title: reward.title,
-          subtitle: `+${reward.points} style points`
-        });
-        if (event.id === 'petbed') sfx.pet();
-        return;
-      }
-
-      if (event.id === 'dj') {
-        gameRef.current?.setDancing(true);
-        setPanel('dj');
-        return;
-      }
-      if (event.id === 'dancefloor') {
-        gameRef.current?.setDancing(true);
-        setPanel('dancefloor');
-        return;
-      }
-      if (event.id === 'runway') {
-        setPanel('runway');
-        return;
-      }
-      if (event.id === 'pet') {
-        setPanel('pet');
-        return;
-      }
-      if (event.id === 'wardrobe') {
-        setPanel('wardrobe');
-        return;
-      }
-      if (event.id === 'mirror') {
-        awardPoints(2);
-        gameRef.current?.celebrate();
-        setNotice('Smart Mirror: instant look preview');
-        setPanel('wardrobe');
-        return;
-      }
-      if (event.id === 'moodlight') {
-        setPanel('moodlight');
-        return;
-      }
-      if (event.id === 'kitchen') {
-        setPanel('kitchen');
-        return;
-      }
-      if (event.id === 'slide') {
-        setPanel('slide');
-        return;
-      }
-      if (event.id === 'surf') {
-        setPanel('surf');
-        return;
-      }
-      if (event.id === 'volley') {
-        setPanel('volley');
-        return;
-      }
-      if (event.id === 'photo') {
-        setPanel('photo');
-        return;
-      }
-      if (event.id === 'boutique') setPanel('boutique');
-    },
-    [awardPoints, sfx]
-  );
-
-  const handleStart = useCallback(() => {
-    sfx.tap();
-    setStarted(true);
-  }, [play, sfx, preferences.music]);
-
-  const handleMove = useCallback((x: number, y: number) => {
-    gameRef.current?.setMove(x, y);
-  }, []);
-
-  const handleJump = useCallback(() => {
-    gameRef.current?.jump();
-    sfx.jump();
-  }, [sfx]);
-
-  const handleInteract = useCallback(() => {
-    gameRef.current?.interact();
-    sfx.tap();
-  }, [sfx]);
-
-  const handleMood = useCallback((color: number) => {
-    gameRef.current?.setMoodLight(color);
-  }, []);
-
-  const closePanel = useCallback(() => {
-    setPanel('none');
-    setNotice(null);
-    gameRef.current?.setDancing(false);
-  }, []);
-
-  const chooseOutfit = useCallback(
-    (id: OutfitId) => {
-      if (!unlocked.includes(id)) {
-        const price = OUTFIT_PRICE[id];
-        if (points < price) {
-          setNotice(`Earn ${price - points} more style points to unlock`);
-          return;
-        }
-        setPoints(current => current - price);
-        setUnlocked(list => [...list, id]);
-        setNotice(null);
-        setCelebration({ title: 'New Look Unlocked', subtitle: OUTFIT_LABEL[id] });
-        sfx.fanfare();
-      } else {
-        sfx.tap();
-      }
-      setOutfit(id);
-      gameRef.current?.setOutfit(id);
-    },
-    [points, unlocked, sfx]
-  );
-
-  const syncScore = useCallback(() => {
-    setSyncing(true);
-    updateScore(earnedRef.current);
-    sfx.tap();
-    setTimeout(() => setSyncing(false), 900);
-  }, [sfx]);
-
-  return (
-    <div className={`app-shell ${preferences.reducedMotion ? 'reduce-motion' : ''}`}>
-      {error ? (
-        <div className="absolute inset-x-4 top-4 z-50 rounded-xl bg-[#2a1030]/80 px-3 py-2 text-xs text-white">
-          {error}
-        </div>
-      ) : null}
-
-      <GameView
-        ref={gameRef}
-        config={config}
-        onError={setError}
-        onEvent={handleEvent}
-        initialCollectedCards={collectedCards}
-      />
-
-      <div className="ui-layer">
-        {started ? (
-          <>
-            {!overlayOpen ? <div className="flex h-full flex-col justify-between">
-              <Hud
-                points={points}
-                earned={earned}
-                tokens={tokens}
-                cardCount={collectedCards.length}
-                zoneName={ZONES[zone].name}
-                onLeaderboard={() => {
-                  setPanel('leaderboard');
-                  sfx.tap();
-                }}
-                onAlbum={() => {
-                  setAlbumOpen(true);
-                  sfx.tap();
-                }}
-                onSettings={() => {
-                  setSettingsOpen(true);
-                  sfx.tap();
-                }}
-              />
-              <div className="dream-next pointer-events-auto" role="status">
-                <span className="dream-next-label">YOUR NEXT DISCOVERY</span>
-                <button type="button" onClick={() => setAlbumOpen(true)}>
-                  {collectedCards.length === 8 ? 'Collection complete · revisit your favourite look' : `${COLLECTOR_CARDS.find(card => !collectedCards.includes(card.id))?.location} · open your collector passport →`}
-                </button>
-              </div>
-              <div className="dream-controls flex items-end justify-between gap-3 px-3 pb-3">
-                <Joystick onChange={handleMove} />
-                <ActionButtons
-                  near={near}
-                  riding={Boolean(vehicle)}
-                  onJump={handleJump}
-                  onInteract={handleInteract}
-                  onWardrobe={() => {
-                    setPanel('wardrobe');
-                    sfx.tap();
-                  }}
-                />
-              </div>
-            </div> : null}
-
-            <Sheets
-              panel={panel}
-              points={points}
-              earned={earned}
-              notice={notice}
-              syncing={syncing}
-              outfit={outfit}
-              hair={hair}
-              accessory={accessory}
-              shoes={shoes}
-              unlocked={unlocked}
-              onClose={closePanel}
-              onOutfit={chooseOutfit}
-              onHair={id => {
-                setHair(id);
-                gameRef.current?.setHair(id);
-                sfx.tap();
-              }}
-              onAccessory={id => {
-                setAccessory(id);
-                gameRef.current?.setAccessory(id);
-                sfx.tap();
-              }}
-              onShoes={id => {
-                setShoes(id);
-                gameRef.current?.setShoes(id);
-                sfx.tap();
-              }}
-              onAward={(score, stopDancing) => {
-                awardPoints(score);
-                sfx.fanfare();
-                if (stopDancing) gameRef.current?.setDancing(false);
-                setPanel('none');
-              }}
-              onMilestone={() => {
-                gameRef.current?.celebrate();
-                sfx.hit();
-              }}
-              onPetAction={() => {
-                sfx.pet();
-                gameRef.current?.celebrate();
-              }}
-              onSync={syncScore}
-              onMood={handleMood}
-              onBonus={awardPoints}
-            />
-
-            {toast ? <div className="dream-toast" role="status">{toast}</div> : null}
-            {discovery !== null ? <DiscoveryCard id={discovery} onClose={() => setDiscovery(null)} onAlbum={() => { setDiscovery(null); setAlbumOpen(true); }} /> : null}
-            {albumOpen ? (
-              <CardAlbum
-                collected={collectedCards}
-                onClose={() => setAlbumOpen(false)}
-              />
-            ) : null}
-
-            {celebration ? (
-              <Celebration
-                title={celebration.title}
-                subtitle={celebration.subtitle}
-                onDone={() => setCelebration(null)}
-              />
-            ) : null}
-          </>
-        ) : (
-          <StartScreen loading={false} onStart={handleStart} />
-        )}
-
-        <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} preferences={preferences} onPreferences={setPreferences} />
-      </div>
-    </div>
-  );
-};
-
 export default App;

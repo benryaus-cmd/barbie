@@ -77,7 +77,7 @@ function danceFloor(b: Builder, fx: StationFx) {
     for (let gz = 0; gz < 3; gz += 1) {
       const mat = neonMaterial(tileColors[(gx + gz) % 3], 0.9);
       fx.pulses.push(mat);
-      b.box(1.06, 0.14, 1.06, mat, 11.5 + (gx - 1) * 1.17, 0.12, -27 + (gz - 1) * 1.17);
+      b.box(1.06, 0.14, 1.06, mat, 11.5 + (gx - 1) * 1.17, 0.12, -27 + (gz - 1) * 1.17).name = 'party tile';
     }
   }
   const speaker = gloss(0x2b2140, { metalness: 0.55, roughness: 0.35 });
@@ -91,21 +91,9 @@ function danceFloor(b: Builder, fx: StationFx) {
 }
 
 function petBed(b: Builder, fx: StationFx) {
-  const fur = gloss(0xfff0d8, { roughness: 0.72, metalness: 0.05 });
-  const ear = gloss(0xc98b62, { roughness: 0.72 });
-  const dark = gloss(0x2b2035, { roughness: 0.4 });
   b.cyl(1.25, 1.3, 0.2, 16, gloss(PALETTE.white, { roughness: 0.45 }), 4.5, 0.2, -34.5);
   const cushion = gloss(PALETTE.pastelPink, { roughness: 0.5 });
   b.cyl(1.05, 1.1, 0.16, 16, cushion, 4.5, 0.34, -34.5);
-  const body = b.sphere(0.32, fur, 4.5, 0.66, -34.5);
-  body.scale.set(1.25, 0.85, 1);
-  b.sphere(0.24, fur, 4.92, 0.86, -34.3);
-  b.sphere(0.1, ear, 4.8, 1.02, -34.42);
-  b.sphere(0.1, ear, 5.04, 1.02, -34.16);
-  b.sphere(0.042, dark, 5.08, 0.9, -34.16);
-  b.sphere(0.042, dark, 4.94, 0.94, -34.14);
-  const tail = b.sphere(0.12, fur, 4.14, 0.78, -34.34);
-  tail.scale.set(1.4, 0.7, 0.7);
   b.box(0.4, 0.1, 0.11, gloss(PALETTE.gold, { metalness: 0.8 }), 3.94, 0.42, -35.15);
   const heart = neonMaterial(PALETTE.hotPink, 1.6);
   fx.pulses.push(heart);

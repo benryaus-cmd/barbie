@@ -1,12 +1,13 @@
 import * as THREE from 'three';
 import type { ColliderBox } from '@/game/types';
 
-export type PresentationMode = 'world' | 'style' | 'dance';
+export type PresentationMode = 'world' | 'style' | 'dance' | 'photo' | 'pet';
 
 export type CameraRig = {
   setPresentation(mode: PresentationMode): void;
   rotate(dx: number, dy: number): void;
   getYaw(): number;
+  setWalkHeading(heading: number | null): void;
   update(dt: number, target: THREE.Vector3, zoomOut: boolean, indoor: boolean): void;
   reset(): void;
 };
@@ -26,6 +27,8 @@ export function createCameraRig(
     b => b.hy >= 0.75 && (b.hx >= 0.75 || b.hz >= 0.75)
   );
   let yaw = 0;
+  let walkHeading: number | null = null;
+  let manualHold = 0;
   let pitch = 0.3;
   let presentation: PresentationMode = 'world';
   let presentationYaw = 0;
@@ -105,12 +108,17 @@ export function createCameraRig(
       started = false;
     },
     rotate(dx: number, dy: number) {
+      if (!Number.isFinite(dx) || !Number.isFinite(dy)) return;
       if (presentation !== 'world') {
         presentationYaw = THREE.MathUtils.clamp(presentationYaw - dx * 0.004, -0.62, 0.62);
         return;
       }
+      manualHold = 1.25;
       yaw -= dx * 0.006;
       pitch = THREE.MathUtils.clamp(pitch + dy * 0.004, MIN_PITCH, MAX_PITCH);
+    },
+    setWalkHeading(heading) {
+      walkHeading = heading !== null && Number.isFinite(heading) ? heading : null;
     },
     getYaw() {
       return yaw;
@@ -119,14 +127,23 @@ export function createCameraRig(
       if (presentation !== 'world') {
         // Feet-relative framing reserves the lower 40% for wardrobe and DJ controls.
         // The doll faces +Z while presenting. Preserve the exploration orbit separately.
-        const dist = camera.aspect < 1 ? 4.25 : 4.4;
-        desired.set(target.x + Math.sin(presentationYaw) * dist, target.y + 1.35, target.z + Math.cos(presentationYaw) * dist);
-        lookAt.set(target.x, target.y + 0.25, target.z);
+        const companion = presentation === 'pet' || presentation === 'photo';
+        const dist = companion ? (camera.aspect < 1 ? 4.7 : 4.3) : camera.aspect < 1 ? 4.25 : 4.4;
+        desired.set(target.x + Math.sin(presentationYaw) * dist, target.y + 1.4, target.z + Math.cos(presentationYaw) * dist);
+        lookAt.set(target.x, target.y + (presentation === 'pet' ? 0 : .25), target.z);
         current.copy(desired);
         camera.position.copy(current);
         camera.lookAt(lookAt);
         started = true;
         return;
+      }
+      // Following changes the view only. Sandbox freezes the movement basis for
+      // the current stick gesture, so this cannot steer a held direction into a spiral.
+      manualHold = Math.max(0, manualHold - dt);
+      if (walkHeading !== null && manualHold === 0) {
+        const wantedYaw = walkHeading + Math.PI;
+        const difference = Math.atan2(Math.sin(wantedYaw - yaw), Math.cos(wantedYaw - yaw));
+        yaw += difference * (1 - Math.exp(-dt * 2.7));
       }
       const wanted = (indoor ? 3.8 : distance) * (zoomOut ? 1.5 : 1);
       currentDistance += (wanted - currentDistance) * Math.min(1, dt * 5);
@@ -155,6 +172,8 @@ export function createCameraRig(
     },
     reset() {
       yaw = 0;
+      walkHeading = null;
+      manualHold = 0;
       pitch = 0.3;
       presentation = 'world';
       presentationYaw = 0;

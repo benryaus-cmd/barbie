@@ -1,0 +1,68 @@
+.photo-studio .dream-panel-stage .panel-sheet { max-height: 44%; }
+.photo-pose-strip { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.photo-pose { display:flex; min-height:44px; align-items:center; justify-content:center; gap:5px; border:1px solid #efdae3; border-radius:12px; background:white; color:#9c6581; }
+.photo-pose > span { font-size:23px; line-height:1; font-weight:700; }
+.photo-pose small { font-size:9px; font-weight:800; }
+.photo-pose[aria-pressed=true] { border-color:#d83e83; background:#fbe2ee; color:#ba246b; box-shadow:inset 0 0 0 1px #d83e83; }
+.photo-companions { display:flex; gap:5px; overflow-x:auto; padding:6px 0; scrollbar-width:thin; }
+.photo-companions button { display:flex; flex:0 0 auto; min-height:32px; align-items:center; justify-content:center; gap:5px; padding:5px 9px; border:1px solid #efdae3; border-radius:99px; color:#8b6177; background:#fff9; font-size:9px; font-weight:800; }
+.photo-companions button[aria-pressed=true] { color:#b82d70; background:#fce4ef; border-color:#dd8ab0; }
+.resident-dot { width:8px; height:8px; border:1px solid #fff; border-radius:50%; }
+.photo-camera-actions { display:flex; align-items:stretch; gap:8px; }
+.photo-library-button { display:flex; flex:1; min-width:0; min-height:45px; align-items:center; justify-content:center; flex-direction:column; gap:3px; border:1px solid #efdae3; border-radius:12px; background:white; color:#9d6782; }
+.photo-library-button span { font-size:8px; font-weight:800; white-space:nowrap; }
+.photo-shutter { display:flex; flex:1.8; align-items:center; justify-content:center; gap:7px; min-height:45px; border:1px solid #fff; border-radius:15px; background:#d83e83; color:white; font-size:11px; font-weight:900; box-shadow:0 3px 10px #a52b6330; }
+.photo-shutter:active { transform:scale(.97); }
+.photo-status { margin:5px 0 0; min-height:13px; color:#a46c87; font-size:9px; font-weight:700; line-height:1.35; }
+.camera-flash { position:absolute; inset:0; z-index:39; background:#ffffffe0; pointer-events:none; }
+.photo-browser { position:absolute; inset:0; z-index:40; pointer-events:none; }
+.photo-browser .panel-sheet { height:92%; max-height:92%; }
+.photo-browser .panel-content { flex:1 1 auto; }
+.photo-browser .panel-heading p { max-width:270px; font-size:9px; }
+.photo-browser-nav { display:flex; align-items:center; gap:5px; margin-bottom:8px; }
+.photo-browser-nav > button { display:flex; align-items:center; justify-content:center; gap:5px; min-height:39px; padding:6px 10px; border:1px solid #ecdae3; border-radius:11px; background:#fff; font-size:10px; font-weight:800; color:#a06b86; }
+.photo-browser-nav > button[aria-selected=true] { color:#bd3375; border-color:#e49bbd; background:#fce7f0; }
+.photo-browser-nav > button span { font-size:8px; opacity:.7; }
+.photo-follower-count { display:flex; align-items:center; justify-content:end; gap:4px; margin-left:auto; color:#bb3a78; font-size:11px; font-weight:900; }
+.photo-status-browser { margin-bottom:9px; }
+.photo-album-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+.photo-album-grid > button { position:relative; overflow:hidden; aspect-ratio:4/5; border:2px solid white; border-radius:12px; background:#f7deeb; box-shadow:0 2px 7px #63324a18; }
+.photo-album-grid img { width:100%; height:100%; object-fit:cover; }
+.photo-thumbnail-place { position:absolute; left:0; bottom:0; width:100%; padding:12px 4px 5px; color:#fff; background:linear-gradient(transparent,#49223cb0); font-size:8px; font-weight:800; text-align:left; }
+.photo-shared-mark { position:absolute; top:5px; right:5px; display:grid; width:17px; height:17px; place-items:center; border-radius:50%; color:#bd3575; background:#fff; }
+.photo-empty { display:flex; min-height:210px; flex-direction:column; align-items:center; justify-content:center; padding:23px; text-align:center; color:#b84c81; }
+.photo-empty strong { margin-top:15px; font-size:15px; }
+.photo-empty p { max-width:240px; margin:7px 0 13px; color:#a1778c; font-size:11px; line-height:1.6; }
+.photo-empty button { min-height:44px; padding:9px 15px; border-radius:13px; background:#d83e83; color:#fff; font-size:11px; font-weight:800; }
+.photo-storage-note { margin:10px 0; color:#aa8294; font-size:9px; line-height:1.5; }
+.photo-detail-heading { display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; color:#7f4c66; font-size:11px; }
+.photo-detail-heading button { display:grid; min-width:35px; min-height:35px; place-items:center; border-radius:50%; background:#f5e5ed; }
+.photo-detail-image { display:block; width:100%; max-height:39dvh; object-fit:contain; border:2px solid #fff; border-radius:16px; background:#f1dde7; }
+.photo-tags { display:flex; flex-wrap:wrap; gap:5px; margin:8px 0; }
+.photo-tags span { padding:4px 6px; border-radius:6px; background:#f6e6ee; font-size:8px; font-weight:800; color:#9f6781; }
+.photo-caption-label { display:block; font-size:9px; font-weight:800; color:#996a82; }
+.photo-caption-label input { display:block; width:100%; min-height:40px; margin-top:4px; padding:8px 10px; border:1px solid #e6ccd9; border-radius:10px; outline-color:#d83e83; background:white; font:inherit; font-size:12px; color:#6c3d55; user-select:text; }
+.photo-detail-actions { display:flex; gap:8px; margin-top:9px; }
+.photo-publish { display:flex; flex:1; align-items:center; justify-content:center; gap:7px; min-height:44px; border-radius:12px; background:#d83e83; color:white; font-size:10px; font-weight:800; }
+.photo-publish:disabled { background:#eecbdc; color:#ad6989; }
+.photo-delete { display:grid; min-width:44px; min-height:44px; place-items:center; border:1px solid #ecc8da; border-radius:12px; color:#b84d7d; background:white; }
+.dream-feed { display:flex; flex-direction:column; gap:14px; }
+.dream-post { overflow:hidden; border:1px solid #edd9e2; border-radius:17px; background:white; }
+.dream-post > header { display:flex; align-items:center; gap:8px; padding:10px; }
+.dream-avatar { display:grid; flex:0 0 31px; width:31px; height:31px; place-items:center; border:1px solid #efbbd4; border-radius:50%; background:#ffedf5; color:#d24584; }
+.dream-post > header strong { display:block; color:#6f3d56; font-size:11px; }
+.dream-post > header strong span { color:#ad8a9c; font-size:9px; font-weight:500; }
+.dream-post > header small { display:block; margin-top:2px; color:#aa8396; font-size:8px; }
+.dream-post > header button { display:grid; width:35px; min-height:35px; margin-left:auto; place-items:center; color:#b3859c; }
+.dream-post-image { display:block; width:100%; max-height:51dvh; object-fit:contain; background:#f4e5ec; }
+.dream-post-body { padding:9px 11px 11px; }
+.dream-post-stats { display:flex; align-items:center; justify-content:space-between; gap:6px; color:#b55885; font-size:9px; font-weight:800; }
+.dream-post-stats button,.dream-post-stats > span { display:flex; align-items:center; gap:5px; min-height:32px; }
+.dream-post-stats button[aria-pressed=true] { color:#d52f7b; }
+.dream-caption { margin:5px 0 0; color:#875b72; font-size:10px; line-height:1.6; overflow-wrap:anywhere; }
+.dream-caption strong { color:#7b3e5b; }
+.dream-tag { margin:3px 0; color:#bf4881; font-size:9px; }
+.dream-comments { margin-top:7px; padding-top:7px; border-top:1px solid #f1e4eb; }
+.dream-comments p { margin:3px 0; color:#ab8396; font-size:9px; line-height:1.5; }
+.dream-comments strong { margin-right:3px; color:#8d5670; }
+@media(max-height:560px) { .photo-studio .panel-heading { margin-bottom:3px; } .photo-studio .panel-heading p { margin-top:2px; } .photo-pose { min-height:40px; } .photo-companions { padding:4px 0; } .photo-status { font-size:8px; } .photo-browser .panel-sheet { height:96%; max-height:96%; } }

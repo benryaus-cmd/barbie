@@ -1,4 +1,8 @@
 import * as THREE from 'three';
+import { createActivityStage } from '@/game/activity-stage';
+import { createResidents } from '@/game/residents';
+import { createPetCompanion } from '@/game/pet-companion';
+import type { ActivityKind, Look, PetAction, PoseId } from '@/game/lifestyle-types';
 import { createAvatar } from '@/game/avatar';
 import { createCameraRig, type PresentationMode } from '@/game/camera';
 import { createCardPickups } from '@/game/card-pickups';
@@ -25,6 +29,13 @@ const VEHICLE_IDS: VehicleId[] = ['convertible', 'scooter', 'buggy'];
 
 export type SandboxApi = {
   setPresentation(mode: PresentationMode): void;
+  setLook(look: Look): void;
+  setPose(pose: PoseId): void;
+  setActivity(kind: ActivityKind | null): void;
+  setActivityInput(value: number): void;
+  setPouring(on: boolean): void;
+  setPetAction(action: PetAction): void;
+  setPhotoCompanion(id: string | null): void;
   setMove(x: number, y: number): void;
   rotateCamera(dx: number, dy: number): void;
   jump(): void;
@@ -51,6 +62,7 @@ export type Sandbox = {
 export type SandboxTuning = {
   walkSpeed: number;
   effects: boolean;
+  quality?: 'low' | 'balanced' | 'high';
 };
 
 export type SandboxOptions = {
@@ -119,6 +131,19 @@ export function createSandbox(options: SandboxOptions): Sandbox {
   const cards = createCardPickups(options.camera);
   root.add(cards.group);
 
+  const residents = createResidents();
+  const pet = createPetCompanion();
+  root.add(residents.root, pet.root);
+  const activity = createActivityStage(options.camera, avatar, options.emit);
+  root.add(activity.root);
+  activity.root.visible = false;
+  const normalObjects: THREE.Object3D[] = [world.root, residents.root, pet.root, blob, particles.points, tokens.group, cards.group, ...VEHICLE_IDS.map(id => vehicles[id].group)];
+  let activityRunning = false;
+  let activityKind: ActivityKind | null = null;
+  let photoCompanion: string | null = null;
+  let steeringYaw: number | null = null;
+  const petTarget = new THREE.Vector3();
+
   const spots: Spot[] = SPOTS.map(spot => ({ ...spot }));
   const physics = createPhysics(world.colliders, SPAWN);
   const cameraRig = createCameraRig(options.camera, 6.8, world.colliders);
@@ -169,11 +194,14 @@ export function createSandbox(options: SandboxOptions): Sandbox {
   }
 
   function interact() {
+    if (activityRunning || presentation !== 'world') return;
     if (mounted) {
       dismount();
       return;
     }
     const feetY = physics.position.y - FEET_OFFSET;
+    const neighbour = residents.nearest(physics.position.x, feetY, physics.position.z);
+    if (neighbour) {options.emit({type: 'resident', id: neighbour.id}); return;}
     const spot = nearestSpot(physics.position.x, feetY, physics.position.z, spots);
     if (!spot) return;
     if (spot.kind === 'vehicle') {
@@ -185,13 +213,20 @@ export function createSandbox(options: SandboxOptions): Sandbox {
   }
 
   function update(step: number) {
-    const yaw = cameraRig.getYaw();
+    if (activityRunning) {activity.update(step);return;}
+    // Lock the movement basis until the current gesture ends. Auto-follow then
+    // changes the view without feeding back into character steering.
+    const hasInput = Math.hypot(move.x, move.y) > .055 && presentation === 'world' && !dancing;
+    if (!hasInput) steeringYaw = null;
+    else if (steeringYaw === null) steeringYaw = cameraRig.getYaw();
+    const yaw = steeringYaw ?? cameraRig.getYaw();
     const forwardX = -Math.sin(yaw);
     const forwardZ = -Math.cos(yaw);
     const rightX = Math.cos(yaw);
     const rightZ = -Math.sin(yaw);
     let dirX = rightX * move.x + forwardX * move.y;
     let dirZ = rightZ * move.x + forwardZ * move.y;
+    if (!hasInput) {dirX = 0;dirZ = 0;}
     const magnitude = Math.hypot(dirX, dirZ);
     if (magnitude > 1) {
       dirX /= magnitude;
@@ -262,12 +297,19 @@ export function createSandbox(options: SandboxOptions): Sandbox {
       }
     }
 
-    cameraTarget.set(position.x, feetY, position.z);
+    petTarget.set(position.x, feetY, position.z);
+    residents.update(step, petTarget, presentation === 'photo', options.tuning.effects && options.tuning.quality !== 'low' ? 3 : 1);
+    pet.update(step, petTarget, facing, presentation === 'pet' || presentation === 'photo', presentation === 'photo' && photoCompanion === 'pet');
+    pet.root.visible = presentation !== 'photo' || photoCompanion === 'pet';
+    cameraTarget.set(position.x + (presentation === 'photo' && photoCompanion && photoCompanion !== 'pet' ? .42 : presentation === 'pet' || presentation === 'photo' && photoCompanion === 'pet' ? -.28 : 0), feetY, position.z);
+    cameraRig.setWalkHeading(moving ? Math.atan2(dirX, dirZ) : null);
     const insideDreamhouse =
       position.x > -9.5 && position.x < 9.5 &&
       position.z > -52 && position.z < -39;
     cameraRig.update(step, cameraTarget, mounted !== null, insideDreamhouse);
+    particles.points.visible = options.tuning.effects && options.tuning.quality !== 'low';
     particles.update(step);
+    world.update(step, options.tuning.effects && options.tuning.quality !== 'low');
 
     clock += step;
     for (const bobber of world.bobbers) {
@@ -294,13 +336,16 @@ export function createSandbox(options: SandboxOptions): Sandbox {
     });
 
     const spot = mounted ? null : nearestSpot(position.x, feetY, position.z, spots);
-    const spotKey = spot ? spot.id : null;
+    const neighbour = mounted || presentation !== 'world' ? null : residents.nearest(position.x, feetY, position.z);
+    const spotKey = neighbour ? `resident:${neighbour.id}` : spot ? spot.id : null;
     if (spotKey !== lastSpot) {
       lastSpot = spotKey;
       world.setHoverSpot(spotKey);
       options.emit({
         type: 'near',
-        spot: spot
+        spot: neighbour
+          ? {id: 'resident', label: neighbour.name, hint: `Talk · ${neighbour.role}`, kind: 'social'}
+          : spot
           ? { id: spot.id, label: spot.label, hint: spot.hint, kind: spot.kind }
           : null,
       });
@@ -312,12 +357,53 @@ export function createSandbox(options: SandboxOptions): Sandbox {
     }
   }
 
+  function setActivity(kind: ActivityKind | null) {
+    if (kind === activityKind) return;
+    activityKind = kind;
+    move.x = move.y = 0;
+    steeringYaw = null;
+    jumpQueued = false;
+    if (activityRunning) activity.stop();
+    activityRunning = kind !== null;
+    for (const object of normalObjects) object.visible = !activityRunning;
+    activity.root.visible = activityRunning;
+    if (kind) {
+      if (mounted) dismount();
+      dancing = false;
+      presentation = 'world';
+      avatar.setPose('idle');
+      options.emit({type: 'near', spot: null});
+      activity.start(kind);
+    } else {
+      const feetY = physics.position.y - FEET_OFFSET;
+      avatar.group.position.set(physics.position.x, feetY + .02, physics.position.z);
+      avatar.group.rotation.set(0, facing, 0);
+      avatar.group.scale.setScalar(1);
+      avatar.setPose('idle');
+      cameraRig.setPresentation('world');
+      cameraRig.setWalkHeading(null);
+      presentation = 'world';
+      lastSpot = '__none';
+    }
+  }
+
   return {
     root,
     update,
     api: {
+      setLook(look) {avatar.setLook(look);},
+      setPose(pose) {avatar.setPose(pose);},
+      setActivity,
+      setActivityInput(value) {activity.setInput(Number.isFinite(value) ? THREE.MathUtils.clamp(value,-1,1) : 0);},
+      setPouring(on) {activity.setPouring(on);},
+      setPetAction(action) {pet.setAction(action); if (action === 'pat' || action === 'treat') avatar.setPose('pet');},
+      setPhotoCompanion(id) {photoCompanion = id;residents.setPhotoCompanion(id);},
       setPresentation(mode) {
+        if (activityRunning && mode === 'world') return;
+        if (activityRunning) setActivity(null);
         presentation = mode;
+        if (mode === 'world') {avatar.setPose('idle');photoCompanion = null;residents.setPhotoCompanion(null);}
+        steeringYaw = null;
         move.x = 0;
         move.y = 0;
         jumpQueued = false;
@@ -374,6 +460,12 @@ export function createSandbox(options: SandboxOptions): Sandbox {
         }
       },
       reset() {
+        if(activityRunning) setActivity(null);
+        pet.reset();
+        residents.setPhotoCompanion(null);
+        photoCompanion=null;
+        steeringYaw=null;
+        avatar.setPose('idle');
         mounted = null;
         dancing = false;
         presentation = 'world';
@@ -386,6 +478,8 @@ export function createSandbox(options: SandboxOptions): Sandbox {
       },
     },
     dispose() {
+      if(activityRunning)activity.stop();
+      residents.dispose();
       contactTexture.dispose();
       cards.dispose();
       particles.dispose();

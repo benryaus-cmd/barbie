@@ -45,3 +45,6 @@ All 108 outfit × hair × accessory × shoe combinations were traversed with anc
 - Isolated avatar TypeScript check passed, as did the esbuild browser bundle. Full application checks are reported by the integration task.
 
 The polygon and draw budgets are measured source topology, not a performance claim. Shadow rendering adds another pass for shadow-casting meshes. No art rating is claimed as objectively verified.
+
+## Social summer expansion (1 November 2026)
+The same original rig now supports eight tops, eight bottoms with independent colors, five independently stackable accessories, five hairstyles and five shoe silhouettes. Explicit wave, peace, heart, kiss, twirl, dance, pet and surf poses supplement idle. Two-bone arm positioning brings hands to the face/chest for photos; articulated trousers have fabric coverage at their knee hinges. NPCs reuse detailed doll rigs at close range and cheaper silhouettes farther away. These additions remain original geometry/code with no external model or animation downloads. A conservative source-topology enumeration with all extras found a maximum19,120 visible triangles and129 mesh nodes for the default hair/shoes across64 garment pairs; actual render calls vary with culling, hair, pose and shadows. Earlier budget figures above describe the first pass, not this expansion.

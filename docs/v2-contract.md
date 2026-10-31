@@ -1,0 +1,16 @@
+# Parallel implementation contract
+Shared types live in src/game/lifestyle-types.ts. Existing exported APIs remain compatible.
+
+Avatar additions: setLook(look:Look), setPose(pose:PoseId). Existing setOutfit applies a full preset; parent applies saved Look after it. HairId expands with bob/curls, ShoesId with sandals/platforms in game/types.ts.
+
+GameHandle/SandboxApi additions (engine worker): setLook(look), setPose(pose), setActivity(kind:ActivityKind|null), setActivityInput(value:number), setPouring(on:boolean), setPetAction(action:PetAction), setPhotoCompanion(id:string|null). GameHandle only: capturePhoto():string|null. PresentationMode adds photo and pet; surfing/pouring use setActivity separately. Photo with id='pet' uses pet, null solo, other resident id brings the resident next to doll. Capture returns actual JPEG cropped to upper scene (not DOM/UI), max512x640.
+
+GameEvent additions (engine worker writes game/types.ts): {type:'resident';id:string} and {type:'activity';state:ActivityState}. SpotId adds resident, SpotKind adds social. Activity engine module owned separately: createActivityStage(camera:THREE.PerspectiveCamera,avatar:Avatar,emit:(event:GameEvent)=>void) returns {root:THREE.Group;start(kind:ActivityKind):void;stop():void;setInput(value:number):void;setPouring(on:boolean):void;update(dt:number):void;active():boolean}. Sandbox hides normal world/vehicles/pickups/residents during activity; activity updates avatar/camera and emits throttled state. Restore world transforms on exit. New module owns no second renderer.
+
+ActivityPanel props: kind:ActivityKind;state:ActivityState|null;onInput(value:number);onPouring(on:boolean);onClose();onCollect(score:number). Collect only finished state. UI must remain compact bottom transparent sheet and reset controls on blur/cancel/unmount.
+
+Fashion catalog module owned fashion worker: TOPS/BOTTOMS/EXTRAS arrays with {id,label,price,followers?,color?}; COLORS {label,value}[]; DEFAULT_LOOK:Look; presetLook(outfit:OutfitId):Look. WardrobeSheet retains legacy props and adds look:Look, ownedFashion:string[], followers:number, onFashion(slot:'top'|'bottom'|'accessory',id:string), onColor(slot:'top'|'bottom',color:string). Ownership keys top:ID/bottom:ID/accessory:ID. Parent owns transactions and persistence.
+
+PhotoStudio props: onClose();capture():string|null;onPose(pose:PoseId);onCompanion(id:string|null);followers:number;onFollowers(value:number);look:Look;zone:string. Manage its own album/feed storage via social.ts, export loadSocial() for parent follower initialization. Resident roster from src/game/resident-data.ts (engine worker), export RESIDENTS:ResidentInfo[]. Photo challenge PhotoGame adds optional onPose(pose:PoseId), onCapture?():void; uses actual selected poses. Runway adds optional onPose(pose:PoseId). Photos/feed are explicitly fictional and offline, bounded persisted images; followers earned once per meaningful look/companion/pose/location signature, no repeated capture farming.
+
+Keep worker changes isolated; each worker has its own source copy and delivers only owned paths. Parent alone integrates App, GameView, Sheets, profile/lifestyle persistence and pet/social/emote dialogs. Do not mutate another worker source tree or git restore shared files.

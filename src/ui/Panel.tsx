@@ -7,7 +7,7 @@ export function Panel({ title, subtitle, onClose, children, variant = 'default' 
   return (
     <div className={`dream-panel dream-panel-${variant}`}>
       {variant === 'default' ? <button type="button" className="panel-backdrop" onClick={onClose} aria-label="Close backdrop" /> : null}
-      <div className="panel-sheet animate-pop" role="dialog" aria-modal={variant === 'default'} aria-labelledby={titleId}>
+      <div className="panel-sheet animate-pop" role="dialog" aria-modal={variant === 'default'} aria-labelledby={titleId} tabIndex={-1}>
         <div className="panel-handle" aria-hidden="true" />
         <header className="panel-heading"><div className="min-w-0"><h2 id={titleId}>{title}</h2>{subtitle ? <p>{subtitle}</p> : null}</div><button type="button" onClick={onClose} className="panel-close" aria-label="Close panel"><X size={19} strokeWidth={2} /></button></header>
         <div className="panel-content">{children}</div>

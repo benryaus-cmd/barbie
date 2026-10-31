@@ -6,6 +6,7 @@ import { buildAvenue } from '@/game/world/avenue';
 import { buildBeach } from '@/game/world/beach';
 import { buildDreamhouse, type DreamhouseMood } from '@/game/world/dreamhouse';
 import { buildStations, type Bobber } from '@/game/world/stations';
+import { createWorldAmbience } from '@/game/world/ambience';
 import { buildTerrain } from '@/game/world/terrain';
 
 export type World = {
@@ -16,6 +17,7 @@ export type World = {
   bobbers: Bobber[];
   pulses: THREE.MeshStandardMaterial[];
   setHoverSpot(id: string | null): void;
+  update(dt: number, effects: boolean): void;
 };
 
 // Batch only direct, static scenery. Animated beacons, floats and material pulses
@@ -58,6 +60,13 @@ export function buildWorld(): World {
   buildAvenue(builder);
   buildBeach(builder);
   const stations = buildStations(builder);
+  const ambience = createWorldAmbience();
+  builder.group.add(ambience.root);
+  const pointLights: THREE.PointLight[] = [];
+  builder.group.traverse(object => {if (object instanceof THREE.PointLight) pointLights.push(object);});
+  const tiles: THREE.MeshStandardMaterial[] = [];
+  builder.group.traverse(object => {if(object.name === 'party tile' && object instanceof THREE.Mesh) tiles.push(object.material as THREE.MeshStandardMaterial);});
+  let clock = 0;
 
   batchScenery(builder.group, new Set(stations.bobbers.map(bobber => bobber.obj)));
   builder.group.traverse(object => {
@@ -72,5 +81,15 @@ export function buildWorld(): World {
     bobbers: stations.bobbers,
     pulses: stations.pulses,
     setHoverSpot: id => stations.setActiveSpot(id),
+    update(dt, effects) {
+      clock += dt;
+      ambience.update(dt, effects);
+      pointLights.forEach(light => {light.visible = effects;});
+      tiles.forEach((material, index) => {
+        material.color.setHSL((clock * .09 + index * .14) % 1, .8, .59);
+        material.emissive.copy(material.color);
+        material.emissiveIntensity = .65 + (Math.sin(clock * 3.8 + index * 1.6) * .5 + .5) * 1.1;
+      });
+    },
   };
 }

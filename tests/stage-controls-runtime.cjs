@@ -12,24 +12,27 @@ const dom=new JSDOM('<html><body><div id="root"></div></body></html>',{url:'http
 Object.assign(global,{window:dom.window,document:dom.window.document,HTMLElement:dom.window.HTMLElement,IS_REACT_ACT_ENVIRONMENT:true});
 const {createRoot}=localRequire('react-dom/client');
 const cache={};
-function load(name){
- if(cache[name]) return cache[name];
- const text=fs.readFileSync(sourceRoot+'/src/ui/'+name+'.tsx','utf8');
- const code=ts.transpileModule(text,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText;
+function loadFile(file){
+ if(cache[file])return cache[file];
+ const code=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText;
  const mod={exports:{}};
- new Function('require','module','exports',code)(id=>id.startsWith('@/ui/')?load(id.slice(5)):localRequire(id),mod,mod.exports);
- cache[name]=mod.exports; return mod.exports;
+ new Function('require','module','exports',code)(id=>{
+  if(id.endsWith('.css'))return {};
+  if(id.startsWith('@/')){const base=sourceRoot+'/src/'+id.slice(2);return loadFile(base+(fs.existsSync(base+'.tsx')?'.tsx':'.ts'));}
+  return localRequire(id);
+ },mod,mod.exports);cache[file]=mod.exports;return mod.exports;
 }
+function load(name){return loadFile(sourceRoot+'/src/ui/'+name+'.tsx')}
 const root=createRoot(document.getElementById('root'));
 const {WardrobeSheet}=load('WardrobeSheet');
 let selectedHair=null;
-React.act(()=>root.render(React.createElement(WardrobeSheet,{title:'Style studio',outfit:'glam',hair:'blonde',accessory:'none',shoes:'heels',unlocked:['glam','beach'],points:50,notice:null,onOutfit:()=>{},onHair:id=>selectedHair=id,onAccessory:()=>{},onShoes:()=>{},onClose:()=>{}})));
+React.act(()=>root.render(React.createElement(WardrobeSheet,{look:{top:'glam',bottom:'gown',topColor:'#ec4899',bottomColor:'#ec4899',accessories:[]},ownedFashion:['top:glam','bottom:gown'],followers:0,onFashion:()=>{},onColor:()=>{},title:'Style studio',outfit:'glam',hair:'blonde',accessory:'none',shoes:'heels',unlocked:['glam','beach'],points:50,notice:null,onOutfit:()=>{},onHair:id=>selectedHair=id,onAccessory:()=>{},onShoes:()=>{},onClose:()=>{}})));
 assert(document.querySelector('.dream-panel-wardrobe'),'wardrobe uses compact transparent-top panel');
 assert.equal(document.querySelector('.panel-backdrop'),null,'wardrobe leaves world clear');
-assert.equal(document.querySelectorAll('[role="tab"]').length,4,'all style categories are available');
+assert.equal(document.querySelectorAll('[role="tab"]').length,6,'all style categories are available');
 const hairTab=[...document.querySelectorAll('[role="tab"]')].find(x=>x.textContent==='Hair');
 React.act(()=>hairTab.click());
-React.act(()=>document.querySelector('[aria-label^="Bubble Pony"]').click());
+React.act(()=>document.querySelector('[aria-label^="Bubble pony"]').click());
 assert.equal(selectedHair,'pink','hair choice reaches existing callback');
 assert.equal(document.querySelectorAll('select').length,0,'wardrobe uses no native dropdown');
 React.act(()=>root.unmount());

@@ -1,0 +1,21 @@
+import {spawn} from 'node:child_process';
+import {chromium} from 'playwright';
+import {mkdir,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const server=spawn('node',['node_modules/vite/bin/vite.js','--host','127.0.0.1','--port','8094'],{stdio:'ignore'});
+for(let i=0;i<100;i++){try{await fetch('http://127.0.0.1:8094');break;}catch{await new Promise(r=>setTimeout(r,100));}}
+await mkdir('.test-output',{recursive:true});
+const browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const page=await browser.newPage({viewport:{width:1200,height:900}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto('http://127.0.0.1:8094/tests/fashion-fixture.html');await page.waitForFunction(()=>window.fashionResult);const result=await page.evaluate(()=>window.fashionResult);
+await page.screenshot({path:'.test-output/fashion-poses.png'});
+assert.equal(result.combinations,64);const signatures=Object.values(result.jointStates).map(s=>JSON.stringify(s));assert.equal(new Set(signatures).size,9,'All poses must have distinct joint targets');
+await page.setViewportSize({width:360,height:520});await page.goto('http://127.0.0.1:8094/tests/fashion-fixture.html?ui');
+await page.getByRole('tab',{name:'Bottoms',exact:true}).click();
+await page.getByRole('button',{name:/Midnight mini/}).scrollIntoViewIfNeeded();await page.getByRole('button',{name:'Sunset bottom color'}).scrollIntoViewIfNeeded();await page.getByRole('button',{name:'Sunset bottom color'}).click();
+await page.screenshot({path:'.test-output/fashion-ui-small.png'});
+await page.getByRole('tab',{name:'Extras',exact:true}).scrollIntoViewIfNeeded();await page.getByRole('tab',{name:'Extras',exact:true}).click();await page.getByRole('button',{name:/Crystal tiara/}).click();await page.getByRole('button',{name:/Cat eye shades/}).click();
+assert.equal(await page.getByRole('button',{name:/Crystal tiara/}).getAttribute('aria-pressed'),'true');assert.equal(await page.getByRole('button',{name:/Cat eye shades/}).getAttribute('aria-pressed'),'true');
+await page.getByRole('button',{name:/Silk hair bow/}).scrollIntoViewIfNeeded();await page.getByRole('button',{name:/Silk hair bow/}).click();
+assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.equal(errors.length,0);
+await writeFile('.test-output/fashion-result.json',JSON.stringify({combinations:result.combinations,uniquePoses:new Set(signatures).size,drawCallsAllNine:result.drawCalls,errors},null,2));console.log(JSON.stringify({combinations:result.combinations,uniquePoses:new Set(signatures).size,drawCallsAllNine:result.drawCalls,errors}));await browser.close();server.kill();

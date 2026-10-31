@@ -3,6 +3,7 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { createLoop } from '@/core/loop';
 import { releaseRunRoot } from '@/core/release-root';
 import { createRenderer } from '@/core/renderer';
+import type { ActivityKind, Look, PetAction, PoseId } from '@/game/lifestyle-types';
 import type { PresentationMode } from '@/game/camera';
 import { createScope } from '@/core/scope';
 import { createSandbox, type Sandbox, type SandboxTuning } from '@/game/sandbox';
@@ -30,6 +31,14 @@ export type GameHandle = {
   updateConfig(config: GameConfig): void;
   dispose(): void;
   setPresentation(mode: PresentationMode): void;
+  setLook(look: Look): void;
+  setPose(pose: PoseId): void;
+  setActivity(kind: ActivityKind | null): void;
+  setActivityInput(value: number): void;
+  setPouring(on: boolean): void;
+  setPetAction(action: PetAction): void;
+  setPhotoCompanion(id: string | null): void;
+  capturePhoto(): string | null;
   setInputEnabled(enabled: boolean): void;
   setMove(x: number, y: number): void;
   rotateCamera(dx: number, dy: number): void;
@@ -74,6 +83,8 @@ const noop: GameHandle = {
   updateConfig() {},
   dispose() {},
   setPresentation() {},
+  setLook() {}, setPose() {}, setActivity() {}, setActivityInput() {},
+  setPouring() {}, setPetAction() {}, setPhotoCompanion() {}, capturePhoto() {return null;},
   setInputEnabled() {},
   setMove() {},
   rotateCamera() {},
@@ -114,7 +125,8 @@ export function createGame(
 
   const tuning: SandboxTuning = {
     walkSpeed: safe.walkSpeed,
-    effects: safe.sparkleFx,
+    effects: safe.sparkleFx && safe.quality !== 'low',
+    quality: safe.quality,
   };
 
   const view = createRenderer({
@@ -130,13 +142,13 @@ export function createGame(
   const pmrem = new THREE.PMREMGenerator(view.renderer);
   const environment = pmrem.fromScene(room, .04);
   scene.environment = environment.texture;
-  scene.environmentIntensity = .35;
+  scene.environmentIntensity = .4;
   room.dispose();
   pmrem.dispose();
 
-  scene.add(new THREE.HemisphereLight(0xc9eaff, 0xb66e91, 1.1));
-  const sun = new THREE.DirectionalLight(0xffe4bc, 1.9);
-  sun.position.set(15, 24, 12);
+  scene.add(new THREE.HemisphereLight(0xe5cbff, 0x93576d, .95));
+  const sun = new THREE.DirectionalLight(0xffc38d, 1.6);
+  sun.position.set(-25, 18, -12);
   // One bounded shadow map follows the doll; only the character casts into it.
   sun.castShadow = true;
   sun.shadow.mapSize.set(1024, 1024);
@@ -146,18 +158,20 @@ export function createGame(
   sun.shadow.radius = 3;
   scene.add(sun.target);
   scene.add(sun);
-  const fill = new THREE.DirectionalLight(0xc9d9ff, 0.4);
+  const fill = new THREE.DirectionalLight(0xc5bcff, .5);
   fill.position.set(-32, 22, -28);
   scene.add(fill);
 
   let cameraSensitivity = 1;
   function applyConfig(next: GameConfig) {
     const clean = sanitizeConfig(next);
-    scene.background = new THREE.Color(clean.backgroundColor);
-    scene.fog = new THREE.Fog(clean.backgroundColor, 90, 320);
+    scene.background = new THREE.Color(clean.backgroundColor.toLowerCase() === '#8fd8f5' ? '#e9b3bf' : clean.backgroundColor);
+    const sunsetFog = new THREE.Color(clean.backgroundColor).lerp(new THREE.Color(0xe5a0aa), .72);
+    scene.fog = new THREE.Fog(sunsetFog, 70, 290);
     view.setPixelRatio(clean.pixelRatio);
     tuning.walkSpeed = clean.walkSpeed;
-    tuning.effects = clean.sparkleFx;
+    tuning.effects = clean.sparkleFx && clean.quality !== 'low';
+    tuning.quality = clean.quality;
     view.renderer.shadowMap.enabled = clean.quality !== 'low';
     sun.castShadow = clean.quality !== 'low';
     cameraSensitivity = clean.cameraSensitivity;
@@ -175,7 +189,7 @@ export function createGame(
   }
   scene.add(sandbox.root);
 
-  const sunOffset = new THREE.Vector3(15, 24, 12);
+  const sunOffset = new THREE.Vector3(-25, 18, -12);
   const doll = sandbox.root.getObjectByName('doll');
   const loop = createLoop({
     host: {
@@ -327,6 +341,33 @@ export function createGame(
       if (disposed) return;
       clearInput();
       sandbox.api.setPresentation(mode);
+    },
+    setLook(look) {if (!disposed) sandbox.api.setLook(look);},
+    setPose(pose) {if (!disposed) sandbox.api.setPose(pose);},
+    setActivity(kind) {if (!disposed) {clearInput();sandbox.api.setActivity(kind);}},
+    setActivityInput(value) {if (!disposed) sandbox.api.setActivityInput(value);},
+    setPouring(on) {if (!disposed) sandbox.api.setPouring(on);},
+    setPetAction(action) {if (!disposed) sandbox.api.setPetAction(action);},
+    setPhotoCompanion(id) {if (!disposed) sandbox.api.setPhotoCompanion(id);},
+    capturePhoto() {
+      if (disposed || view.renderer.getContext().isContextLost()) return null;
+      try {
+        // Reading in the same call as render avoids an empty WebGL drawing buffer.
+        // Only the scene canvas is used, so dialogs/buttons never enter the photo.
+        sandbox.update(0);
+        view.renderer.render(scene, camera);
+        const sourceWidth = canvas.width;
+        const sourceHeight = Math.floor(canvas.height * .62);
+        if (sourceWidth < 1 || sourceHeight < 1) return null;
+        const scale = Math.min(1, 512 / sourceWidth, 640 / sourceHeight);
+        const output = document.createElement('canvas');
+        output.width = Math.max(1, Math.round(sourceWidth * scale));
+        output.height = Math.max(1, Math.round(sourceHeight * scale));
+        const context = output.getContext('2d');
+        if (!context) return null;
+        context.drawImage(canvas, 0, 0, sourceWidth, sourceHeight, 0, 0, output.width, output.height);
+        return output.toDataURL('image/jpeg', .83);
+      } catch {return null;}
     },
     setInputEnabled(enabled) {
       inputEnabled = enabled;

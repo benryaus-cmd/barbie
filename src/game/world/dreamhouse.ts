@@ -228,8 +228,12 @@ export function buildDreamhouse(b: Builder): DreamhouseMood {
   b.group.add(stairLight);
 
   // ---- Pool terrace with slide ----
-  b.solid(13, 0.7, 10, white, 0, 0.35, -25);
-  b.box(11.2, 0.2, 8.2, glassMaterial(PALETTE.sky, 0.82), 0, 0.74, -25);
+  // A shallow basin with actual animated water; separate coping leaves its centre open.
+  b.solid(11.2, .18, 8.2, gloss(0x50bfcf, { roughness: .55 }), 0, .18, -25);
+  b.solid(.9, .7, 10, white, -6.05, .35, -25);
+  b.solid(.9, .7, 10, white, 6.05, .35, -25);
+  b.solid(11.2, .7, .9, white, 0, .35, -29.55);
+  b.solid(11.2, .7, .9, white, 0, .35, -20.45);
   const slideCurve = new THREE.CatmullRomCurve3([
     new THREE.Vector3(5.4, 4.8, -25),
     new THREE.Vector3(4.4, 3.1, -24.2),
