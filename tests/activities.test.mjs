@@ -108,7 +108,7 @@ test('volleyball has real ball arcs, timed returns, opponent scoring and a finit
   active.update(1/120,movement);
   if(active.rallyHits>=2)seenNpcReturn=true;
  }
- assert(active.finished);assert(returns>0);assert(seenNpcReturn,'NPC returns the ball during rallies');assert.equal(active.playerPoints,5,'timed returns aimed away from the NPC win the match');assert(active.score<=45);
+ assert(active.finished);assert(returns>0);assert(seenNpcReturn,'NPC returns the ball during rallies');assert.equal(active.playerPoints,2,'best of three ends at two rally wins');assert(active.playerPoints+active.opponentScore<=3);assert(active.score<=45);
  const left=new VolleySession(),right=new VolleySession();advance(left,.5,-1);advance(right,.5,1);assert(left.playerX<right.playerX);
  const final=active.score;active.setCharging(true);advance(active,5);active.setCharging(false);assert.equal(active.score,final);assert.equal(activityReward('volley',999),45);
 });

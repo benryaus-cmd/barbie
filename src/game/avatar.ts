@@ -505,6 +505,8 @@ export function createAvatar(): Avatar {
             const rotation=new THREE.Euler().setFromQuaternion(q);pose(node,rotation.x,rotation.y,rotation.z);
           }
         };
+        // Keep the free hand outside the hip and bend its elbow away from the torso.
+        const handOnHip=(i:number)=>{const side=i?1:-1;reach(i,[side*.245,.015,.135],[side*.5,-.08,.04],[0,-1,0]);};
         pose(pelvis,0,0,-.04);pose(spine,0,0,.04);pose(head,0,.08,-.07);
         for(let i=0;i<2;i++){const side=i?1:-1;pose(legs[i].hip,0,0,side*.025);pose(legs[i].knee,0);pose(legs[i].ankle,0);arm(i,0,0,side*.10,-.1);}
         if(selected==='wave') {
@@ -512,7 +514,7 @@ export function createAvatar(): Avatar {
           arm(0,-.12,0,-.15,-.15);
         } else if(selected==='peace') {
           reach(1,[.29,.60,.16],[.3,-.1,.02],[.12,1,0]); peaceFingers[1].visible=true;
-          arm(0,.1,0,.43,-.9,-.25);pose(head,-.04,-.1,-.16);
+          handOnHip(0);pose(head,-.04,-.1,-.16);
           pose(legs[0].hip,.08,0,-.07);pose(legs[0].knee,.12);
         } else if(selected==='heart') {
           reach(0,[-.045,.35,.24],[-.2,-.3,.04],[.65,-.75,0]);
@@ -520,7 +522,7 @@ export function createAvatar(): Avatar {
           pose(head,.10,0,.04);pose(spine,-.03,0,0);
         } else if(selected==='kiss') {
           reach(1,[.082,.53,.235],[.28,-.17,.06],[-.8,.5,.05]);
-          arm(0,.08,0,.34,-1.1,-.22);pose(head,-.08,-.16,-.12);
+          handOnHip(0);pose(head,-.08,-.16,-.12);
           pose(legs[1].hip,.18,0,.08);pose(legs[1].knee,.25);
         } else if(selected==='spin') {
           pose(pelvis,0,state.clock*1.7,.04);pose(spine,-.03,0,-.08);
@@ -540,10 +542,10 @@ export function createAvatar(): Avatar {
           reach(0,[-.08,.31,.39],[-.35,-.10,.18],[1,0,0]);reach(1,[.08,.35,.39],[.35,-.1,.18],[-1,0,0]);
           pose(spine,.04,.12,-.10);pose(head,.10,-.16,-.15);
         } else if(selected==='arm-around') {
-          reach(0,[-.65,.34,-.07],[-.4,.1,-.06],[-.8,-.3,0]);arm(1,.10,0,.34,-1.05,-.17);
+          reach(0,[-.65,.34,-.07],[-.4,.1,-.06],[-.8,-.3,0]);handOnHip(1);
           pose(head,0,-.12,-.15);pose(spine,0,0,-.08);
         } else if(selected==='half-heart') {
-          reach(0,[-.34,.69,.13],[-.40,.36,.06],[1,.1,0]);arm(1,.1,0,.4,-.9,-.15);
+          reach(0,[-.34,.69,.13],[-.40,.36,.06],[1,.1,0]);handOnHip(1);
           pose(head,-.03,-.1,-.16);pose(spine,0,0,-.12);
         } else if(selected==='salute') {
           reach(1,[.15,.76,.14],[.42,.2,.04],[-1,.1,0]);arm(0,0,0,-.30,-.8,.1);pose(head,0,-.12,-.07);

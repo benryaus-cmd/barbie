@@ -3,6 +3,7 @@ const m={exports:{}};new Function('module','exports',ts.transpileModule(fs.readF
 const steering=m.exports.createSteering();
 const initial=steering.direction(.7,.7,0);for(let i=0;i<600;i++){const d=steering.direction(.7,.7,-i*.01);assert(Math.abs(d.x-initial.x)<1e-9);assert(Math.abs(d.z-initial.z)<1e-9,'camera cannot curve a held diagonal');}
 const up=steering.direction(0,1,-Math.PI/2);assert(up.x>.999&&Math.abs(up.z)<1e-9,'deliberate up maps to new screen forward');
-assert.equal(steering.direction(0,-1,0).follow,false,'backward walk keeps front view');
+assert.equal(steering.direction(0,-1,0).follow,true,'sustained backward walking can recenter the camera');
+for(const x of [-.8,.8])assert.equal(steering.direction(x,-.6,0).follow,true,'rear diagonals can recenter too');
 assert.deepEqual(steering.direction(0,.05,0),{x:0,z:0,follow:false});assert.deepEqual(steering.direction(NaN,0,0),{x:0,z:0,follow:false});
-console.log('PASS stable held direction, deliberate screen reanchor, backward view and input deadzone');
+console.log('PASS stable held direction, deliberate screen reanchor, all-direction follow and input deadzone');

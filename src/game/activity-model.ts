@@ -163,14 +163,14 @@ const VOLLEY_GRAVITY=7.2;
 export class VolleySession {
  elapsed=0;playerX=0;npcX=0;playerPoints=0;opponentScore=0;score=0;combo=0;finished=false;
  phase:'serve'|'rally'|'point'='serve';charge=0;charging=false;swing=0;jump=0;rallyHits=0;
- feedback='First to 5 · move under the ball · hold, then release to return';
+ feedback='Best of 3 · first to 2 · move under the ball and release to return';
  ballPosition={x:0,y:2.05,z:-2.8,vx:0,vy:0,vz:0};
  private pause=1.2;private npcReaction=0;private npcTarget=0;private lastHitter:'player'|'npc'='npc';private input=0;private hitPower=0;private pointIndex=0;
  get timeLeft(){return Math.max(0,VOLLEY_DURATION-this.elapsed);}
  setCharging(on:boolean){
   if(this.finished||this.phase==='point'){this.charging=false;return;}
   if(!on&&this.charging&&this.phase==='serve'){this.cancelCharge();return;}
-  if(!on&&this.charging){this.charging=false;this.hitPower=this.charge;this.swing=.4;this.jump=.62;this.charge=0;return;}
+  if(!on&&this.charging){this.charging=false;this.hitPower=this.charge;this.swing=.65;this.jump=.62;this.charge=0;return;}
   this.charging=on;
  }
  cancelCharge(){this.charging=false;this.charge=0;this.swing=0;}
@@ -185,23 +185,23 @@ export class VolleySession {
    this.pause=Math.max(0,this.pause-dt);
    if(this.phase==='serve'){this.ballPosition.x=this.npcX;this.ballPosition.y=2.05;this.ballPosition.z=-2.8;}
    if(this.pause===0&&this.phase==='point'){this.phase='serve';this.pause=.55;return;}
-   if(this.pause===0){this.phase='rally';this.rallyHits=0;this.launch('npc',[-1.35,1.75,-2.15,.65,2.25][this.pointIndex%5],1.5);this.feedback='Receive! Move to the ball · release as it drops';}
+   if(this.pause===0){this.phase='rally';this.rallyHits=0;this.launch('npc',[-.7,1.05,-1.15,.5,1.2][this.pointIndex%5],1.75);this.feedback='Receive! Move to the ball · release as it drops';}
    return;
   }
   const ball=this.ballPosition,previousZ=ball.z;
   ball.x+=ball.vx*dt;ball.y+=ball.vy*dt-VOLLEY_GRAVITY*dt*dt/2;ball.z+=ball.vz*dt;ball.vy-=VOLLEY_GRAVITY*dt;
-  // Opponent only revises its prediction every quarter second and has a limited run speed.
+  // Coco reacts slowly, sometimes reads the wrong side, and can miss a return.
   this.npcReaction-=dt;
-  if(this.npcReaction<=0){this.npcReaction=.24;const time=ball.vz<0?Math.max(0,(-2.65-ball.z)/ball.vz):0;this.npcTarget=clamp(ball.x+ball.vx*time+Math.sin(this.rallyHits*2.7+this.pointIndex)*.26,-3,3);}
-  const npcMove=clamp(this.npcTarget-this.npcX,-dt*2.15,dt*2.15);this.npcX+=npcMove;
+  if(this.npcReaction<=0){this.npcReaction=.48;const time=ball.vz<0?Math.max(0,(-2.65-ball.z)/ball.vz):0;this.npcTarget=clamp(ball.x+ball.vx*time+Math.sin(this.rallyHits*2.7+this.pointIndex)*.65,-3,3);}
+  const npcMove=clamp(this.npcTarget-this.npcX,-dt*1.35,dt*1.35);this.npcX+=npcMove;
   if(previousZ*ball.z<=0&&Math.abs(previousZ-ball.z)>.0001&&ball.y<VOLLEY_NET_HEIGHT+.16){this.point(this.lastHitter!=='player','Into the net!');return;}
-  if(this.lastHitter==='npc'&&ball.z>2.12&&ball.z<3.55&&ball.vy<0&&ball.y<2.35&&ball.y>.55&&Math.abs(ball.x-this.playerX)<.86&&this.swing>0){
+  if(this.lastHitter==='npc'&&ball.z>1.85&&ball.z<3.75&&ball.vy<.5&&ball.y<2.65&&ball.y>.38&&Math.abs(ball.x-this.playerX)<1.15&&this.swing>0){
    const quality=clamp(1-Math.abs(this.hitPower-.57)*.8,0,1);
    const aim=clamp(this.playerX*.25+this.input*2.8+(this.hitPower-.57)*1.1,-3.15,3.15);
    this.launch('player',aim,1.58-this.hitPower*.48);this.combo++;this.swing=0;this.feedback=quality>.85?'Great return! Aim away from Coco':'Returned! Move for the next receive';return;
   }
-  if(this.lastHitter==='player'&&ball.z< -2.12&&ball.z> -3.55&&ball.vy<0&&ball.y<2.25&&ball.y>.65&&Math.abs(ball.x-this.npcX)<.7){
-   this.launch('npc',[-2.35,1.95,-.75,2.45,.3][(this.rallyHits+this.pointIndex)%5],1.42);this.feedback='Coco returns! Get under the ball';return;
+  if(this.lastHitter==='player'&&ball.z< -2.12&&ball.z> -3.55&&ball.vy<0&&ball.y<2.25&&ball.y>.65&&Math.abs(ball.x-this.npcX)<.52&&(this.pointIndex+this.rallyHits)%3!==0){
+   this.launch('npc',[-1.2,1.1,-.5,1.35,.3][(this.rallyHits+this.pointIndex)%5],1.65);this.feedback='Coco returns! Get under the ball';return;
   }
   if(ball.y<=.16){ball.y=.16;const inside=Math.abs(ball.x)<=3.5&&Math.abs(ball.z)<=4.5;this.point(inside?ball.z<0:this.lastHitter==='npc',inside?'On the sand!':'Out of bounds!');}
  }
@@ -215,7 +215,7 @@ export class VolleySession {
   if(playerWon){this.playerPoints++;this.score=this.playerPoints*9;}else {this.opponentScore++;this.combo=0;}
   this.feedback=`${reason} ${playerWon?'Your point':'Coco scores'} · ${this.playerPoints}–${this.opponentScore}`;
   this.cancelCharge();this.pointIndex++;this.phase='point';this.pause=1.15;
-  if(this.playerPoints>=5||this.opponentScore>=5)this.finish();
+  if(this.playerPoints>=2||this.opponentScore>=2)this.finish();
  }
  private finish(){this.finished=true;this.cancelCharge();this.feedback=`${this.playerPoints>this.opponentScore?'You win!':this.playerPoints===this.opponentScore?'A seaside draw!':'Coco wins · rematch soon!'} ${this.playerPoints}–${this.opponentScore} · ${this.score} court points`;}
 }

@@ -10,7 +10,7 @@ const HOMES = [
   { x: 2.1, y: .91, z: -27.7, pool: true },
   { x: -43.3, y: .06, z: 10.6, pool: false },
   { x: 43.7, y: .02, z: 29.3, pool: false },
-  { x: -39, y: .03, z: 24.4, pool: false },
+  { x: -38.6, y: .04, z: 20, pool: false },
   { x: 37.6, y: .04, z: 24.4, pool: false },
 ];
 // Short pedestrian loops stay outside the pool coping, shop walls, raised
@@ -18,7 +18,7 @@ const HOMES = [
 const WALK_ROUTES: Record<string, readonly (readonly [number, number])[]> = {
   brooklyn: [[17.2,-29.4],[17.2,-24],[19.8,-24],[19.8,-29.4]],
   nikki: [[-43.3,10.6],[-43.3,13],[-40,13],[-40,10.6]],
-  daisy: [[-39,24.4],[-38,28.8],[-45.4,28.8],[-39,28.8]],
+  daisy: [[-38.6,20],[-38.6,27.8],[-36.5,27.8],[-36.5,20]],
   ken: [[37.6,24.4],[35.5,24.4],[35.5,29.4],[36.9,29.4],[36.9,24.4]],
 };
 const SKINS = [0xffd4b9, 0x8f4f32, 0xdba17d, 0x754731, 0xcc997b, 0xf1c3ac, 0xe9b38d];
@@ -262,6 +262,8 @@ export function createResidents() {
       const paired = chosen && !!pair && photoIds.find(id=>id!=='pet')===person.info.id;
       const localX=offset*(paired ? .62 : .92), localZ=paired ? -.04 : .05;
       const cosine=Math.cos(presentationFacing), sine=Math.sin(presentationFacing);
+      // Match the raised runway deck if a resident ever occupies its footprint.
+      if(!home.pool)person.position.y=person.position.x>-51.7&&person.position.x< -40.3&&person.position.z>17.8&&person.position.z<26.2?1.22:home.y;
       group.position.set(chosen?player.x+cosine*localX+sine*localZ:person.position.x,chosen?player.y:person.position.y,chosen?player.z-sine*localX+cosine*localZ:person.position.z);
       group.rotation.y=chosen?presentationFacing+(paired && pair === 'hug' ? Math.PI/2 : -.1):home.pool?Math.sin(clock*.25+i)*.2:person.heading;
       const distance=group.position.distanceTo(player);

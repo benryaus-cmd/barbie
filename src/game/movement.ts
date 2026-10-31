@@ -11,7 +11,7 @@ export function createSteering() {
    const change=Math.atan2(Math.sin(angle-anchor),Math.cos(angle-anchor));
    if(basis===null||Math.abs(change)>.18){basis=yaw;anchor=angle;}
    const scale=Math.max(1,magnitude);
-   return {x:(Math.cos(basis)*x-Math.sin(basis)*y)/scale,z:(-Math.sin(basis)*x-Math.cos(basis)*y)/scale,follow:y>-.15};
+   return {x:(Math.cos(basis)*x-Math.sin(basis)*y)/scale,z:(-Math.sin(basis)*x-Math.cos(basis)*y)/scale,follow:true};
   },
  };
 }
