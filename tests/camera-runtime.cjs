@@ -7,9 +7,9 @@ const code = ts.transpileModule(fs.readFileSync('src/game/camera.ts', 'utf8'), {
 new Function('require', 'module', 'exports', code)(require, mod, mod.exports);
 const {createCameraRig} = mod.exports;
 const frame = 1 / 60;
-function setup() {
+function setup(blockers = []) {
   const camera = new THREE.PerspectiveCamera(58, .6, .1, 900);
-  const rig = createCameraRig(camera);
+  const rig = createCameraRig(camera, 6.8, blockers);
   const target = new THREE.Vector3();
   rig.update(frame, target, false, false);
   return {camera, rig, target};
@@ -86,3 +86,48 @@ state.rig.setPresentation('photo');
 state.rig.update(frame, state.target, false, false);
 assert(state.camera.position.distanceTo(initial) < 1e-6, 'reset restores photo orbit, angle and zoom');
 console.log('PASS camera follow delay/distance/deadzones, turning/manual hold, actual travel, full photo orbit, vertical angle, zoom and reset');
+
+for (const mode of ['photo', 'style']) {
+  state = setup();
+  const heading = Math.PI / 2;
+  state.rig.setPresentation(mode, heading);
+  state.rig.update(frame, state.target, false, false);
+  assert(state.camera.position.x > 4 && Math.abs(state.camera.position.z) < .001, `${mode} opens in front of the actual heading`);
+  const start = state.camera.position.clone();
+  state.rig.rotate(850, 90);
+  state.rig.update(frame, state.target, false, false);
+  assert(state.camera.position.x < 0, `${mode} supports a complete horizontal orbit`);
+  assert(state.camera.position.y > start.y + .5, `${mode} supports vertical orbit`);
+  const beforeZoom = state.camera.position.distanceTo(photoFocus);
+  state.rig.zoom(-250);
+  state.rig.update(frame, state.target, false, false);
+  assert(state.camera.position.distanceTo(photoFocus) < beforeZoom, `${mode} supports zoom`);
+  const selected = state.camera.position.clone();
+  state.rig.setPresentation(mode, 0);
+  state.rig.update(frame, state.target, false, false);
+  assert(state.camera.position.distanceTo(selected) < .001, 'repeated presentation state does not reset its orbit');
+}
+// A thin decorated wall is shorter than the previous blocker filter. Its near
+// face is .95m from the doll, inside the previous forced 1.35m camera distance.
+const wardrobeWall = {x: 0, y: 1, z: -.98, hx: 4, hy: .7, hz: .03};
+for (const mode of ['photo', 'style', 'world']) {
+  state = setup([wardrobeWall]);
+  if (mode === 'world') state.rig.rotate(Math.PI / .006, 0);
+  else state.rig.setPresentation(mode, Math.PI);
+  state.rig.update(frame, state.target, false, true);
+  assert(state.camera.position.z > -.73, `${mode} stays in front of a nearby thin wardrobe wall`);
+  if (mode !== 'world') {
+    state.camera.updateMatrixWorld(true);
+    const head = new THREE.Vector3(0, 1.85, 0).project(state.camera);
+    assert(head.y > -1 && head.y < 1, `${mode} keeps the head visible when a wall compresses the camera`);
+  }
+}
+console.log('PASS heading-relative photo/style orbit, zoom and thin indoor wall clearance');
+
+state = setup([wardrobeWall]);
+state.rig.setPresentation('style', Math.PI);
+state.rig.update(frame, state.target, false, true, true);
+assert(state.camera.position.z < -4, 'an explicitly cutaway presentation keeps full-body camera distance');
+state.rig.zoom(-1e6);
+state.rig.update(frame, state.target, false, true, true);
+assert(state.camera.position.z < -2, 'cutaway still keeps the selected zoom near a wall');

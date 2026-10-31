@@ -4,6 +4,7 @@ import { PALETTE, gloss, glassMaterial, neonMaterial } from '@/game/palette';
 import { SPOTS } from '@/game/spots';
 import type { Spot } from '@/game/types';
 import { neonPanel } from '@/game/world/props';
+import { buildPhotoGarden } from '@/game/world/vistas';
 
 export type Bobber = {
   obj: THREE.Object3D;
@@ -34,6 +35,7 @@ const BEACON_COLORS: Record<string, number> = {
 function beacon(b: Builder, spot: Spot, fx: StationFx) {
   const color = BEACON_COLORS[spot.kind] ?? PALETTE.magenta;
   const group = new THREE.Group();
+  group.name = `activity beacon: ${spot.id}`;
   const ringMat = neonMaterial(color, 1.9);
   const ring = new THREE.Mesh(
     new THREE.TorusGeometry(0.44, 0.07, 6, 16),
@@ -139,36 +141,65 @@ function surfShack(b: Builder, fx: StationFx) {
 }
 
 function netballCourt(b: Builder) {
-  const rose = gloss(0xe291af,{roughness:.88});
-  const stripe = gloss(0xfff6df,{roughness:.8});
-  const brass = gloss(PALETTE.gold,{metalness:.65,roughness:.3});
-  b.box(11,.035,9,rose,44,.035,36.2);
-  for(const x of [38.6,49.4]) b.box(.08,.04,8.8,stripe,x,.07,36.2);
-  for(const z of [31.85,36.2,40.55]) b.box(10.8,.04,.08,stripe,44,.07,z);
-  const circle=b.add(new THREE.TorusGeometry(1.05,.045,5,28),stripe,44,.09,36.2);circle.rotation.x=-Math.PI/2;
-  const goalArc=b.add(new THREE.TorusGeometry(3.5,.045,5,36,Math.PI),stripe,44,.09,31.85);goalArc.rotation.x=-Math.PI/2;
-  // Netball has a freestanding ring with an open net, without a backboard.
-  b.cyl(.085,.12,3.05,10,brass,44,1.53,31.7);
-  b.box(.08,.08,.6,brass,44,3.04,31.98);
-  const rim=b.add(new THREE.TorusGeometry(.4,.045,8,24),gloss(0xd95080),44,3.05,32.35);rim.rotation.x=-Math.PI/2;
-  const netMat=gloss(0xfff5e6,{roughness:.85});
-  for(let i=0;i<12;i++) {
-    const a=i*Math.PI*2/12;
-    const curve=new THREE.LineCurve3(new THREE.Vector3(44+Math.cos(a)*.4,3.03,32.35+Math.sin(a)*.4),new THREE.Vector3(44+Math.cos(a+.3)*.22,2.48,32.35+Math.sin(a+.3)*.22));
-    b.add(new THREE.TubeGeometry(curve,1,.012,4,false),netMat);
+  const x=17,z=34;
+  const rose=gloss(0xe582a5,{roughness:.88});
+  const teal=gloss(0x2e8f9c,{roughness:.86});
+  const stripe=gloss(0xfff6df,{roughness:.8});
+  const brass=gloss(PALETTE.gold,{metalness:.65,roughness:.3});
+  // This separate court is on the main island, with a broad entrance at the south.
+  b.box(13,.04,11,teal,x,.035,z).name='Sunset Netball court';
+  b.box(11,.045,9,rose,x,.06,z);
+  for(const px of [x-5.4,x+5.4]) b.box(.08,.04,8.8,stripe,px,.095,z);
+  for(const pz of [z-4.35,z,z+4.35]) b.box(10.8,.04,.08,stripe,x,.095,pz);
+  const circle=b.add(new THREE.TorusGeometry(1.05,.045,5,28),stripe,x,.12,z);circle.rotation.x=-Math.PI/2;
+  const goalArc=b.add(new THREE.TorusGeometry(3.5,.045,5,36,Math.PI),stripe,x,.12,z-4.35);goalArc.rotation.x=-Math.PI/2;
+  for(const side of [-1,1]) {
+    const pz=z+side*4.5, rz=pz-side*.65;
+    b.cyl(.085,.12,3.05,10,brass,x,1.53,pz);
+    b.collider(x,1.53,pz,.13,1.53,.13);
+    b.box(.08,.08,.65,brass,x,3.04,pz-side*.325);
+    const rim=b.add(new THREE.TorusGeometry(.4,.045,8,24),gloss(0xd95080),x,3.05,rz);rim.rotation.x=-Math.PI/2;
+    const netMat=gloss(0xfff5e6,{roughness:.85});
+    for(let i=0;i<10;i++) {
+      const a=i*Math.PI*2/10;
+      const curve=new THREE.LineCurve3(new THREE.Vector3(x+Math.cos(a)*.4,3.03,rz+Math.sin(a)*.4),new THREE.Vector3(x+Math.cos(a+.3)*.22,2.48,rz+Math.sin(a+.3)*.22));
+      b.add(new THREE.TubeGeometry(curve,1,.012,4,false),netMat);
+    }
+    for(const [y,r] of [[2.86,.35],[2.67,.28],[2.48,.22]]) {const ring=b.add(new THREE.TorusGeometry(r,.012,4,16),netMat,x,y,rz);ring.rotation.x=-Math.PI/2;}
   }
-  for(const [y,r] of [[2.86,.35],[2.67,.28],[2.48,.22]]) {const ring=b.add(new THREE.TorusGeometry(r,.012,4,16),netMat,44,y,32.35);ring.rotation.x=-Math.PI/2;}
-  b.sphere(.23,gloss(0xf8eee4,{roughness:.78}),41.4,.25,37.4);
+  b.sphere(.23,gloss(0xf8eee4,{roughness:.78}),x-2.6,.27,z+1.2);
+  // Benches stay outside the court and leave its two end entrances clear.
+  const seat=gloss(0xffc1d6,{roughness:.8});
+  b.solid(.8,.42,3,seat,9.5,.23,z);
+  b.box(.15,.55,3,brass,9.15,.7,z);
+}
+
+function volleyballCourt(b: Builder) {
+  const sand=gloss(0xf9d49b,{roughness:.95});
+  const coral=gloss(0xd75278,{roughness:.8});
+  const rope=gloss(0xfff5e8,{roughness:.8});
+  const post=gloss(0x47a4b0,{roughness:.4,metalness:.18});
+  b.box(13,.04,10,sand,50,.06,35).name='Glam Beach volleyball court';
+  for(const x of [43.8,56.2]) b.box(.095,.035,9.6,coral,x,.1,35);
+  for(const z of [30.2,39.8]) b.box(12.4,.035,.095,coral,50,.1,z);
+  for(const x of [43.6,56.4]) {
+    b.cyl(.095,.14,2.65,10,post,x,1.34,35);
+    b.cyl(.18,.18,.09,10,coral,x,2.68,35);
+    b.collider(x,1.34,35,.15,1.34,.15);
+  }
+  // A visible woven mesh, top tape and lower rope make the real 3D net readable.
+  for(let i=0;i<=24;i++) b.box(.018,1.2,.02,rope,43.8+i*12.4/24,1.91,35);
+  for(let i=0;i<=5;i++) b.box(12.4,.018,.02,rope,50,1.31+i*.24,35);
+  b.box(12.8,.1,.045,rope,50,2.56,35);
+  b.collider(50,1.91,35,6.2,.65,.035);
+  b.sphere(.24,gloss(0xfff4e3,{roughness:.68}),52,.34,37.8);
 }
 
 function photoBooth(b: Builder, fx: StationFx) {
   const gold = gloss(PALETTE.gold, { metalness: 0.92, roughness: 0.14 });
   const dark = gloss(0x2b2140, { metalness: 0.5, roughness: 0.35 });
   b.box(3.6, 0.18, 2.6, gloss(0xd0184f, { roughness: 0.38, metalness: 0.2 }), -46, 0.14, 16.4);
-  for (const px of [-47.7, -44.3]) {
-    b.box(0.34, 3.3, 0.34, gold, px, 1.72, 16.4);
-  }
-  b.add(new THREE.TorusGeometry(1.7, 0.18, 8, 20, Math.PI), gold, -46, 3.3, 16.4);
+  buildPhotoGarden(b);
   b.cyl(0.07, 0.1, 1.5, 6, dark, -46, 0.86, 14.7);
   b.box(0.52, 0.38, 0.5, dark, -46, 1.78, 14.7);
   b.cyl(0.16, 0.16, 0.28, 10, glassMaterial(PALETTE.sky, 0.85), -46, 1.78, 14.42).rotation.x =
@@ -222,6 +253,7 @@ export function buildStations(b: Builder): StationFx {
   slideSign(b, fx);
   surfShack(b, fx);
   netballCourt(b);
+  volleyballCourt(b);
   photoBooth(b, fx);
   cafeKiosk(b, fx);
 

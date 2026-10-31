@@ -4,21 +4,21 @@ import type { ColliderBox } from '@/game/types';
 export type PresentationMode = 'world' | 'style' | 'dance' | 'photo' | 'pet';
 
 export type CameraRig = {
-  setPresentation(mode: PresentationMode): void;
+  setPresentation(mode: PresentationMode, facing?: number): void;
   rotate(dx: number, dy: number): void;
   getYaw(): number;
   setWalkHeading(heading: number | null, speed?: number, allowFollow?: boolean): void;
   /** Positive wheel/pinch delta zooms out; negative delta zooms in. */
   zoom(delta: number): void;
-  update(dt: number, target: THREE.Vector3, zoomOut: boolean, indoor: boolean): void;
+  /** cutaway is only used when the renderer removes presentation occluders. */
+  update(dt: number, target: THREE.Vector3, zoomOut: boolean, indoor: boolean, cutaway?: boolean): void;
   reset(): void;
 };
 
 const MIN_PITCH = 0.08;
 const MAX_PITCH = 1.05;
 const CAMERA_RADIUS = 0.22;
-const CAMERA_CLEARANCE = 0.38;
-const MIN_CAMERA_DISTANCE = 1.35;
+const CAMERA_CLEARANCE = 0.12;
 const WALK_FOLLOW_DELAY = 0.6;
 const WALK_FOLLOW_DISTANCE = 1;
 const WALK_FOLLOW_DEADZONE = 0.2;
@@ -29,9 +29,6 @@ export function createCameraRig(
   distance = 6.8,
   blockers: ColliderBox[] = []
 ): CameraRig {
-  const wallBlockers = blockers.filter(
-    b => b.hy >= 0.75 && (b.hx >= 0.75 || b.hz >= 0.75)
-  );
   let yaw = 0;
   let walkHeading: number | null = null;
   let manualHold = 0;
@@ -69,7 +66,7 @@ export function createCameraRig(
     rayDirection.divideScalar(rayLength);
     let allowedDistance = rayLength;
 
-    for (const box of wallBlockers) {
+    for (const box of blockers) {
       const minX = box.x - box.hx - CAMERA_RADIUS;
       const maxX = box.x + box.hx + CAMERA_RADIUS;
       const minY = box.y - box.hy - CAMERA_RADIUS;
@@ -109,10 +106,8 @@ export function createCameraRig(
       }
 
       if (valid && exit >= enter && enter > 0 && enter < allowedDistance) {
-        allowedDistance = Math.max(
-          MIN_CAMERA_DISTANCE,
-          enter - CAMERA_CLEARANCE
-        );
+        // Never enforce a minimum that can put the lens beyond a nearby wall.
+        allowedDistance = Math.max(0, enter - CAMERA_CLEARANCE);
       }
     }
 
@@ -122,10 +117,10 @@ export function createCameraRig(
   }
 
   return {
-    setPresentation(mode) {
+    setPresentation(mode, facing = 0) {
       if (presentation === mode) return;
       presentation = mode;
-      presentationYaw = 0;
+      presentationYaw = Number.isFinite(facing) ? facing : 0;
       photoPitch = 0.26;
       photoZoom = 1;
       clearFollowProgress();
@@ -134,7 +129,7 @@ export function createCameraRig(
     },
     rotate(dx: number, dy: number) {
       if (!Number.isFinite(dx) || !Number.isFinite(dy)) return;
-      if (presentation === 'photo') {
+      if (presentation === 'photo' || presentation === 'style') {
         presentationYaw -= dx * 0.004;
         photoPitch = THREE.MathUtils.clamp(photoPitch + dy * 0.004, -0.15, 1.05);
         return;
@@ -155,20 +150,21 @@ export function createCameraRig(
       if (walkHeading === null || !followAllowed || walkSpeed < WALK_FOLLOW_MIN_SPEED) clearFollowProgress();
     },
     zoom(delta) {
-      if (!Number.isFinite(delta) || presentation !== 'photo') return;
+      if (!Number.isFinite(delta) || (presentation !== 'photo' && presentation !== 'style')) return;
       photoZoom = THREE.MathUtils.clamp(photoZoom * Math.exp(delta * 0.0015), 0.58, 1.9);
     },
     getYaw() {
       return yaw;
     },
-    update(dt: number, target: THREE.Vector3, zoomOut: boolean, indoor: boolean) {
+    update(dt: number, target: THREE.Vector3, zoomOut: boolean, indoor: boolean, cutaway = false) {
       if (presentation !== 'world') {
         // Feet-relative framing reserves the lower 40% for wardrobe and DJ controls.
-        // The doll faces +Z while presenting. Preserve the exploration orbit separately.
+        // Presentation orbit starts in front of the captured doll heading. It
+        // remains independent of both the doll and the exploration camera.
         const companion = presentation === 'pet' || presentation === 'photo';
         const dist = companion ? (camera.aspect < 1 ? 4.7 : 4.3) : camera.aspect < 1 ? 4.25 : 4.4;
         lookAt.set(target.x, target.y + (presentation === 'pet' ? 0 : .25), target.z);
-        if (presentation === 'photo') {
+        if (presentation === 'photo' || presentation === 'style') {
           const radius = dist * photoZoom;
           desired.set(
             target.x + Math.sin(presentationYaw) * radius * Math.cos(photoPitch),
@@ -177,6 +173,17 @@ export function createCameraRig(
           );
         } else {
           desired.set(target.x + Math.sin(presentationYaw) * dist, target.y + 1.4, target.z + Math.cos(presentationYaw) * dist);
+        }
+        if (!cutaway) keepCameraClear(desired);
+        const clearDistance = desired.distanceTo(lookAt);
+        if (!cutaway && clearDistance < 2.8) {
+          // A close indoor wall may require a portrait crop. Lift the focus
+          // toward the face rather than leaving the head above the viewport.
+          const closeFocus = THREE.MathUtils.lerp(1.7, .25, THREE.MathUtils.clamp((clearDistance - .45) / 2.35, 0, 1));
+          const lift = target.y + closeFocus - lookAt.y;
+          lookAt.y += lift;
+          desired.y += lift;
+          keepCameraClear(desired);
         }
         current.copy(desired);
         camera.position.copy(current);

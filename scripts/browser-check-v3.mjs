@@ -146,7 +146,7 @@ try {
     assert(groupPositions.every(x=>x.visible),'both actual resident meshes are visible');
     await shot('two-costars');await inspectSunhat('two-costars');
     const original=await scene();
-    const region=page.getByRole('region',{name:/Photo camera: drag/});
+    const region=page.getByRole('region',{name:/Camera: drag/});
     const box=await region.boundingBox();
     await page.mouse.move(box.x+box.width*.35,box.y+box.height*.6);await page.mouse.down();
     await page.mouse.move(box.x+box.width*.75,box.y+box.height*.8,{steps:8});await page.mouse.up();
@@ -280,7 +280,7 @@ try {
     });
     await page.reload();await click(/step into/i,false);await page.waitForFunction(()=>window.__testGame&&window.__testScene);
     const before=await profile();
-    const tierText=await page.locator('.dream-next-label').innerText();
+    const tierText=await page.locator('.hud-followers').innerText();
     assert.match(tierText,/500 FOLLOWERS/);assert.match(tierText,/×1\.50 POINTS/);
     await emit('token',{points:10,count:1});
     await page.waitForFunction(points=>JSON.parse(localStorage.getItem('barbie-ultimate-dreamland:profile-v1')).points===points,before.points+15);

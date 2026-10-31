@@ -24,23 +24,23 @@ export function buildDreamhouse(b: Builder): DreamhouseMood {
 
   // ---- Structure: hollow, enterable footprint x[-10,10] z[-53,-39] ----
   // Back wall (full height, also loft wall)
-  b.solid(20, 7.4, 0.5, wall, 0, 3.7, -52.75);
+  b.solid(20, 7.4, 0.5, wall, 0, 3.7, -52.75).name = 'camera cutaway wall';
   // Side walls: front half (low) + back half (tall loft walls)
-  b.solid(0.5, 3.7, 8.4, wall, -9.75, 1.85, -43.2);
-  b.solid(0.5, 3.7, 8.4, wall, 9.75, 1.85, -43.2);
-  b.solid(0.5, 7.4, 5.6, wall, -9.75, 3.7, -50.2);
-  b.solid(0.5, 7.4, 5.6, wall, 9.75, 3.7, -50.2);
+  b.solid(0.5, 3.7, 8.4, wall, -9.75, 1.85, -43.2).name = 'camera cutaway wall';
+  b.solid(0.5, 3.7, 8.4, wall, 9.75, 1.85, -43.2).name = 'camera cutaway wall';
+  b.solid(0.5, 7.4, 5.6, wall, -9.75, 3.7, -50.2).name = 'camera cutaway wall';
+  b.solid(0.5, 7.4, 5.6, wall, 9.75, 3.7, -50.2).name = 'camera cutaway wall';
   // Front wall with centered door gap x[-1.9,1.9]
-  b.solid(7.6, 3.7, 0.5, wall, -5.7, 1.85, -39.25);
-  b.solid(7.6, 3.7, 0.5, wall, 5.7, 1.85, -39.25);
+  b.solid(7.6, 3.7, 0.5, wall, -5.7, 1.85, -39.25).name = 'camera cutaway wall';
+  b.solid(7.6, 3.7, 0.5, wall, 5.7, 1.85, -39.25).name = 'camera cutaway wall';
   // Interior partition between living room and kitchen (open doorway at front)
-  b.solid(0.5, 3.7, 4.9, inner, 0, 1.85, -44.95);
+  b.solid(0.5, 3.7, 4.9, inner, 0, 1.85, -44.95).name = 'camera cutaway wall';
   // Back partition (stair hall) with doorway gap x[1.5,4.5]
-  b.solid(8.4, 3.7, 0.5, inner, -2.3, 1.85, -47.4);
-  b.solid(5.25, 3.7, 0.5, inner, 7.125, 1.85, -47.4);
+  b.solid(8.4, 3.7, 0.5, inner, -2.3, 1.85, -47.4).name = 'camera cutaway wall';
+  b.solid(5.25, 3.7, 0.5, inner, 7.125, 1.85, -47.4).name = 'camera cutaway wall';
 
   // Second-floor slab over the back half (stair opening at x[-9.75,-6.5])
-  b.solid(16.25, 0.3, 5.6, white, 1.625, 3.75, -50.2);
+  b.solid(16.25, 0.3, 5.6, white, 1.625, 3.75, -50.2).name = 'camera cutaway wall';
 
   // A full-width stair passage avoids the old partition across the flight.
   // Closed risers use a comfortable 0.15m rise, with a clear 3m flight.
@@ -308,5 +308,17 @@ export function buildDreamhouse(b: Builder): DreamhouseMood {
     b.sphere(0.34, neonMaterial(PALETTE.gold, 1.6), lx, 3.4, -24);
   }
 
+  // Keep enclosing decorative skins independent for the indoor full-body camera.
+  // Wall collision remains solid when their render mesh is temporarily cut away.
+  for (const object of b.group.children) {
+    if (!(object instanceof THREE.Mesh) || object.name) continue;
+    const p=object.position;
+    if (p.x < -10.6 || p.x > 10.6 || p.z < -53.3 || p.z > -38.0) continue;
+    const geo=object.geometry as THREE.BoxGeometry;
+    const params=geo.parameters;
+    if (object.material===wall || object.material===inner ||
+      (params && ((params.height > 1.4 && (Math.abs(p.x)>9.2 || p.z < -52.2)) ||
+      (params.width > 7 && p.y > 3.6)))) object.name='camera cutaway wall';
+  }
   return { light: moodLight, orbMat };
 }

@@ -94,3 +94,41 @@ test('netball awards only when the descending 3D ball fits through the actual ri
   if(expected){const point=shot.ballPosition;assert(point.y<NETBALL_HOOP.y,'made ball drops through the net');assert(Math.abs(point.z-NETBALL_HOOP.z)<.4,'net slows the ball after the ring');}
  }
 });
+
+test('volleyball has real ball arcs, timed returns, opponent scoring and a finite match', async()=>{
+ const {VolleySession}=await import('../src/game/activity-model.ts');
+ assert.equal(typeof VolleySession,'function');
+ const idle=new VolleySession();advance(idle,61);assert.equal(idle.finished,true);assert.ok(idle.opponentScore>0);assert.equal(idle.score,0);
+ const active=new VolleySession();let returns=0,seenNpcReturn=false;
+ for(let tick=0;tick<7200&&!active.finished;tick++){
+  const ball=active.ballPosition;
+  let movement=Math.abs(ball.x-active.playerX)>.07?Math.sign(ball.x-active.playerX):0;
+  if(active.phase==='rally'&&ball.z>1.6&&ball.vy<0&&!active.charging&&active.swing<=0)active.setCharging(true);
+  if(active.charging&&ball.z>2.35&&ball.y<2.15){active.setCharging(false);movement=active.npcX>0?-1:1;returns++;}
+  active.update(1/120,movement);
+  if(active.rallyHits>=2)seenNpcReturn=true;
+ }
+ assert(active.finished);assert(returns>0);assert(seenNpcReturn,'NPC returns the ball during rallies');assert.equal(active.playerPoints,5,'timed returns aimed away from the NPC win the match');assert(active.score<=45);
+ const left=new VolleySession(),right=new VolleySession();advance(left,.5,-1);advance(right,.5,1);assert(left.playerX<right.playerX);
+ const final=active.score;active.setCharging(true);advance(active,5);active.setCharging(false);assert.equal(active.score,final);assert.equal(activityReward('volley',999),45);
+});
+
+test('volleyball return direction and held power change the physical outgoing ball',async()=>{
+ const {VolleySession}=await import('../src/game/activity-model.ts');
+ const firstReturn=(direction,early)=>{
+  const model=new VolleySession();
+  for(let tick=0;tick<1200;tick++){
+   const ball=model.ballPosition;
+   let input=Math.abs(ball.x-model.playerX)>.03?Math.sign(ball.x-model.playerX):0;
+   if(model.phase==='rally'&&(early||ball.z>1.6)&&!model.charging)model.setCharging(true);
+   if(model.charging&&ball.z>2.35&&ball.y<2.15){model.setCharging(false);input=direction;}
+   model.update(1/120,input);
+   if(model.rallyHits===2)return {...model.ballPosition};
+  }
+  assert.fail('the timed release should make a real return');
+ };
+ const left=firstReturn(-1,false),right=firstReturn(1,false),strong=firstReturn(1,true);
+ assert(left.vx<0);assert(right.vx>0,'direction at release aims across the opponent court');
+ assert(Math.abs(strong.vz)>Math.abs(right.vz),'holding longer produces a faster return');
+ assert(left.vy>0&&right.vy>0,'returned balls rise in a gravity-driven arc');
+});

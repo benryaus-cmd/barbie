@@ -50,7 +50,10 @@ export function createPetCompanion() {
     update(dt:number,player:THREE.Vector3,facing:number,presenting:boolean,photo:boolean,photoOffset=-.82) {
       elapsed+=dt;clock+=dt;presentingNow=presenting;
       if(elapsed>5.3)action='idle';
-      besidePlayer.set(player.x+(presenting?(photo?photoOffset:-.82):Math.cos(facing)*.9),player.y+.02,player.z+(presenting?.18:-Math.sin(facing)*.9+.5));
+      if (presenting) {
+        const offset=photo?photoOffset:-.82;
+        besidePlayer.set(player.x+Math.cos(facing)*offset+Math.sin(facing)*.18,player.y+.02,player.z-Math.sin(facing)*offset+Math.cos(facing)*.18);
+      } else besidePlayer.set(player.x+Math.cos(facing)*.9,player.y+.02,player.z-Math.sin(facing)*.9+.5);
       // A photo is a temporary invitation. Leaving it resumes the chosen mode.
       destination.copy(mode==='follow'||photo?besidePlayer:bed);
       const fetch=action==='ball'||action==='frisbee';
@@ -65,7 +68,7 @@ export function createPetCompanion() {
       const walking=old.distanceTo(dog.position)>.002;
       const sleeping=mode==='bed'&&!photo&&action==='idle'&&dog.position.distanceTo(bed)<.12;
       sleep=THREE.MathUtils.damp(sleep,sleeping?1:0,7,dt);
-      if(presenting&&(mode==='follow'||photo)&&!fetch&&!walking)dog.rotation.y=0;
+      if(presenting&&(mode==='follow'||photo)&&!fetch&&!walking)dog.rotation.y=facing;
       else if(walking) {
         const heading=Math.atan2(destination.x-dog.position.x,destination.z-dog.position.z);
         dog.rotation.y+=Math.atan2(Math.sin(heading-dog.rotation.y),Math.cos(heading-dog.rotation.y))*(1-Math.exp(-dt*10));

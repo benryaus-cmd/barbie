@@ -83,7 +83,7 @@ export function Sheets({
   onMood,
   onBonus,
 }: SheetsProps) {
-  if (['surf','pour','netball','salon','makeup','camera','emotes','resident','pet'].includes(panel)) return null;
+  if (['surf','pour','volley','netball','salon','makeup','camera','emotes','resident','pet'].includes(panel)) return null;
   if (panel === 'wardrobe' || panel === 'boutique') {
     return (
       <WardrobeSheet

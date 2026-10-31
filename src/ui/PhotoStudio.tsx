@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState, type PointerEvent } from 'react';
-import { Camera, Check, Heart, Image, MessageCircle, PawPrint, Send, Sparkles, Trash2, UserRound, Users, X, ZoomIn, ZoomOut, Move } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Camera, Check, Heart, Image, MessageCircle, PawPrint, Send, Sparkles, Trash2, UserRound, Users, X } from 'lucide-react';
 import type { Look, PoseId } from '@/game/lifestyle-types';
 import { RESIDENTS } from '@/game/resident-data';
 import { addPhoto, captionPhoto, deletePhoto, followerTier, isPhotoImage, loadSocial, MAX_PHOTOS, publishPhoto, saveSocial, togglePhotoLike, type SocialState, type StoredPhoto } from '@/game/social';
+import { CameraControls } from '@/ui/CameraControls';
 import { Panel } from '@/ui/Panel';
 import '@/ui/social.css';
 
@@ -32,7 +33,6 @@ export function PhotoStudio({ onClose, capture, onPose, onCompanion, followers, 
   const [status, setStatus] = useState(initialCompanion === 'pet' ? 'Mochi is joining your photo. You stay in the shot.' : 'You stay in the shot. Invite up to two co-stars.');
   const [flash, setFlash] = useState(false);
   const initialCallbacks = useRef({ onPose, onCompanion, onGroup, initialCompanion });
-  const pointers = useRef(new Map<number, {x:number;y:number}>());
   const tier = followerTier(social.followers);
   const hasResident = group.some(id => id !== 'pet');
   const flashTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -78,26 +78,11 @@ export function PhotoStudio({ onClose, capture, onPose, onCompanion, followers, 
     setGroup(next);setPair(nextPair);applyGroup(next,companionPose,nextPair);if (!nextPair) onPose(pose);
   };
   const choosePair = (value: string) => {const next=value || null;setPair(next);onPose(next as PoseId || pose);applyGroup(group,companionPose,next);};
-  const moveCamera = (event: PointerEvent<HTMLDivElement>) => {
-    const old=pointers.current.get(event.pointerId);if(!old)return;
-    const next={x:event.clientX,y:event.clientY};
-    if(pointers.current.size===1) onOrbit?.(next.x-old.x,next.y-old.y);
-    else {const other=[...pointers.current.entries()].find(([id])=>id!==event.pointerId)?.[1];if(other)onZoom?.((Math.hypot(old.x-other.x,old.y-other.y)-Math.hypot(next.x-other.x,next.y-other.y))*3);}
-    pointers.current.set(event.pointerId,next);event.preventDefault();
-  };
-  const endCamera = (event: PointerEvent<HTMLDivElement>) => {pointers.current.delete(event.pointerId);};
   const openView = (next: 'album' | 'feed') => { setView(next); setSelectedId(null); };
 
   return <>
     {flash ? <div className="camera-flash" aria-hidden="true" /> : null}
-    {view === 'camera' ? <div className="photo-camera-region" role="region" tabIndex={0} aria-label="Photo camera: drag to orbit, pinch or use plus and minus to zoom. Arrow keys rotate."
-      onPointerDown={event=>{pointers.current.set(event.pointerId,{x:event.clientX,y:event.clientY});event.currentTarget.setPointerCapture?.(event.pointerId);event.preventDefault();}}
-      onPointerMove={moveCamera} onPointerUp={endCamera} onPointerCancel={endCamera} onLostPointerCapture={endCamera}
-      onWheel={event=>{onZoom?.(event.deltaY);}}
-      onKeyDown={event=>{const delta=event.shiftKey?40:15;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-'].includes(event.key))event.preventDefault();if(event.key==='ArrowLeft')onOrbit?.(-delta,0);if(event.key==='ArrowRight')onOrbit?.(delta,0);if(event.key==='ArrowUp')onOrbit?.(0,-delta);if(event.key==='ArrowDown')onOrbit?.(0,delta);if(event.key==='+'||event.key==='=')onZoom?.(-100);if(event.key==='-')onZoom?.(100);}}>
-      <span className="photo-camera-hint"><Move size={12}/> Drag to frame · pinch to zoom</span>
-      <div className="photo-zoom-controls" onPointerDown={event=>event.stopPropagation()}><button type="button" aria-label="Zoom in" onClick={()=>onZoom?.(-100)}><ZoomIn size={17}/></button><button type="button" aria-label="Zoom out" onClick={()=>onZoom?.(100)}><ZoomOut size={17}/></button></div>
-    </div> : null}
+    {view === 'camera' ? <CameraControls onOrbit={onOrbit} onZoom={onZoom}/>:null}
     <div className="photo-studio">
       <Panel title="Photo studio" subtitle={`${zone} · ${social.followers} followers · ${tier.multiplier}× points`} onClose={onClose} variant="stage">
         <div className="photo-composition"><span><UserRound size={12}/>You <Check size={11}/></span><strong>+ {group.length}/2 co-stars</strong><small>You are always in the photo</small></div>

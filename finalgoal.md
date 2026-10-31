@@ -31,3 +31,9 @@ Preserve the now-working world and saves, then deliver the user's new requests a
 The next quality bar is a resort with a life loop: dress, style hair/makeup, save personal sets, meet Ken and friends, stage expressive group photos, grow DreamFeed and earn a capped reward bonus to fund more fashion. Keep the original playful world while adding a proper salon, detailed sunset surfaces/gardens and recognisable resort props. Mochi belongs at his bed until invited, with explicit follow/whistle/home commands.
 
 Every visual promise must have gameplay support: ground under every rendered district, stairs with usable landings, netball with actual aimed ball flight and hoop scoring, precision drinks with fair payouts, photo angle/zoom and poses that reach the actual doll joints. Preserve Android multitouch and short Aippy viewport access. Do not describe original rigid-joint meshes as a commercially skinned character asset; continue improving their silhouettes, face/hair detail and expressive posing within phone budgets.
+
+## Resort Life / fourth pass
+
+The world is a photo playground as well as a minigame collection. Keep photography framing clean and share its gestures with styling; the doll retains its world heading. Indoor dressing uses a reversible wall cutaway. The HUD follows the actual Aippy game frame, with progress above the scene and controls at the bottom edge.
+
+Both sports remain: beach volleyball against Coco, plus netball at a separate venue. Ken and friends walk short safe routes, stop to chat and return to their stroll after photos. Flower-heart garden, lifeguard lookout and a lit seaside viewing pier give distinct backdrops with real walkable approaches. Continue to use bounded geometry, instanced flowers and optional ambient effects for phone quality settings.

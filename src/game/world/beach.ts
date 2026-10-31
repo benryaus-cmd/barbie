@@ -3,6 +3,7 @@ import type { Builder } from '@/game/builder';
 import { PALETTE, gloss, glassMaterial, neonMaterial } from '@/game/palette';
 import { lounger, palm, umbrella } from '@/game/world/props';
 import { surface } from '@/game/world/materials';
+import { buildCoastalLookout, buildSunsetPier } from '@/game/world/vistas';
 
 export function buildBeach(b: Builder) {
   const wood = surface(PALETTE.wood, 'wood', { roughness: 0.82, metalness: 0.02 });
@@ -87,21 +88,10 @@ export function buildBeach(b: Builder) {
   b.cyl(0.1, 0.1, 1.4, 6, white, 52, 0.7, 41);
   b.cyl(0.1, 0.1, 1.4, 6, white, 56, 0.7, 41);
 
-  // Lifeguard tower
-  b.box(3.4, 0.3, 3.4, lightWood, 55, 2.3, 46);
-  for (const [px, pz] of [
-    [53.6, 44.8],
-    [56.4, 44.8],
-    [53.6, 47.2],
-    [56.4, 47.2],
-  ]) {
-    b.cyl(0.14, 0.14, 2.3, 6, wood, px, 1.15, pz);
-  }
-  b.box(3.6, 0.24, 0.24, trim, 55, 3.4, 44.6);
-  b.box(0.24, 1.1, 3.6, trim, 53.3, 2.9, 46);
-  b.sphere(0.3, neonMaterial(PALETTE.magenta, 1.6), 55, 3.1, 44.7);
+  buildCoastalLookout(b);
+  buildSunsetPier(b);
 
-  palm(b, 22, 40, 1.05);
+  palm(b, 24, 44, 1.05);
   palm(b, 36, 46, 0.95);
   palm(b, 50, 20, 1);
   palm(b, 58, 34, 0.9);

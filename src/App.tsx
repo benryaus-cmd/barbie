@@ -30,6 +30,7 @@ import {StartScreen} from '@/ui/StartScreen';
 import {ActivityPanel} from '@/ui/ActivityPanel';
 import {BeautyStudio} from '@/ui/BeautyStudio';
 import {activityReward} from '@/game/activity-model';
+import {CameraControls} from '@/ui/CameraControls';
 import {PhotoStudio} from '@/ui/PhotoStudio';
 import {EmotePanel,PetCompanionPanel,ResidentChat} from '@/ui/LifestylePanels';
 
@@ -75,7 +76,7 @@ const App=()=>{
   const game=gameRef.current;if(!game)return;
   game.setMove(0,0);game.setInputEnabled(!overlayOpen);
   game.setPresentation(['wardrobe','boutique','salon','makeup'].includes(panel)?'style':panel==='camera'||panel==='photo'||panel==='resident'?'photo':panel==='pet'?'pet':['dj','dancefloor','runway','emotes'].includes(panel)?'dance':'world');
-  game.setActivity(panel==='surf'?'surf':panel==='pour'?'pour':panel==='netball'?'netball':null);
+  game.setActivity(panel==='surf'?'surf':panel==='pour'?'pour':panel==='netball'?'netball':panel==='volley'?'volley':null);
   game.setDancing(panel==='dj'||panel==='dancefloor');
   if(panel==='resident')game.setPhotoCompanion(residentId);else if(panel!=='camera')game.setPhotoCompanion(null);
   if(!['photo','runway','camera','emotes','surf','pet'].includes(panel))game.setPose('idle');
@@ -101,8 +102,8 @@ const App=()=>{
   if(event.id==='pet'||event.id==='petbed'){setPanel('pet');return;}
   if(event.id==='mirror'){setPanel('wardrobe');return;}
   const reward=REWARDS[event.id];if(reward){const now=Date.now();if(now-(rewardTimes.current[event.id]||0)<30000){setToast('Try another corner of Dreamland while this spot recharges.');return;}rewardTimes.current[event.id]=now;awardPoints(reward.points);setCelebration({title:reward.title,subtitle:`+${reward.points} style points`});return;}
-  const panels:Partial<Record<SpotId,PanelId>>={dj:'dj',dancefloor:'dancefloor',runway:'runway',wardrobe:'wardrobe',moodlight:'moodlight',kitchen:'kitchen',slide:'slide',surf:'surf',volley:'netball',photo:'photo',boutique:'boutique'};
-  const target=panels[event.id];if(target){if(target==='surf'||target==='netball')setActivity(null);setPanel(target);}
+  const panels:Partial<Record<SpotId,PanelId>>={dj:'dj',dancefloor:'dancefloor',runway:'runway',wardrobe:'wardrobe',moodlight:'moodlight',kitchen:'kitchen',slide:'slide',surf:'surf',volley:'volley',netball:'netball',photo:'photo',boutique:'boutique'};
+  const target=panels[event.id];if(target){if(target==='surf'||target==='netball'||target==='volley')setActivity(null);setPanel(target);}
  },[awardPoints,sfx]);
  const chooseOutfit=(id:OutfitId)=>{if(!unlocked.includes(id)){if(!spend(OUTFIT_PRICE[id])){setNotice('Earn a few more style points for this look.');return;}setUnlocked([...unlocked,id]);}const current=lifestyleRef.current;const look={...presetLook(id),hairColor:current.look.hairColor,makeup:current.look.makeup};commitLifestyle({...current,look,ownedFashion:[...new Set([...current.ownedFashion,'top:'+look.top,'bottom:'+look.bottom])]});setOutfit(id);sfx.tap();};
  const chooseFashion=(slot:'top'|'bottom'|'accessory',id:string)=>{
@@ -145,12 +146,13 @@ const App=()=>{
   <GameView ref={gameRef} config={config} onError={setError} onEvent={handleEvent} initialCollectedCards={collectedCards}/>
   <div className="ui-layer">{started?<>
    {!overlayOpen?<div className="flex h-full flex-col justify-between">
-    <Hud points={points} earned={earned} tokens={tokens} cardCount={collectedCards.length} zoneName={ZONES[zone].name} onLeaderboard={()=>{setPanel('leaderboard');sfx.tap();}} onAlbum={()=>setAlbumOpen(true)} onSettings={()=>setSettingsOpen(true)} onCamera={()=>openCamera()} onEmotes={()=>setPanel('emotes')} onPet={()=>setPanel('pet')}/>
-    <div className="dream-next pointer-events-auto" role="status"><span className="dream-next-label">YOUR DREAMLAND STORY · {followers} FOLLOWERS · ×{followerTier(followers).multiplier.toFixed(2)} POINTS</span><button type="button" onClick={()=>openCamera()}>{followers<40?'New look. New friends. Your next great photo →':'Grow your DreamFeed · boost every reward →'}</button></div>
+    <Hud followers={followers} points={points} earned={earned} tokens={tokens} cardCount={collectedCards.length} zoneName={ZONES[zone].name} onLeaderboard={()=>{setPanel('leaderboard');sfx.tap();}} onAlbum={()=>setAlbumOpen(true)} onSettings={()=>setSettingsOpen(true)} onCamera={()=>openCamera()} onEmotes={()=>setPanel('emotes')} onPet={()=>setPanel('pet')}/>
+
     <div className="dream-controls flex items-end justify-between gap-3 px-3 pb-3"><Joystick onChange={(x,y)=>gameRef.current?.setMove(x,y)}/><ActionButtons near={near} riding={Boolean(vehicle)} onJump={()=>{gameRef.current?.jump();sfx.jump();}} onInteract={()=>{gameRef.current?.interact();sfx.tap();}} onWardrobe={()=>{setPanel('wardrobe');sfx.tap();}}/></div>
    </div>:null}
+   {['wardrobe','boutique','salon','makeup'].includes(panel)?<CameraControls onOrbit={(dx,dy)=>gameRef.current?.rotateCamera(dx,dy)} onZoom={delta=>gameRef.current?.zoomCamera(delta)}/>:null}
    <Sheets savedLooks={lifestyle.savedLooks} onSaveLook={saveLook} onLoadLook={loadLook} onDeleteLook={id=>commitLifestyle({...lifestyleRef.current,savedLooks:lifestyleRef.current.savedLooks.filter(x=>x.id!==id)})} ownedColors={lifestyle.ownedColors} onBuyColor={buyColor} panel={panel} points={points} earned={earned} notice={notice} syncing={syncing} outfit={outfit} hair={hair} accessory={accessory} shoes={shoes} unlocked={unlocked} look={lifestyle.look} ownedFashion={lifestyle.ownedFashion} followers={followers} onFashion={chooseFashion} onColor={changeColor} onPose={setPose} onCapture={captureChallenge} onClose={closePanel} onOutfit={chooseOutfit} onHair={id=>{setHair(id);sfx.tap();}} onAccessory={id=>setAccessory(id)} onShoes={id=>{setShoes(id);sfx.tap();}} onAward={score=>{awardPoints(score);sfx.fanfare();closePanel();}} onMilestone={()=>{if(!['photo','runway'].includes(panel))gameRef.current?.celebrate();sfx.hit();}} onPetAction={()=>petAction('pat')} onSync={()=>{setSyncing(true);updateScore(earnedRef.current);setTimeout(()=>setSyncing(false),900);}} onMood={color=>gameRef.current?.setMoodLight(color)} onBonus={awardPoints}/>
-   {panel==='surf'||panel==='pour'||panel==='netball'?<ActivityPanel rewardMultiplier={followerTier(followers).multiplier} kind={panel} state={activity} onInput={v=>gameRef.current?.setActivityInput(v)} onPouring={v=>gameRef.current?.setPouring(v)} onClose={closePanel} onCollect={score=>{awardPoints(activityReward(panel,score));closePanel();sfx.fanfare();}}/>:null}
+   {panel==='surf'||panel==='pour'||panel==='netball'||panel==='volley'?<ActivityPanel rewardMultiplier={followerTier(followers).multiplier} kind={panel} state={activity} onInput={v=>gameRef.current?.setActivityInput(v)} onPouring={v=>gameRef.current?.setPouring(v)} onClose={closePanel} onCollect={score=>{awardPoints(activityReward(panel,score));closePanel();sfx.fanfare();}}/>:null}
    {panel==='camera'?<PhotoStudio onOrbit={(dx,dy)=>gameRef.current?.rotateCamera(dx,dy)} onZoom={delta=>gameRef.current?.zoomCamera(delta)} onGroup={(ids,pose,pair)=>gameRef.current?.setPhotoGroup(ids,pose,pair)} initialCompanion={photoCompanion} onClose={closePanel} capture={()=>gameRef.current?.capturePhoto()||null} onPose={setPose} onCompanion={id=>gameRef.current?.setPhotoCompanion(id)} followers={followers} onFollowers={handleFollowers} look={lifestyle.look} zone={ZONES[zone].name}/>:null}
    {panel==='salon'||panel==='makeup'?<BeautyStudio mode={panel==='salon'?'hair':'makeup'} hair={hair} look={lifestyle.look} points={points} onHair={setHair} onLook={look=>commitLifestyle({...lifestyleRef.current,look})} onClose={closePanel}/>:null}
    {panel==='emotes'?<EmotePanel onClose={closePanel} onPose={setPose}/>:null}

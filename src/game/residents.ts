@@ -10,9 +10,17 @@ const HOMES = [
   { x: 2.1, y: .91, z: -27.7, pool: true },
   { x: -43.3, y: .06, z: 10.6, pool: false },
   { x: 43.7, y: .02, z: 29.3, pool: false },
-  { x: -45.4, y: .03, z: 24.4, pool: false },
+  { x: -39, y: .03, z: 24.4, pool: false },
   { x: 37.6, y: .04, z: 24.4, pool: false },
 ];
+// Short pedestrian loops stay outside the pool coping, shop walls, raised
+// runway stage, beach furniture and both sports courts. Pool residents stay put.
+const WALK_ROUTES: Record<string, readonly (readonly [number, number])[]> = {
+  brooklyn: [[17.2,-29.4],[17.2,-24],[19.8,-24],[19.8,-29.4]],
+  nikki: [[-43.3,10.6],[-43.3,13],[-40,13],[-40,10.6]],
+  daisy: [[-39,24.4],[-38,28.8],[-45.4,28.8],[-39,28.8]],
+  ken: [[37.6,24.4],[35.5,24.4],[35.5,29.4],[36.9,29.4],[36.9,24.4]],
+};
 const SKINS = [0xffd4b9, 0x8f4f32, 0xdba17d, 0x754731, 0xcc997b, 0xf1c3ac, 0xe9b38d];
 const HAIR = [0xf0ce73, 0x302026, 0x493024, 0x271d28, 0x262329, 0xe381ac, 0xb68646];
 
@@ -152,7 +160,10 @@ export function createResidents() {
     const label=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,transparent:true,depthWrite:false}));label.scale.set(1.8,.45,1);label.position.y=home.pool?1.58:2.23;group.add(label);
     group.traverse(object=>{object.castShadow=false;object.receiveShadow=false;});
     if (male) body.scale.set(1.05,1.08,1.05);
-    return {info,home,group,body,arms,legs,details,label,float,floatDecor,male};
+    group.position.set(home.x, home.y, home.z);
+    return {info,home,group,body,arms,legs,details,label,float,floatDecor,male,
+      position:new THREE.Vector3(home.x,home.y,home.z), route:WALK_ROUTES[info.id],
+      waypoint:1, wait:0, heading:0, speed:0, stride:0, nearby:false};
   });
   // Three reusable full doll rigs provide close-up detail without six expensive
   // characters updating offscreen. Everyone else retains the simple silhouette.
@@ -180,11 +191,41 @@ export function createResidents() {
   let photoIds: string[]=[];
   let photoPose: PoseId = 'wave';
   let pair: string | null = null;
-  function update(dt:number, player:THREE.Vector3, photo:boolean, detailedBudget = 3) {
-    clock+=dt;
+  function update(dt:number, player:THREE.Vector3, photo:boolean, detailedBudget = 3, presentationFacing = 0) {
+    const step = Math.min(Math.max(dt,0),.1);
+    clock+=step;
+    for (let i=0;i<people.length;i++) {
+      const person=people[i];
+      const distance=Math.hypot(person.position.x-player.x,person.position.z-player.z);
+      person.nearby=distance<3.3 && Math.abs(person.position.y-player.y)<2;
+      person.speed=0;
+      // Keep the route cursor and its position while invited to talk or pose.
+      // Removing the invitation resumes the same leg, without walking home.
+      if (photoIds.includes(person.info.id)) continue;
+      if (person.nearby) {
+        person.heading=Math.atan2(player.x-person.position.x,player.z-person.position.z);
+        continue;
+      }
+      if (!person.route) continue;
+      if (person.wait>0) {person.wait=Math.max(0,person.wait-step);continue;}
+      const target=person.route[person.waypoint];
+      const dx=target[0]-person.position.x, dz=target[1]-person.position.z;
+      const remaining=Math.hypot(dx,dz), speed=person.male?1.25:1.05+i*.035;
+      const travel=Math.min(remaining,speed*step);
+      if (remaining>.001 && step>0) {
+        person.position.x+=dx/remaining*travel;person.position.z+=dz/remaining*travel;
+        person.speed=travel/step;person.stride+=travel*5.7;
+        const heading=Math.atan2(dx,dz);
+        person.heading+=Math.atan2(Math.sin(heading-person.heading),Math.cos(heading-person.heading))*(1-Math.exp(-step*10));
+      }
+      if (remaining<=travel+.001) {
+        person.waypoint=(person.waypoint+1)%person.route.length;
+        person.wait=1.2+(i%3)*.55;
+      }
+    }
     const ranked=people.filter(person => !person.male).sort((a,b)=> {
       const selectedA=photo && photoIds.includes(a.info.id), selectedB=photo && photoIds.includes(b.info.id);
-      return Number(selectedB)-Number(selectedA) || Math.hypot(a.home.x-player.x,a.home.z-player.z)-Math.hypot(b.home.x-player.x,b.home.z-player.z);
+      return Number(selectedB)-Number(selectedA) || Math.hypot(a.position.x-player.x,a.position.z-player.z)-Math.hypot(b.position.x-player.x,b.position.z-player.z);
     });
     const count = Math.max(detailedBudget === 1 ? 1 : 3, photo ? photoIds.filter(id => id !== 'pet' && id !== 'ken').length : 0);
     while(slots.length < count) slots.push(createDetailSlot());
@@ -209,8 +250,8 @@ export function createResidents() {
       const paired = chosen && !!pair && photoIds.find(id=>id!=='pet')===person.info.id;
       slot.avatar.group.scale.x = paired && pair !== 'hug' ? -1 : 1;
       slot.avatar.group.position.set(0, person.home.pool && !chosen ? -.82 : 0, 0);
-      slot.avatar.setPose(chosen ? (pair && photoIds.find(id=>id!=='pet')===person.info.id ? pair as PoseId : photoPose) : 'idle');
-      slot.avatar.update(dt, {moving:false,speed:0,grounded:true,dancing:index===1&&!photo,sitting:person.home.pool&&!chosen});
+      slot.avatar.setPose(chosen ? (pair && photoIds.find(id=>id!=='pet')===person.info.id ? pair as PoseId : photoPose) : person.nearby && !person.home.pool && (clock+index)%8<2.2 ? 'wave' : 'idle');
+      slot.avatar.update(dt, {moving:!chosen&&person.speed>0,speed:person.speed,grounded:true,dancing:false,sitting:person.home.pool&&!chosen});
     }
     for (let i=0;i<people.length;i++) {
       const person=people[i], chosen=photo && photoIds.includes(person.info.id);
@@ -219,8 +260,10 @@ export function createResidents() {
       const primary = photoIds.find(id=>id!=='pet');
       const offset = pair ? person.info.id === primary ? -1 : 1 : groupIndex === 0 ? 1 : -1;
       const paired = chosen && !!pair && photoIds.find(id=>id!=='pet')===person.info.id;
-      group.position.set(chosen?player.x+offset*(paired ? .62 : .92):home.x,chosen?player.y:home.y,chosen?player.z+(paired ? -.04 : .05):home.z);
-      group.rotation.y=chosen?(paired && pair === 'hug' ? Math.PI/2 : -.1):home.pool?Math.sin(clock*.25+i)*.2:Math.atan2(player.x-home.x,player.z-home.z);
+      const localX=offset*(paired ? .62 : .92), localZ=paired ? -.04 : .05;
+      const cosine=Math.cos(presentationFacing), sine=Math.sin(presentationFacing);
+      group.position.set(chosen?player.x+cosine*localX+sine*localZ:person.position.x,chosen?player.y:person.position.y,chosen?player.z-sine*localX+cosine*localZ:person.position.z);
+      group.rotation.y=chosen?presentationFacing+(paired && pair === 'hug' ? Math.PI/2 : -.1):home.pool?Math.sin(clock*.25+i)*.2:person.heading;
       const distance=group.position.distanceTo(player);
       group.visible=chosen || distance<45;
       person.body.visible=!detailed.has(person);
@@ -229,14 +272,16 @@ export function createResidents() {
       if (!group.visible) continue;
       // A photo companion stands beside the doll even if normally floating.
       if(person.male) person.body.scale.x = paired && pair !== 'hug' ? -1.05 : 1.05;
-      person.body.position.y=chosen?0:home.pool?-.82:Math.sin(clock*1.5+i)*.012;
+      person.body.position.y=chosen?0:home.pool?-.82:person.speed>0?Math.abs(Math.sin(person.stride))*.025:Math.sin(clock*1.5+i)*.012;
       person.floatDecor.visible=!chosen;
-      person.legs.forEach(leg=>{leg.rotation.x=home.pool&&!chosen?-1.25:0;leg.rotation.z=0;});
+      person.legs.forEach((leg,index)=>{leg.rotation.x=home.pool&&!chosen?-1.25:!chosen&&person.speed>0?Math.sin(person.stride+index*Math.PI)*.4:0;leg.rotation.z=0;});
       if(home.pool && !chosen) {group.position.y+=Math.sin(clock*1.3+i)*.07;group.rotation.z=Math.sin(clock*.9+i)*.035;}
       else group.rotation.z=0;
       person.arms[0].rotation.z=.1+Math.sin(clock*1.6+i)*.04;
       person.arms[1].rotation.z=chosen?-.8:-.1-Math.sin(clock*1.6+i)*.04;
-      person.arms[0].rotation.x=0;person.arms[1].rotation.x=chosen?-1.2:home.pool?-.5:0;
+      person.arms[0].rotation.x=!chosen&&person.speed>0?-Math.sin(person.stride)*.3:0;
+      person.arms[1].rotation.x=chosen?-1.2:home.pool?-.5:person.speed>0?Math.sin(person.stride)*.3:0;
+      if (!chosen && !home.pool && person.nearby && (clock+i)%8<2.2) person.arms[1].rotation.set(-.6,0,-2.3-Math.sin(clock*4)*.12);
       if (person.male && chosen) {
         const selectedPose=paired ? pair : photoPose;
         person.legs.forEach(leg=>{leg.rotation.z=0;});
@@ -260,8 +305,8 @@ export function createResidents() {
     nearest(x:number,y:number,z:number) {
       let best:typeof people[number]|null=null, distance=2.7;
       for(const person of people) {
-        if(Math.abs(person.home.y-y)>2) continue;
-        const d=Math.hypot(x-person.home.x,z-person.home.z);
+        if(Math.abs(person.group.position.y-y)>2) continue;
+        const d=Math.hypot(x-person.group.position.x,z-person.group.position.z);
         if(d<distance){best=person;distance=d;}
       }
       return best?.info ?? null;

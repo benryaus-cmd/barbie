@@ -1,0 +1,2540 @@
+{
+  "passed": true,
+  "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+  "checks": [
+    "embedded-layout",
+    "indoor-style",
+    "photo-heading",
+    "resident-routes",
+    "world-props",
+    "scenic-portraits",
+    "volleyball"
+  ],
+  "failures": [],
+  "errors": [],
+  "screenshots": [
+    ".test-output/v4-embedded-520.png",
+    ".test-output/v4-embedded-800.png",
+    ".test-output/v4-style-wardrobe-entry.png",
+    ".test-output/v4-style-wardrobe.png",
+    ".test-output/v4-style-salon-entry.png",
+    ".test-output/v4-style-salon.png",
+    ".test-output/v4-style-makeup-entry.png",
+    ".test-output/v4-style-makeup.png",
+    ".test-output/v4-photo-group.png",
+    ".test-output/v4-resident-chat.png",
+    ".test-output/v4-postcard-props.png",
+    ".test-output/v4-flower-garden.png",
+    ".test-output/v4-flower-garden-capture.jpg",
+    ".test-output/v4-sunset-pier.png",
+    ".test-output/v4-sunset-pier-capture.jpg",
+    ".test-output/v4-volley-npc.png",
+    ".test-output/v4-volley-return.png",
+    ".test-output/v4-volley-result.png"
+  ],
+  "details": {
+    "layout": [
+      {
+        "height": 520,
+        "shell": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 520,
+          "bottom": 520,
+          "right": 360
+        },
+        "hud": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 132.390625,
+          "bottom": 132.390625,
+          "right": 360
+        },
+        "controls": {
+          "x": 0,
+          "y": 414,
+          "width": 360,
+          "height": 106,
+          "bottom": 520,
+          "right": 360
+        },
+        "story": null,
+        "stick": {
+          "x": 12,
+          "y": 414,
+          "width": 100,
+          "height": 100,
+          "bottom": 514,
+          "right": 112
+        },
+        "actions": {
+          "x": 176,
+          "y": 446,
+          "width": 172,
+          "height": 68,
+          "bottom": 514,
+          "right": 348
+        }
+      },
+      {
+        "height": 800,
+        "shell": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 800,
+          "bottom": 800,
+          "right": 360
+        },
+        "hud": {
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 133.5,
+          "bottom": 133.5,
+          "right": 360
+        },
+        "controls": {
+          "x": 0,
+          "y": 684,
+          "width": 360,
+          "height": 116,
+          "bottom": 800,
+          "right": 360
+        },
+        "story": null,
+        "stick": {
+          "x": 12,
+          "y": 684,
+          "width": 110,
+          "height": 110,
+          "bottom": 794,
+          "right": 122
+        },
+        "actions": {
+          "x": 176,
+          "y": 726,
+          "width": 172,
+          "height": 68,
+          "bottom": 794,
+          "right": 348
+        }
+      }
+    ],
+    "style": {
+      "wardrobe": {
+        "entry": {
+          "camera": [
+            1.2172470382443774,
+            5.262210856741611,
+            -47.44695001450755
+          ],
+          "avatar": [
+            -1.9999998807907104,
+            3.939618511199951,
+            -50
+          ],
+          "rays": [
+            {
+              "height": 0.6,
+              "ndc": [
+                4.456363112463635e-15,
+                0.15525431006100218,
+                0.95208073253672
+              ],
+              "targetDistance": 4.170237602858998,
+              "firstDistance": null,
+              "avatarFirst": false
+            },
+            {
+              "height": 1.05,
+              "ndc": [
+                4.5839974713184406e-15,
+                0.3539318063532895,
+                0.9507019150644734
+              ],
+              "targetDistance": 4.1161934543108725,
+              "firstDistance": 3.992859850311129,
+              "firstName": "bottom wrap",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.65,
+              "ndc": [
+                4.766001038346567e-15,
+                0.6372412015495191,
+                0.9487357540676916
+              ],
+              "targetDistance": 4.120186614543288,
+              "firstDistance": 3.9697113311703296,
+              "firstName": "head",
+              "avatarFirst": true
+            }
+          ],
+          "unobstructed": 2
+        },
+        "gesture": {
+          "before": {
+            "camera": [
+              1.2172470382443774,
+              5.262210856741611,
+              -47.44695001450755
+            ],
+            "quaternion": [
+              -0.1167286880878779,
+              0.4312952487039958,
+              0.056386384083627,
+              0.8928490339988138
+            ],
+            "player": [
+              -1.9999998807907104,
+              4.769618511199951,
+              -50
+            ],
+            "avatar": [
+              -1.9999998807907104,
+              3.939618511199951,
+              -50
+            ],
+            "heading": 0.9,
+            "yaw": 0,
+            "orbitYaw": 0.9000000000000005,
+            "fov": 58
+          },
+          "after": {
+            "camera": [
+              -1.8577461083081892,
+              5.732132693218566,
+              -46.05021351270664
+            ],
+            "quaternion": [
+              -0.1871005515052353,
+              0.017681075064985764,
+              0.0033681736977110785,
+              0.9821758593128447
+            ],
+            "player": [
+              -1.9999998807907104,
+              4.769618511199951,
+              -50
+            ],
+            "avatar": [
+              -1.9999998807907104,
+              3.939618511199951,
+              -50
+            ],
+            "heading": 0.9,
+            "yaw": 0,
+            "orbitYaw": 0.035999999999999706,
+            "fov": 58
+          },
+          "buttonDistance": [
+            4.3398336977041625,
+            3.2401046442916477
+          ],
+          "wheelDistance": 4.214384408905613,
+          "fullOrbitDelta": -4.8000000000000025,
+          "pinchDistance": [
+            4.214384408905615,
+            3.240104644291651
+          ]
+        },
+        "orbited": {
+          "camera": [
+            0.9240722884091661,
+            5.327157487312931,
+            -49.8489515142797
+          ],
+          "avatar": [
+            -1.9999998807907104,
+            3.939618511199951,
+            -50
+          ],
+          "rays": [
+            {
+              "height": 0.6,
+              "ndc": [
+                0,
+                0.2060613507066869,
+                0.9338236551607801
+              ],
+              "targetDistance": 3.032034190873307,
+              "firstDistance": 2.8329233698532237,
+              "firstName": "wrap skirt",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.05,
+              "ndc": [
+                0,
+                0.4832145031698345,
+                0.9299651567517785
+              ],
+              "targetDistance": 2.947362593255717,
+              "firstDistance": 2.8164323077211746,
+              "firstName": "bottom wrap",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.65,
+              "ndc": [
+                0,
+                0.9070670333141378,
+                0.9240643243106591
+              ],
+              "targetDistance": 2.939710782506927,
+              "firstDistance": 2.790007215511707,
+              "firstName": "head",
+              "avatarFirst": true
+            }
+          ],
+          "unobstructed": 3
+        }
+      },
+      "salon": {
+        "entry": {
+          "camera": [
+            -25.782753080964913,
+            1.3896951783358487,
+            23.753050748431907
+          ],
+          "avatar": [
+            -29,
+            0.06710283279418937,
+            21.200000762939453
+          ],
+          "rays": [
+            {
+              "height": 0.6,
+              "ndc": [
+                4.456363112463634e-15,
+                0.15525431006100252,
+                0.95208073253672
+              ],
+              "targetDistance": 4.170237602858999,
+              "firstDistance": null,
+              "avatarFirst": false
+            },
+            {
+              "height": 1.05,
+              "ndc": [
+                4.58399747131844e-15,
+                0.3539318063532907,
+                0.9507019150644735
+              ],
+              "targetDistance": 4.116193454310874,
+              "firstDistance": 3.994538253544314,
+              "firstName": "bottom wrap",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.65,
+              "ndc": [
+                4.766001038346565e-15,
+                0.6372412015495192,
+                0.9487357540676916
+              ],
+              "targetDistance": 4.1201866145432895,
+              "firstDistance": 3.960922260725612,
+              "firstName": "head",
+              "avatarFirst": true
+            }
+          ],
+          "unobstructed": 2
+        },
+        "gesture": {
+          "before": {
+            "camera": [
+              -25.782753080964913,
+              1.3941959250628384,
+              23.753050748431907
+            ],
+            "quaternion": [
+              -0.11672868808787791,
+              0.43129524870399555,
+              0.05638638408362695,
+              0.892849033998814
+            ],
+            "player": [
+              -29,
+              0.9016035795211792,
+              21.200000762939453
+            ],
+            "avatar": [
+              -29,
+              0.07160357952117911,
+              21.200000762939453
+            ],
+            "heading": 0.9,
+            "yaw": 0,
+            "orbitYaw": 0.8999999999999997,
+            "fov": 58
+          },
+          "after": {
+            "camera": [
+              -28.857746227517477,
+              1.8851212462657458,
+              25.14978725023281
+            ],
+            "quaternion": [
+              -0.18710055150523547,
+              0.017681075064985948,
+              0.003368173697711116,
+              0.9821758593128447
+            ],
+            "player": [
+              -29,
+              0.9226070642471313,
+              21.200000762939453
+            ],
+            "avatar": [
+              -29,
+              0.09260706424713126,
+              21.200000762939453
+            ],
+            "heading": 0.9,
+            "yaw": 0,
+            "orbitYaw": 0.036000000000000074,
+            "fov": 58
+          },
+          "buttonDistance": [
+            4.339833697704159,
+            3.2401046442916503
+          ],
+          "wheelDistance": 4.214384408905616,
+          "fullOrbitDelta": -4.8000000000000025,
+          "pinchDistance": [
+            4.214384408905617,
+            3.2401046442916517
+          ]
+        },
+        "orbited": {
+          "camera": [
+            -26.075931645497388,
+            1.5862860578695714,
+            21.351049248659752
+          ],
+          "avatar": [
+            -29.000003814697266,
+            0.1987470817565917,
+            21.200000762939453
+          ],
+          "rays": [
+            {
+              "height": 0.6,
+              "ndc": [
+                6.14638402701142e-15,
+                0.2060613507066871,
+                0.93382365516078
+              ],
+              "targetDistance": 3.032034190873308,
+              "firstDistance": 2.832675271252286,
+              "firstName": "wrap skirt",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.05,
+              "ndc": [
+                6.503557460397607e-15,
+                0.48321450316983416,
+                0.9299651567517786
+              ],
+              "targetDistance": 2.9473625932557184,
+              "firstDistance": 2.816353314423407,
+              "firstName": "bottom wrap",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.65,
+              "ndc": [
+                7.049785645412375e-15,
+                0.907067033314136,
+                0.9240643243106591
+              ],
+              "targetDistance": 2.9397107825069284,
+              "firstDistance": 2.7900458033240136,
+              "firstName": "head",
+              "avatarFirst": true
+            }
+          ],
+          "unobstructed": 3
+        }
+      },
+      "makeup": {
+        "entry": {
+          "camera": [
+            -1.2827540346392285,
+            5.262396346396152,
+            -48.146950777447
+          ],
+          "avatar": [
+            -4.500000953674316,
+            3.939804000854492,
+            -50.70000076293945
+          ],
+          "rays": [
+            {
+              "height": 0.6,
+              "ndc": [
+                0,
+                0.1552543100610013,
+                0.95208073253672
+              ],
+              "targetDistance": 4.170237602858998,
+              "firstDistance": null,
+              "avatarFirst": false
+            },
+            {
+              "height": 1.05,
+              "ndc": [
+                0,
+                0.3539318063532895,
+                0.9507019150644734
+              ],
+              "targetDistance": 4.1161934543108725,
+              "firstDistance": 3.994773380285277,
+              "firstName": "bottom wrap",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.65,
+              "ndc": [
+                0,
+                0.6372412015495191,
+                0.9487357540676916
+              ],
+              "targetDistance": 4.120186614543288,
+              "firstDistance": 3.957997445184356,
+              "firstName": "head",
+              "avatarFirst": true
+            }
+          ],
+          "unobstructed": 2
+        },
+        "gesture": {
+          "before": {
+            "camera": [
+              -1.2827540346392285,
+              5.262546073263827,
+              -48.146950777447
+            ],
+            "quaternion": [
+              -0.1167286880878779,
+              0.4312952487039958,
+              0.056386384083627,
+              0.8928490339988138
+            ],
+            "player": [
+              -4.500000953674316,
+              4.769953727722168,
+              -50.70000076293945
+            ],
+            "avatar": [
+              -4.500000953674316,
+              3.939953727722168,
+              -50.70000076293945
+            ],
+            "heading": 0.9,
+            "yaw": 0,
+            "orbitYaw": 0.9000000000000005,
+            "fov": 58
+          },
+          "after": {
+            "camera": [
+              -4.357747181191795,
+              5.73241831867633,
+              -46.750214275646094
+            ],
+            "quaternion": [
+              -0.1871005515052353,
+              0.017681075064985823,
+              0.003368173697711089,
+              0.9821758593128447
+            ],
+            "player": [
+              -4.500000953674316,
+              4.769904136657715,
+              -50.70000076293945
+            ],
+            "avatar": [
+              -4.500000953674316,
+              3.9399041366577148,
+              -50.70000076293945
+            ],
+            "heading": 0.9,
+            "yaw": 0,
+            "orbitYaw": 0.03599999999999982,
+            "fov": 58
+          },
+          "buttonDistance": [
+            4.3398336977041625,
+            3.2401046442916477
+          ],
+          "wheelDistance": 4.214384408905613,
+          "fullOrbitDelta": -4.800000000000001,
+          "pinchDistance": [
+            4.214384408905615,
+            3.240104644291651
+          ]
+        },
+        "orbited": {
+          "camera": [
+            -1.5759287844744398,
+            5.327342976967472,
+            -50.54895227721915
+          ],
+          "avatar": [
+            -4.500000953674316,
+            3.939804000854492,
+            -50.70000076293945
+          ],
+          "rays": [
+            {
+              "height": 0.6,
+              "ndc": [
+                -6.146384027011413e-15,
+                0.20606135070668793,
+                0.9338236551607801
+              ],
+              "targetDistance": 3.032034190873307,
+              "firstDistance": 2.8372087653205136,
+              "firstName": "wrap skirt",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.05,
+              "ndc": [
+                -6.503557460397609e-15,
+                0.4832145031698355,
+                0.9299651567517786
+              ],
+              "targetDistance": 2.947362593255717,
+              "firstDistance": 2.818993824749208,
+              "firstName": "bottom wrap",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.65,
+              "ndc": [
+                -7.04978564541238e-15,
+                0.9070670333141376,
+                0.9240643243106591
+              ],
+              "targetDistance": 2.939710782506927,
+              "firstDistance": 2.789439844156157,
+              "firstName": "head",
+              "avatarFirst": true
+            }
+          ],
+          "unobstructed": 3
+        }
+      }
+    },
+    "photoHeadings": [
+      {
+        "heading": 0.9,
+        "entry": {
+          "camera": [
+            7.515506433668188,
+            3.26075008003995,
+            -8.856281717948448
+          ],
+          "quaternion": [
+            -0.24354970619639285,
+            -0.05640675579187675,
+            -0.014189899379820521,
+            0.9681427917762322
+          ],
+          "player": [
+            8.000000953674316,
+            0.8699179291725159,
+            -13.000001907348633
+          ],
+          "avatar": [
+            8.000000953674316,
+            0.039917929172515784,
+            -13.000001907348633
+          ],
+          "heading": 0.9,
+          "yaw": 0,
+          "orbitYaw": -0.11639411167564058,
+          "fov": 58
+        },
+        "solo": {
+          "camera": [
+            11.55789754648959,
+            1.4782967184735123,
+            -10.17662993589012
+          ],
+          "quaternion": [
+            -0.11672868808787791,
+            0.43129524870399566,
+            0.05638638408362698,
+            0.892849033998814
+          ],
+          "player": [
+            8.000000953674316,
+            0.8700181245803833,
+            -13.00000286102295
+          ],
+          "avatar": [
+            8.000000953674316,
+            0.040018124580383216,
+            -13.00000286102295
+          ],
+          "heading": 0.9,
+          "yaw": 0,
+          "orbitYaw": 0.8999999999999999,
+          "fov": 58
+        },
+        "group": [
+          {
+            "name": "Ken",
+            "position": [
+              8.611047516290386,
+              0.01992424726486197,
+              -13.689580258443751
+            ],
+            "rotation": 0.8
+          },
+          {
+            "name": "Barbie",
+            "position": [
+              7.467285174672363,
+              0.01992424726486197,
+              -12.248258744729181
+            ],
+            "rotation": 0.8
+          }
+        ],
+        "styles": {
+          "borderTop": "0px",
+          "borderRight": "0px",
+          "borderBottom": "0px",
+          "borderLeft": "0px",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      },
+      {
+        "heading": -1.1,
+        "entry": {
+          "camera": [
+            8.000000774572403,
+            3.3659363029681804,
+            -6.547622813503549
+          ],
+          "quaternion": [
+            -0.1734751952795465,
+            -1.3668321766573676e-08,
+            -2.407618524707869e-09,
+            0.9848382388101727
+          ],
+          "player": [
+            8.000000953674316,
+            0.8700286746025085,
+            -13.00000286102295
+          ],
+          "avatar": [
+            8.000000953674316,
+            0.04002867460250846,
+            -13.00000286102295
+          ],
+          "heading": -1.1,
+          "yaw": 0,
+          "orbitYaw": -2.775749605963104e-08,
+          "fov": 58
+        },
+        "solo": {
+          "camera": [
+            3.9521078060198036,
+            1.4782988642407242,
+            -10.93975435545104
+          ],
+          "quaternion": [
+            -0.11051628547944917,
+            -0.5182767385390195,
+            -0.06775811078069018,
+            0.8453308295316181
+          ],
+          "player": [
+            8.000000953674316,
+            0.8700202703475952,
+            -13.00000286102295
+          ],
+          "avatar": [
+            8.000000953674316,
+            0.04002027034759513,
+            -13.00000286102295
+          ],
+          "heading": -1.1,
+          "yaw": 0,
+          "orbitYaw": -1.1,
+          "fov": 58
+        },
+        "group": [
+          {
+            "name": "Ken",
+            "position": [
+              8.372749017382775,
+              0.019996011257171542,
+              -12.15741228369515
+            ],
+            "rotation": -1.2000000000000002
+          },
+          {
+            "name": "Barbie",
+            "position": [
+              7.5381321539597135,
+              0.019996011257171542,
+              -13.79723382620819
+            ],
+            "rotation": -1.2000000000000002
+          }
+        ],
+        "styles": {
+          "borderTop": "0px",
+          "borderRight": "0px",
+          "borderBottom": "0px",
+          "borderLeft": "0px",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      }
+    ],
+    "photoGestures": {
+      "before": {
+        "camera": [
+          11.55789754648959,
+          1.4782746051503006,
+          -10.17662993589012
+        ],
+        "quaternion": [
+          -0.11672868808787791,
+          0.43129524870399566,
+          0.05638638408362698,
+          0.892849033998814
+        ],
+        "player": [
+          8.000000953674316,
+          0.8699960112571716,
+          -13.00000286102295
+        ],
+        "avatar": [
+          8.000000953674316,
+          0.039996011257171546,
+          -13.00000286102295
+        ],
+        "heading": 0.9,
+        "yaw": 0,
+        "orbitYaw": 0.8999999999999999,
+        "fov": 58
+      },
+      "after": {
+        "camera": [
+          8.157316890302045,
+          1.9979855347172115,
+          -8.632003686839706
+        ],
+        "quaternion": [
+          -0.1871005515052353,
+          0.017681075064985705,
+          0.0033681736977110672,
+          0.9821758593128447
+        ],
+        "player": [
+          8.000000953674316,
+          0.8700286746025085,
+          -13.00000286102295
+        ],
+        "avatar": [
+          8.000000953674316,
+          0.04002867460250846,
+          -13.00000286102295
+        ],
+        "heading": 0.9,
+        "yaw": 0,
+        "orbitYaw": 0.03599999999999958,
+        "fov": 58
+      },
+      "buttonDistance": [
+        4.789338175119061,
+        3.5728134470636057
+      ],
+      "wheelDistance": 4.65057491442993,
+      "fullOrbitDelta": -3.2,
+      "pinchDistance": [
+        4.65057491442993,
+        3.572813447063606
+      ]
+    },
+    "residents": {
+      "first": {
+        "Ken": [
+          35.5,
+          0.04,
+          29.004166666666404
+        ],
+        "Brooklyn": [
+          17.2,
+          0.18,
+          -24
+        ],
+        "Nikki": [
+          -41.683000000000035,
+          0.06,
+          13
+        ],
+        "Daisy": [
+          -42.14461044497565,
+          0.03,
+          28.799947520465643
+        ]
+      },
+      "moved": {
+        "Ken": [
+          36.104166666666735,
+          0.04,
+          29.399999999999817
+        ],
+        "Brooklyn": [
+          18.067999999999994,
+          0.18,
+          -24
+        ],
+        "Nikki": [
+          -40,
+          0.06,
+          13
+        ],
+        "Daisy": [
+          -44.594610444657086,
+          0.03,
+          28.799987016463582
+        ]
+      },
+      "distances": {
+        "Ken": 0.7222889926400897,
+        "Brooklyn": 0.867999999999995,
+        "Nikki": 1.6830000000000354,
+        "Daisy": 2.449999999999792
+      },
+      "actualNearest": "ken",
+      "nearby": {
+        "Ken": [
+          36.104166666666735,
+          0.04,
+          29.399999999999817
+        ],
+        "Brooklyn": [
+          18.32116666666666,
+          0.18,
+          -24
+        ],
+        "Nikki": [
+          -40,
+          0.06,
+          13
+        ],
+        "Daisy": [
+          -44.88044377795325,
+          0.03,
+          28.79999162433001
+        ]
+      },
+      "stopped": {
+        "Ken": [
+          36.104166666666735,
+          0.04,
+          29.399999999999817
+        ],
+        "Brooklyn": [
+          19.568916666666652,
+          0.18,
+          -24
+        ],
+        "Nikki": [
+          -40,
+          0.06,
+          12.17225000000002
+        ],
+        "Daisy": [
+          -45.4,
+          0.03,
+          28.8
+        ]
+      },
+      "chatStart": {
+        "Ken": [
+          36.104166666666735,
+          0.04,
+          29.399999999999817
+        ],
+        "Brooklyn": [
+          19.568916666666652,
+          0.18,
+          -24
+        ],
+        "Nikki": [
+          -40,
+          0.06,
+          12.17225000000002
+        ],
+        "Daisy": [
+          -45.4,
+          0.03,
+          28.8
+        ]
+      },
+      "chatEnd": {
+        "Ken": [
+          7.9199918937683105,
+          0.019821012020110995,
+          -12.9499942779541
+        ],
+        "Brooklyn": [
+          19.8,
+          0.18,
+          -24
+        ],
+        "Nikki": [
+          -40,
+          0.06,
+          10.767000000000053
+        ],
+        "Daisy": [
+          -45.4,
+          0.03,
+          28.8
+        ]
+      },
+      "chatRouteStart": [
+        36.104166666666735,
+        0.04,
+        29.399999999999817
+      ],
+      "chatRouteEnd": [
+        36.104166666666735,
+        0.04,
+        29.399999999999817
+      ],
+      "resumed": {
+        "Ken": [
+          36.9,
+          0.04,
+          29.02500000000002
+        ],
+        "Brooklyn": [
+          19.8,
+          0.18,
+          -29.4
+        ],
+        "Nikki": [
+          -43.3,
+          0.06,
+          11.350749999999982
+        ],
+        "Daisy": [
+          -39,
+          0.03,
+          28.8
+        ]
+      }
+    },
+    "worldProps": {
+      "spots": [
+        {
+          "id": "volley",
+          "label": "Beach Volleyball",
+          "hint": "Rally across the beach net",
+          "x": 50,
+          "z": 37.2,
+          "radius": 3.4,
+          "kind": "activity"
+        },
+        {
+          "id": "netball",
+          "label": "Sunset Netball",
+          "hint": "Aim for the freestanding hoop",
+          "x": 17,
+          "z": 35.5,
+          "radius": 3.4,
+          "kind": "activity"
+        }
+      ],
+      "names": [
+        "ocean",
+        "island",
+        "district shore",
+        "district shore",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "camera cutaway wall",
+        "Pastel lifeguard lookout",
+        "Sunset viewing pier",
+        "party tile",
+        "party tile",
+        "party tile",
+        "party tile",
+        "party tile",
+        "party tile",
+        "party tile",
+        "party tile",
+        "party tile",
+        "Sunset Netball court",
+        "Glam Beach volleyball court",
+        "Flower garden portrait backdrop",
+        "activity beacon: wardrobe",
+        "activity beacon: mirror",
+        "activity beacon: moodlight",
+        "activity beacon: kitchen",
+        "activity beacon: pool",
+        "activity beacon: slide",
+        "activity beacon: dj",
+        "activity beacon: dancefloor",
+        "activity beacon: petbed",
+        "activity beacon: convertible",
+        "activity beacon: runway",
+        "activity beacon: photo",
+        "activity beacon: boutique",
+        "activity beacon: cafe",
+        "activity beacon: pet",
+        "activity beacon: salon",
+        "activity beacon: makeup",
+        "activity beacon: smoothie",
+        "activity beacon: surf",
+        "activity beacon: volley",
+        "activity beacon: netball",
+        "activity beacon: scooter",
+        "activity beacon: buggy",
+        "Sunset, pool water & party lights",
+        "Living pool water",
+        "Optional party effects"
+      ]
+    },
+    "scenicPortraits": [
+      {
+        "setting": {
+          "name": "flower-garden",
+          "x": -46,
+          "y": 0.88,
+          "z": 15.4,
+          "heading": 3.141592653589793
+        },
+        "scene": {
+          "camera": [
+            -46,
+            1.6889194521978081,
+            10.122910266927537
+          ],
+          "quaternion": [
+            0,
+            0.9915618937147881,
+            0.12963414261969486,
+            0
+          ],
+          "player": [
+            -46,
+            0.8851000070571899,
+            15.399999618530273
+          ],
+          "avatar": [
+            -46,
+            0.055100007057189856,
+            15.399999618530273
+          ],
+          "heading": 3.141592653589793,
+          "yaw": 0,
+          "orbitYaw": 3.141592653589793,
+          "fov": 58
+        },
+        "visibility": {
+          "camera": [
+            -46,
+            1.6889194521978081,
+            10.122910266927537
+          ],
+          "avatar": [
+            -46,
+            0.055100007057189856,
+            15.399999618530273
+          ],
+          "rays": [
+            {
+              "height": 0.6,
+              "ndc": [
+                0,
+                0.12022419560813928,
+                0.9629429286199662
+              ],
+              "targetDistance": 5.377402223188242,
+              "firstDistance": null,
+              "avatarFirst": false
+            },
+            {
+              "height": 1.05,
+              "ndc": [
+                0,
+                0.27231421306407916,
+                0.9621214321355014
+              ],
+              "targetDistance": 5.309285937800232,
+              "firstDistance": 5.1864673190642785,
+              "firstName": "bottom wrap",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.65,
+              "ndc": [
+                0,
+                0.48584340617176536,
+                0.9609680791120567
+              ],
+              "targetDistance": 5.2771141578664515,
+              "firstDistance": 5.131404433403649,
+              "firstName": "head",
+              "avatarFirst": true
+            }
+          ],
+          "unobstructed": 2
+        }
+      },
+      {
+        "setting": {
+          "name": "sunset-pier",
+          "x": 48,
+          "y": 1.15,
+          "z": 60.8,
+          "heading": 3.141592653589793
+        },
+        "scene": {
+          "camera": [
+            48,
+            1.9439022812917413,
+            55.52290988545781
+          ],
+          "quaternion": [
+            0,
+            0.9915618937147881,
+            0.12963414261969478,
+            0
+          ],
+          "player": [
+            48,
+            1.140082836151123,
+            60.79999923706055
+          ],
+          "avatar": [
+            48,
+            0.310082836151123,
+            60.79999923706055
+          ],
+          "heading": 3.141592653589793,
+          "yaw": 0,
+          "orbitYaw": 3.141592653589793,
+          "fov": 58
+        },
+        "visibility": {
+          "camera": [
+            48,
+            1.9438309941365899,
+            55.52290988545781
+          ],
+          "avatar": [
+            48,
+            0.3100115489959716,
+            60.79999923706055
+          ],
+          "rays": [
+            {
+              "height": 0.6,
+              "ndc": [
+                3.4508714786933274e-15,
+                0.12022419560813953,
+                0.9629429286199662
+              ],
+              "targetDistance": 5.377402223188246,
+              "firstDistance": null,
+              "avatarFirst": false
+            },
+            {
+              "height": 1.05,
+              "ndc": [
+                3.526915755188676e-15,
+                0.2723142130640786,
+                0.9621214321355014
+              ],
+              "targetDistance": 5.309285937800236,
+              "firstDistance": 5.187193231978914,
+              "firstName": "bottom wrap",
+              "avatarFirst": true
+            },
+            {
+              "height": 1.65,
+              "ndc": [
+                3.633679323712916e-15,
+                0.4858434061717646,
+                0.9609680791120568
+              ],
+              "targetDistance": 5.277114157866455,
+              "firstDistance": 5.1317067288147085,
+              "firstName": "head",
+              "avatarFirst": true
+            }
+          ],
+          "unobstructed": 2
+        }
+      }
+    ],
+    "volleyInitial": {
+      "elapsed": 0.08333333333333333,
+      "playerX": 0,
+      "npcX": 0,
+      "playerPoints": 0,
+      "opponentScore": 0,
+      "score": 0,
+      "combo": 0,
+      "finished": false,
+      "phase": "serve",
+      "charge": 0,
+      "charging": false,
+      "swing": 0,
+      "jump": 0,
+      "rallyHits": 0,
+      "feedback": "First to 5 \u00b7 move under the ball \u00b7 hold, then release to return",
+      "ballPosition": {
+        "x": 0,
+        "y": 2.05,
+        "z": -2.8,
+        "vx": 0,
+        "vy": 0,
+        "vz": 0
+      },
+      "pause": 1.116666666666667,
+      "npcReaction": 0,
+      "npcTarget": 0,
+      "lastHitter": "npc",
+      "input": 0,
+      "hitPower": 0,
+      "pointIndex": 0,
+      "timeLeft": 59.916666666666664
+    },
+    "volleyReturn": {
+      "elapsed": 2.5166666666666626,
+      "playerX": -1.2183333333333333,
+      "npcX": -0.9472145644725385,
+      "playerPoints": 0,
+      "opponentScore": 0,
+      "score": 0,
+      "combo": 1,
+      "finished": false,
+      "phase": "rally",
+      "charge": 0,
+      "charging": false,
+      "swing": 0,
+      "jump": 0.6033333333333333,
+      "rallyHits": 2,
+      "feedback": "Great return! Aim away from Coco",
+      "ballPosition": {
+        "x": -1.1849999999999996,
+        "y": 2.2,
+        "z": 2.334999999999997,
+        "vx": 0.6721108731130143,
+        "vy": 3.9791758139534896,
+        "vz": -4.1194920440636436
+      },
+      "pause": 0,
+      "npcReaction": 0.19,
+      "npcTarget": -1.0288812311392042,
+      "lastHitter": "player",
+      "input": 0,
+      "hitPower": 0.568333333333333,
+      "pointIndex": 0,
+      "timeLeft": 57.483333333333334
+    },
+    "volley": {
+      "initial": {
+        "elapsed": 0.08333333333333333,
+        "playerX": 0,
+        "npcX": 0,
+        "playerPoints": 0,
+        "opponentScore": 0,
+        "score": 0,
+        "combo": 0,
+        "finished": false,
+        "phase": "serve",
+        "charge": 0,
+        "charging": false,
+        "swing": 0,
+        "jump": 0,
+        "rallyHits": 0,
+        "feedback": "First to 5 \u00b7 move under the ball \u00b7 hold, then release to return",
+        "ballPosition": {
+          "x": 0,
+          "y": 2.05,
+          "z": -2.8,
+          "vx": 0,
+          "vy": 0,
+          "vz": 0
+        },
+        "pause": 1.116666666666667,
+        "npcReaction": 0,
+        "npcTarget": 0,
+        "lastHitter": "npc",
+        "input": 0,
+        "hitPower": 0,
+        "pointIndex": 0,
+        "timeLeft": 59.916666666666664
+      },
+      "court": [
+        "Glam Beach volleyball court",
+        "activity beacon: volley",
+        "Playable 3D volleyball court",
+        "Volleyball net",
+        "Playable volleyball",
+        "Volleyball receive marker",
+        "Coco volleyball opponent"
+      ],
+      "before": {
+        "elapsed": 1.2333333333333338,
+        "playerX": 0,
+        "npcX": 0.07166666666666666,
+        "playerPoints": 0,
+        "opponentScore": 0,
+        "score": 0,
+        "combo": 0,
+        "finished": false,
+        "phase": "rally",
+        "charge": 0,
+        "charging": false,
+        "swing": 0,
+        "jump": 0,
+        "rallyHits": 1,
+        "feedback": "Receive! Move to the ball \u00b7 release as it drops",
+        "ballPosition": {
+          "x": -0.03,
+          "y": 2.208222222222222,
+          "z": -2.67,
+          "vx": -0.9,
+          "vy": 4.626666666666668,
+          "vz": 3.9
+        },
+        "pause": 0,
+        "npcReaction": 0.22333333333333333,
+        "npcTarget": 0.09611876886079575,
+        "lastHitter": "npc",
+        "input": 0,
+        "hitPower": 0,
+        "pointIndex": 0,
+        "timeLeft": 58.766666666666666
+      },
+      "moved": {
+        "elapsed": 1.5166666666666662,
+        "playerX": -1.2183333333333333,
+        "npcX": -0.047214564472537565,
+        "playerPoints": 0,
+        "opponentScore": 0,
+        "score": 0,
+        "combo": 0,
+        "finished": false,
+        "phase": "rally",
+        "charge": 0,
+        "charging": false,
+        "swing": 0,
+        "jump": 0,
+        "rallyHits": 1,
+        "feedback": "Receive! Move to the ball \u00b7 release as it drops",
+        "ballPosition": {
+          "x": -0.28500000000000014,
+          "y": 3.230111111111111,
+          "z": -1.5650000000000008,
+          "vx": -0.9,
+          "vy": 2.586666666666666,
+          "vz": 3.9
+        },
+        "pause": 0,
+        "npcReaction": 0.19,
+        "npcTarget": -0.12888123113920436,
+        "lastHitter": "npc",
+        "input": -1,
+        "hitPower": 0,
+        "pointIndex": 0,
+        "timeLeft": 58.483333333333334
+      },
+      "held": {
+        "elapsed": 2.499999999999996,
+        "playerX": -1.2183333333333333,
+        "npcX": -0.9113812311392051,
+        "playerPoints": 0,
+        "opponentScore": 0,
+        "score": 0,
+        "combo": 0,
+        "finished": false,
+        "phase": "rally",
+        "charge": 0.568333333333333,
+        "charging": true,
+        "swing": 0,
+        "jump": 0,
+        "rallyHits": 1,
+        "feedback": "Receive! Move to the ball \u00b7 release as it drops",
+        "ballPosition": {
+          "x": -1.1699999999999997,
+          "y": 2.292666666666663,
+          "z": 2.269999999999997,
+          "vx": -0.9,
+          "vy": -4.4933333333333385,
+          "vz": 3.9
+        },
+        "pause": 0,
+        "npcReaction": 0.20666666666666667,
+        "npcTarget": -1.0288812311392042,
+        "lastHitter": "npc",
+        "input": 0,
+        "hitPower": 0,
+        "pointIndex": 0,
+        "timeLeft": 57.50000000000001
+      },
+      "final": {
+        "elapsed": 18.81666666666688,
+        "playerX": -1.2183333333333333,
+        "npcX": 2.295609184565764,
+        "playerPoints": 0,
+        "opponentScore": 5,
+        "score": 0,
+        "combo": 0,
+        "finished": true,
+        "phase": "point",
+        "charge": 0,
+        "charging": false,
+        "swing": 0,
+        "jump": 0,
+        "rallyHits": 1,
+        "feedback": "Coco wins \u00b7 rematch soon! 0\u20135 \u00b7 0 court points",
+        "ballPosition": {
+          "x": 2.4687232475799936,
+          "y": 0.16,
+          "z": 3.7649999999999957,
+          "vx": 1.1930358958909144,
+          "vy": -7.253333333333341,
+          "vz": 3.9
+        },
+        "pause": 1.15,
+        "npcReaction": 0.006666666666666703,
+        "npcTarget": 2.295609184565764,
+        "lastHitter": "npc",
+        "input": 0,
+        "hitPower": 0.568333333333333,
+        "pointIndex": 5,
+        "timeLeft": 41.183333333333124
+      }
+    }
+  },
+  "limitations": [
+    "SwiftShader Chromium is a real WebGL renderer, but is not physical mobile hardware.",
+    "Test-only transform exposes scene/model reads and teleports to actual spot locations; no production source, score or time is changed.",
+    "Genuine browser pointer, two-contact CDP touch, wheel, keyboard and on-screen action controls exercise actual application callbacks."
+  ],
+  "finalCutawaySupplement": {
+    "passed": true,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "checks": [
+      "indoor-style",
+      "photo-heading",
+      "scenic-portraits"
+    ],
+    "failures": [],
+    "errors": [],
+    "screenshots": [
+      ".test-output/v4-style-wardrobe-entry.png",
+      ".test-output/v4-style-wardrobe.png",
+      ".test-output/v4-style-salon-entry.png",
+      ".test-output/v4-style-salon.png",
+      ".test-output/v4-style-makeup-entry.png",
+      ".test-output/v4-style-makeup.png",
+      ".test-output/v4-photo-group.png",
+      ".test-output/v4-flower-garden.png",
+      ".test-output/v4-flower-garden-capture.jpg",
+      ".test-output/v4-sunset-pier.png",
+      ".test-output/v4-sunset-pier-capture.jpg"
+    ],
+    "details": {
+      "style": {
+        "wardrobe": {
+          "decor": {
+            "photoBeacon": false,
+            "tokens": false,
+            "cards": false
+          },
+          "entry": {
+            "camera": [
+              1.2172470382443774,
+              5.262210856741611,
+              -47.44695001450755
+            ],
+            "avatar": [
+              -1.9999998807907104,
+              3.939618511199951,
+              -50
+            ],
+            "rays": [
+              {
+                "height": 0.6,
+                "ndc": [
+                  4.456363112463635e-15,
+                  0.15525431006100218,
+                  0.95208073253672
+                ],
+                "targetDistance": 4.170237602858998,
+                "firstDistance": null,
+                "avatarFirst": false
+              },
+              {
+                "height": 1.05,
+                "ndc": [
+                  4.5839974713184406e-15,
+                  0.3539318063532895,
+                  0.9507019150644734
+                ],
+                "targetDistance": 4.1161934543108725,
+                "firstDistance": 3.9929322350828724,
+                "firstName": "bottom wrap",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.65,
+                "ndc": [
+                  4.766001038346567e-15,
+                  0.6372412015495191,
+                  0.9487357540676916
+                ],
+                "targetDistance": 4.120186614543288,
+                "firstDistance": 3.9751150966548807,
+                "firstName": "head",
+                "avatarFirst": true
+              }
+            ],
+            "unobstructed": 2
+          },
+          "gesture": {
+            "before": {
+              "camera": [
+                1.2172470382443774,
+                5.262210856741611,
+                -47.44695001450755
+              ],
+              "quaternion": [
+                -0.1167286880878779,
+                0.4312952487039958,
+                0.056386384083627,
+                0.8928490339988138
+              ],
+              "player": [
+                -1.9999998807907104,
+                4.769618511199951,
+                -50
+              ],
+              "avatar": [
+                -1.9999998807907104,
+                3.939618511199951,
+                -50
+              ],
+              "heading": 0.9,
+              "yaw": 0,
+              "orbitYaw": 0.9000000000000005,
+              "fov": 58
+            },
+            "after": {
+              "camera": [
+                -1.8577461083081892,
+                5.732132693218566,
+                -46.05021351270664
+              ],
+              "quaternion": [
+                -0.1871005515052353,
+                0.017681075064985764,
+                0.0033681736977110785,
+                0.9821758593128447
+              ],
+              "player": [
+                -1.9999998807907104,
+                4.769618511199951,
+                -50
+              ],
+              "avatar": [
+                -1.9999998807907104,
+                3.939618511199951,
+                -50
+              ],
+              "heading": 0.9,
+              "yaw": 0,
+              "orbitYaw": 0.035999999999999706,
+              "fov": 58
+            },
+            "buttonDistance": [
+              4.3398336977041625,
+              3.2401046442916477
+            ],
+            "wheelDistance": 4.214384408905613,
+            "fullOrbitDelta": -4.8000000000000025,
+            "pinchDistance": [
+              4.214384408905615,
+              3.240104644291651
+            ]
+          },
+          "orbited": {
+            "camera": [
+              0.9240722884091661,
+              5.327157487312931,
+              -49.8489515142797
+            ],
+            "avatar": [
+              -1.9999998807907104,
+              3.939618511199951,
+              -50
+            ],
+            "rays": [
+              {
+                "height": 0.6,
+                "ndc": [
+                  0,
+                  0.2060613507066869,
+                  0.9338236551607801
+                ],
+                "targetDistance": 3.032034190873307,
+                "firstDistance": 2.8339734539824577,
+                "firstName": "wrap skirt",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.05,
+                "ndc": [
+                  0,
+                  0.4832145031698345,
+                  0.9299651567517785
+                ],
+                "targetDistance": 2.947362593255717,
+                "firstDistance": 2.816311958460039,
+                "firstName": "bottom wrap",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.65,
+                "ndc": [
+                  0,
+                  0.9070670333141378,
+                  0.9240643243106591
+                ],
+                "targetDistance": 2.939710782506927,
+                "firstDistance": 2.789430313761488,
+                "firstName": "head",
+                "avatarFirst": true
+              }
+            ],
+            "unobstructed": 3
+          }
+        },
+        "salon": {
+          "decor": {
+            "photoBeacon": false,
+            "tokens": false,
+            "cards": false
+          },
+          "entry": {
+            "camera": [
+              -25.782753080964913,
+              1.3850944150149258,
+              23.753050748431907
+            ],
+            "avatar": [
+              -29,
+              0.06250206947326652,
+              21.200000762939453
+            ],
+            "rays": [
+              {
+                "height": 0.6,
+                "ndc": [
+                  0,
+                  0.15525431006100235,
+                  0.95208073253672
+                ],
+                "targetDistance": 4.170237602858999,
+                "firstDistance": null,
+                "avatarFirst": false
+              },
+              {
+                "height": 1.05,
+                "ndc": [
+                  0,
+                  0.3539318063532908,
+                  0.9507019150644734
+                ],
+                "targetDistance": 4.116193454310874,
+                "firstDistance": 3.9945522009288315,
+                "firstName": "bottom wrap",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.65,
+                "ndc": [
+                  0,
+                  0.6372412015495196,
+                  0.9487357540676916
+                ],
+                "targetDistance": 4.1201866145432895,
+                "firstDistance": 3.9602521190720252,
+                "firstName": "head",
+                "avatarFirst": true
+              }
+            ],
+            "unobstructed": 2
+          },
+          "gesture": {
+            "before": {
+              "camera": [
+                -25.782753080964913,
+                1.3850944150149258,
+                23.753050748431907
+              ],
+              "quaternion": [
+                -0.11672868808787791,
+                0.43129524870399555,
+                0.05638638408362695,
+                0.892849033998814
+              ],
+              "player": [
+                -29,
+                0.8925020694732666,
+                21.200000762939453
+              ],
+              "avatar": [
+                -29,
+                0.06250206947326652,
+                21.200000762939453
+              ],
+              "heading": 0.9,
+              "yaw": 0,
+              "orbitYaw": 0.8999999999999997,
+              "fov": 58
+            },
+            "after": {
+              "camera": [
+                -28.857746227517477,
+                1.8632176121943957,
+                25.14978725023281
+              ],
+              "quaternion": [
+                -0.18710055150523547,
+                0.017681075064985948,
+                0.003368173697711116,
+                0.9821758593128447
+              ],
+              "player": [
+                -29,
+                0.9007034301757812,
+                21.200000762939453
+              ],
+              "avatar": [
+                -29,
+                0.07070343017578117,
+                21.200000762939453
+              ],
+              "heading": 0.9,
+              "yaw": 0,
+              "orbitYaw": 0.036000000000000074,
+              "fov": 58
+            },
+            "buttonDistance": [
+              4.339833697704159,
+              3.2401046442916503
+            ],
+            "wheelDistance": 4.214384408905616,
+            "fullOrbitDelta": -4.8000000000000025,
+            "pinchDistance": [
+              4.214384408905617,
+              3.2401046442916517
+            ]
+          },
+          "orbited": {
+            "camera": [
+              -26.075927830800122,
+              1.4748451608816564,
+              21.351049248659752
+            ],
+            "avatar": [
+              -29,
+              0.08730618476867667,
+              21.200000762939453
+            ],
+            "rays": [
+              {
+                "height": 0.6,
+                "ndc": [
+                  0,
+                  0.2060613507066877,
+                  0.9338236551607803
+                ],
+                "targetDistance": 3.032034190873308,
+                "firstDistance": 2.8328001307028163,
+                "firstName": "wrap skirt",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.05,
+                "ndc": [
+                  0,
+                  0.48321450316983533,
+                  0.9299651567517786
+                ],
+                "targetDistance": 2.9473625932557184,
+                "firstDistance": 2.816548428267754,
+                "firstName": "bottom wrap",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.65,
+                "ndc": [
+                  0,
+                  0.9070670333141371,
+                  0.9240643243106591
+                ],
+                "targetDistance": 2.9397107825069284,
+                "firstDistance": 2.790164210516931,
+                "firstName": "head",
+                "avatarFirst": true
+              }
+            ],
+            "unobstructed": 3
+          }
+        },
+        "makeup": {
+          "decor": {
+            "photoBeacon": false,
+            "tokens": false,
+            "cards": false
+          },
+          "entry": {
+            "camera": [
+              -1.2827540346392285,
+              5.262396346396152,
+              -48.146950777447
+            ],
+            "avatar": [
+              -4.500000953674316,
+              3.939804000854492,
+              -50.70000076293945
+            ],
+            "rays": [
+              {
+                "height": 0.6,
+                "ndc": [
+                  0,
+                  0.1552543100610013,
+                  0.95208073253672
+                ],
+                "targetDistance": 4.170237602858998,
+                "firstDistance": null,
+                "avatarFirst": false
+              },
+              {
+                "height": 1.05,
+                "ndc": [
+                  0,
+                  0.3539318063532895,
+                  0.9507019150644734
+                ],
+                "targetDistance": 4.1161934543108725,
+                "firstDistance": 3.9929919628084036,
+                "firstName": "bottom wrap",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.65,
+                "ndc": [
+                  0,
+                  0.6372412015495191,
+                  0.9487357540676916
+                ],
+                "targetDistance": 4.120186614543288,
+                "firstDistance": 3.9658450443962323,
+                "firstName": "head",
+                "avatarFirst": true
+              }
+            ],
+            "unobstructed": 2
+          },
+          "gesture": {
+            "before": {
+              "camera": [
+                -1.2827540346392285,
+                5.262396346396152,
+                -48.146950777447
+              ],
+              "quaternion": [
+                -0.1167286880878779,
+                0.4312952487039958,
+                0.056386384083627,
+                0.8928490339988138
+              ],
+              "player": [
+                -4.500000953674316,
+                4.769804000854492,
+                -50.70000076293945
+              ],
+              "avatar": [
+                -4.500000953674316,
+                3.939804000854492,
+                -50.70000076293945
+              ],
+              "heading": 0.9,
+              "yaw": 0,
+              "orbitYaw": 0.9000000000000005,
+              "fov": 58
+            },
+            "after": {
+              "camera": [
+                -4.357747181191795,
+                5.732467909740783,
+                -46.750214275646094
+              ],
+              "quaternion": [
+                -0.1871005515052353,
+                0.017681075064985823,
+                0.003368173697711089,
+                0.9821758593128447
+              ],
+              "player": [
+                -4.500000953674316,
+                4.769953727722168,
+                -50.70000076293945
+              ],
+              "avatar": [
+                -4.500000953674316,
+                3.939953727722168,
+                -50.70000076293945
+              ],
+              "heading": 0.9,
+              "yaw": 0,
+              "orbitYaw": 0.03599999999999982,
+              "fov": 58
+            },
+            "buttonDistance": [
+              4.3398336977041625,
+              3.2401046442916477
+            ],
+            "wheelDistance": 4.214384408905613,
+            "fullOrbitDelta": -4.800000000000001,
+            "pinchDistance": [
+              4.214384408905615,
+              3.240104644291651
+            ]
+          },
+          "orbited": {
+            "camera": [
+              -1.5759287844744398,
+              5.327492703835148,
+              -50.54895227721915
+            ],
+            "avatar": [
+              -4.500000953674316,
+              3.939953727722168,
+              -50.70000076293945
+            ],
+            "rays": [
+              {
+                "height": 0.6,
+                "ndc": [
+                  -6.146384027011413e-15,
+                  0.20606135070668793,
+                  0.9338236551607801
+                ],
+                "targetDistance": 3.032034190873307,
+                "firstDistance": 2.8372196403002254,
+                "firstName": "wrap skirt",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.05,
+                "ndc": [
+                  -6.503557460397609e-15,
+                  0.4832145031698355,
+                  0.9299651567517786
+                ],
+                "targetDistance": 2.947362593255717,
+                "firstDistance": 2.8189897730796276,
+                "firstName": "bottom wrap",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.65,
+                "ndc": [
+                  -7.049785645412377e-15,
+                  0.9070670333141373,
+                  0.9240643243106591
+                ],
+                "targetDistance": 2.939710782506927,
+                "firstDistance": 2.7893252926208594,
+                "firstName": "head",
+                "avatarFirst": true
+              }
+            ],
+            "unobstructed": 3
+          }
+        }
+      },
+      "photoHeadings": [
+        {
+          "heading": 0.9,
+          "entry": {
+            "camera": [
+              8.000000713965425,
+              3.0549347020611317,
+              -7.552970710843311
+            ],
+            "quaternion": [
+              -0.17781230558724828,
+              -2.165298316602158e-08,
+              -3.9125150537033895e-09,
+              0.9840644206462027
+            ],
+            "player": [
+              8.000000953674316,
+              0.8700286746025085,
+              -13.00000286102295
+            ],
+            "avatar": [
+              8.000000953674316,
+              0.04002867460250846,
+              -13.00000286102295
+            ],
+            "heading": 0.9,
+            "yaw": 0,
+            "orbitYaw": -4.4007247313753664e-08,
+            "fov": 58
+          },
+          "solo": {
+            "camera": [
+              11.55789754648959,
+              1.4782746051503006,
+              -10.17662993589012
+            ],
+            "quaternion": [
+              -0.11672868808787791,
+              0.43129524870399566,
+              0.05638638408362698,
+              0.892849033998814
+            ],
+            "player": [
+              8.000000953674316,
+              0.8699960112571716,
+              -13.00000286102295
+            ],
+            "avatar": [
+              8.000000953674316,
+              0.039996011257171546,
+              -13.00000286102295
+            ],
+            "heading": 0.9,
+            "yaw": 0,
+            "orbitYaw": 0.8999999999999999,
+            "fov": 58
+          },
+          "group": [
+            {
+              "name": "Ken",
+              "position": [
+                8.611049423639018,
+                0.02006497383117667,
+                -13.689584073141017
+              ],
+              "rotation": 0.8
+            },
+            {
+              "name": "Barbie",
+              "position": [
+                7.467287082020996,
+                0.02006497383117667,
+                -12.248262559426447
+              ],
+              "rotation": 0.8
+            }
+          ],
+          "styles": {
+            "borderTop": "0px",
+            "borderRight": "0px",
+            "borderBottom": "0px",
+            "borderLeft": "0px",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        },
+        {
+          "heading": -1.1,
+          "entry": {
+            "camera": [
+              8.00000067993302,
+              3.3636034015248226,
+              -6.555103488321572
+            ],
+            "quaternion": [
+              -0.17350841904952144,
+              5.194963622009625e-08,
+              9.152521158789189e-09,
+              0.9848323860022745
+            ],
+            "player": [
+              8,
+              0.8699242472648621,
+              -13
+            ],
+            "avatar": [
+              8,
+              0.039924247264861976,
+              -13
+            ],
+            "heading": -1.1,
+            "yaw": 0,
+            "orbitYaw": 1.0549944733433295e-07,
+            "fov": 58
+          },
+          "solo": {
+            "camera": [
+              3.9521078060198036,
+              1.4782967184735123,
+              -10.93975435545104
+            ],
+            "quaternion": [
+              -0.11051628547944917,
+              -0.5182767385390195,
+              -0.06775811078069018,
+              0.8453308295316181
+            ],
+            "player": [
+              8.000000953674316,
+              0.8700181245803833,
+              -13.00000286102295
+            ],
+            "avatar": [
+              8.000000953674316,
+              0.040018124580383216,
+              -13.00000286102295
+            ],
+            "heading": -1.1,
+            "yaw": 0,
+            "orbitYaw": -1.1,
+            "fov": 58
+          },
+          "group": [
+            {
+              "name": "Ken",
+              "position": [
+                8.372749017382775,
+                0.020020270347595126,
+                -12.15741228369515
+              ],
+              "rotation": -1.2000000000000002
+            },
+            {
+              "name": "Barbie",
+              "position": [
+                7.5381321539597135,
+                0.020020270347595126,
+                -13.79723382620819
+              ],
+              "rotation": -1.2000000000000002
+            }
+          ],
+          "styles": {
+            "borderTop": "0px",
+            "borderRight": "0px",
+            "borderBottom": "0px",
+            "borderLeft": "0px",
+            "background": "rgba(0, 0, 0, 0)"
+          }
+        }
+      ],
+      "photoGestures": {
+        "before": {
+          "camera": [
+            11.557898500163907,
+            1.4783435677243058,
+            -10.176630889564436
+          ],
+          "quaternion": [
+            -0.11672868808787791,
+            0.43129524870399566,
+            0.05638638408362698,
+            0.892849033998814
+          ],
+          "player": [
+            8.000001907348633,
+            0.8700649738311768,
+            -13.000003814697266
+          ],
+          "avatar": [
+            8.000001907348633,
+            0.04006497383117667,
+            -13.000003814697266
+          ],
+          "heading": 0.9,
+          "yaw": 0,
+          "orbitYaw": 0.8999999999999999,
+          "fov": 58
+        },
+        "after": {
+          "camera": [
+            8.157316890302045,
+            1.997952752162585,
+            -8.632004640514022
+          ],
+          "quaternion": [
+            -0.1871005515052353,
+            0.017681075064985705,
+            0.0033681736977110672,
+            0.9821758593128447
+          ],
+          "player": [
+            8.000000953674316,
+            0.8699958920478821,
+            -13.000003814697266
+          ],
+          "avatar": [
+            8.000000953674316,
+            0.039995892047881995,
+            -13.000003814697266
+          ],
+          "heading": 0.9,
+          "yaw": 0,
+          "orbitYaw": 0.03599999999999958,
+          "fov": 58
+        },
+        "buttonDistance": [
+          4.789338175119061,
+          3.5728134470636057
+        ],
+        "wheelDistance": 4.65057491442993,
+        "fullOrbitDelta": -4.800000000000002,
+        "pinchDistance": [
+          4.65057491442993,
+          3.572813447063606
+        ]
+      },
+      "scenicPortraits": [
+        {
+          "setting": {
+            "name": "flower-garden",
+            "x": -46,
+            "y": 0.88,
+            "z": 15.4,
+            "heading": 3.141592653589793
+          },
+          "decor": {
+            "photoBeacon": false,
+            "tokens": false,
+            "cards": false
+          },
+          "scene": {
+            "camera": [
+              -46,
+              1.6889194521978081,
+              10.122910266927537
+            ],
+            "quaternion": [
+              0,
+              0.9915618937147881,
+              0.12963414261969486,
+              0
+            ],
+            "player": [
+              -46,
+              0.8851000070571899,
+              15.399999618530273
+            ],
+            "avatar": [
+              -46,
+              0.055100007057189856,
+              15.399999618530273
+            ],
+            "heading": 3.141592653589793,
+            "yaw": 0,
+            "orbitYaw": 3.141592653589793,
+            "fov": 58
+          },
+          "visibility": {
+            "camera": [
+              -46,
+              1.6889194521978081,
+              10.122910266927537
+            ],
+            "avatar": [
+              -46,
+              0.055100007057189856,
+              15.399999618530273
+            ],
+            "rays": [
+              {
+                "height": 0.6,
+                "ndc": [
+                  0,
+                  0.12022419560813928,
+                  0.9629429286199662
+                ],
+                "targetDistance": 5.377402223188242,
+                "firstDistance": null,
+                "avatarFirst": false
+              },
+              {
+                "height": 1.05,
+                "ndc": [
+                  0,
+                  0.27231421306407916,
+                  0.9621214321355014
+                ],
+                "targetDistance": 5.309285937800232,
+                "firstDistance": 5.187067055087834,
+                "firstName": "bottom wrap",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.65,
+                "ndc": [
+                  0,
+                  0.48584340617176536,
+                  0.9609680791120567
+                ],
+                "targetDistance": 5.2771141578664515,
+                "firstDistance": 5.131726808789392,
+                "firstName": "head",
+                "avatarFirst": true
+              }
+            ],
+            "unobstructed": 2
+          }
+        },
+        {
+          "setting": {
+            "name": "sunset-pier",
+            "x": 48,
+            "y": 1.15,
+            "z": 60.8,
+            "heading": 3.141592653589793
+          },
+          "decor": {
+            "photoBeacon": false,
+            "tokens": false,
+            "cards": false
+          },
+          "scene": {
+            "camera": [
+              48,
+              1.9438309941365899,
+              55.52290988545781
+            ],
+            "quaternion": [
+              0,
+              0.9915618937147881,
+              0.12963414261969478,
+              0
+            ],
+            "player": [
+              48,
+              1.1400115489959717,
+              60.79999923706055
+            ],
+            "avatar": [
+              48,
+              0.3100115489959716,
+              60.79999923706055
+            ],
+            "heading": 3.141592653589793,
+            "yaw": 0,
+            "orbitYaw": 3.141592653589793,
+            "fov": 58
+          },
+          "visibility": {
+            "camera": [
+              48,
+              1.9438309941365899,
+              55.52290988545781
+            ],
+            "avatar": [
+              48,
+              0.3100115489959716,
+              60.79999923706055
+            ],
+            "rays": [
+              {
+                "height": 0.6,
+                "ndc": [
+                  3.4508714786933274e-15,
+                  0.12022419560813953,
+                  0.9629429286199662
+                ],
+                "targetDistance": 5.377402223188246,
+                "firstDistance": null,
+                "avatarFirst": false
+              },
+              {
+                "height": 1.05,
+                "ndc": [
+                  3.526915755188676e-15,
+                  0.2723142130640786,
+                  0.9621214321355014
+                ],
+                "targetDistance": 5.309285937800236,
+                "firstDistance": 5.187350515360836,
+                "firstName": "bottom wrap",
+                "avatarFirst": true
+              },
+              {
+                "height": 1.65,
+                "ndc": [
+                  3.633679323712916e-15,
+                  0.4858434061717646,
+                  0.9609680791120568
+                ],
+                "targetDistance": 5.277114157866455,
+                "firstDistance": 5.131681698507649,
+                "firstName": "head",
+                "avatarFirst": true
+              }
+            ],
+            "unobstructed": 2
+          }
+        }
+      ]
+    },
+    "limitations": [
+      "SwiftShader Chromium is a real WebGL renderer, but is not physical mobile hardware.",
+      "Test-only transform exposes scene/model reads and teleports to actual spot locations; no production source, score or time is changed.",
+      "Genuine browser pointer, two-contact CDP touch, wheel, keyboard and on-screen action controls exercise actual application callbacks."
+    ]
+  }
+}

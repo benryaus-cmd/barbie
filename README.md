@@ -29,3 +29,7 @@ The camera button captures actual scene photos with residents or your pet. Keep1
 ### Golden Hour
 
 Personal outfit sets, nine salon hairstyles and hair dye, five makeup looks, twelve stackable accessory types, Ken, group and paired photographs, photo orbit/zoom, explicit Mochi follow/home/whistle, five-shot 3D netball and balanced activity rewards. DreamFeed milestones apply a capped 1.0–1.5× style-point multiplier. The world adds matching beach ground collision, comfortable stairs, a salon and warmer textured resort scenery.
+
+### Resort Life
+
+Shared photo/style orbit and pinch zoom; clean camera view; preserved character heading; reversible indoor cutaway; embedded viewport HUD fixes. Ken/Brooklyn/Nikki/Daisy walk and pause to greet. Beach volleyball rallies against Coco return alongside a separate netball court. New flower-heart portrait garden, coastal lifeguard lookout and sunset pier create distinct photo destinations.

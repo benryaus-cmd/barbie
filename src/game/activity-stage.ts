@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { Avatar } from '@/game/avatar';
 import type { GameEvent } from '@/game/types';
 import type { ActivityKind, ActivityState } from '@/game/lifestyle-types';
-import { SurfSession, PourSession, NetballSession, NETBALL_HOOP, NETBALL_CHARGE_TARGET, NETBALL_BALL_RADIUS, NETBALL_RING_RADIUS, netballTrajectory, normalizedInput, SURF_DURATION } from './activity-model';
+import { SurfSession, PourSession, NetballSession, VolleySession, VOLLEY_DURATION, VOLLEY_NET_HEIGHT, NETBALL_HOOP, NETBALL_CHARGE_TARGET, NETBALL_BALL_RADIUS, NETBALL_RING_RADIUS, netballTrajectory, normalizedInput, SURF_DURATION } from './activity-model';
 
 type Material = THREE.Material;
 const material = (color: number, roughness = .45, metalness = 0) => new THREE.MeshStandardMaterial({color, roughness, metalness});
@@ -154,17 +154,81 @@ export function createActivityStage(camera:THREE.PerspectiveCamera,avatar:Avatar
   mesh(courtRoot,new THREE.BoxGeometry(.3,.4,14),ivory,x,.16,-.5);
   for(let i=0;i<5;i++)sphere(courtRoot,material(i%2?0xe991ad:0x7ccaa9),x,.55,-6+i*2.7,.48,.55,.48);
  }
- let kind:ActivityKind|null=null,surf=new SurfSession(),pour=new PourSession(),netball=new NetballSession(),input=0,clock=0,eventTimer=0;
+ // The volleyball court shares the sandbox scene and its sunlight, avatar and renderer.
+ const volleyRoot=new THREE.Group();volleyRoot.name='Playable 3D volleyball court';root.add(volleyRoot);
+ const beachSand=material(0xf6dfb3,.9),lagoon=material(0x3abac2,.28,.12);
+ const volleyballSea=mesh(volleyRoot,new THREE.PlaneGeometry(120,130),lagoon,0,-.23,-53);volleyballSea.rotation.x=-Math.PI/2;volleyballSea.castShadow=false;
+ mesh(volleyRoot,new THREE.BoxGeometry(42,.14,18),beachSand,0,-.1,3);
+ const shoreFoam=new THREE.MeshStandardMaterial({color:0xfff8e5,roughness:.8,transparent:true,opacity:.7});
+ for(let row=0;row<4;row++){
+  const points=Array.from({length:25},(_,i)=>new THREE.Vector3(-24+i*2,-.11-row*.025,-6.15-row*4+Math.sin(i*.7+row)*.25));
+  tube(volleyRoot,shoreFoam,points,row===0?.09:.035);
+ }
+ // Framing stays outside the play lines: a little resort beach around a real court.
+ const palmTrunk=material(0xb8946c,.9),palmLeaf=material(0x438f79,.8),leafLight=material(0x71b798,.8);
+ for(const [x,z] of [[-6.5,-5.4],[6.8,-5.8]]){
+  const palm=new THREE.Group();palm.position.set(x,0,z);volleyRoot.add(palm);
+  const trunk=mesh(palm,new THREE.CylinderGeometry(.1,.17,3,8),palmTrunk,0,1.45,0);trunk.rotation.z=x>0?-.12:.12;
+  for(let i=0;i<6;i++){const angle=i*Math.PI/3;const leaf=sphere(palm,i%2?palmLeaf:leafLight,Math.cos(angle)*.68,2.91,Math.sin(angle)*.68,.25,.11,1.13);leaf.rotation.set(Math.sin(angle)*.2,-angle+Math.PI/2,.15);}
+ }
+ for(const [x,z] of [[-4.9,-4.4],[5.1,-4.2]]){
+  mesh(volleyRoot,new THREE.CylinderGeometry(.032,.04,2.2,8),ivory,x,1.08,z);
+  const canopy=new THREE.Group();canopy.position.set(x,2.15,z);volleyRoot.add(canopy);
+  for(let i=0;i<8;i++){mesh(canopy,new THREE.ConeGeometry(1.05,.48,3,1,true,Math.PI/4*i,Math.PI/4),i%2?ivory:coral);}
+  sphere(volleyRoot,gold,x,2.4,z,.065,.065,.065);
+  const chair=mesh(volleyRoot,new THREE.BoxGeometry(.65,.12,1.25),teal,x,.25,z+.55);chair.rotation.x=-.14;
+  mesh(volleyRoot,new THREE.BoxGeometry(.65,.65,.1),ivory,x,.58,z+.04).rotation.x=-.3;
+ }
+ for(const x of [-4.55,4.55])mesh(volleyRoot,new THREE.CylinderGeometry(.035,.045,2.75,8),ivory,x,1.35,-5.3);
+ const buntingPoints=Array.from({length:17},(_,i)=>{const x=-4.55+i*9.1/16;return new THREE.Vector3(x,2.7-.38*(1-(x/4.55)**2),-5.3);});
+ tube(volleyRoot,gold,buntingPoints,.012);
+ for(let i=0;i<11;i++){
+  const x=-4.2+i*.84,y=2.7-.38*(1-(x/4.55)**2);
+  const flag=new THREE.Shape();flag.moveTo(-.14,0);flag.lineTo(.14,0);flag.lineTo(0,-.28);flag.closePath();
+  mesh(volleyRoot,new THREE.ShapeGeometry(flag),new THREE.MeshStandardMaterial({color:[0xf387a7,0xfff8e5,0x3e9b99][i%3],side:THREE.DoubleSide}),x,y-.03,-5.3);
+ }
+ for(const [x,z] of [[-17,-29],[20,-34]]){sphere(volleyRoot,beachSand,x,-.3,z,9,.6,3.4);sphere(volleyRoot,palmLeaf,x,.25,z,6.5,.7,2.6);}
+ mesh(volleyRoot,new THREE.BoxGeometry(7,.018,9),material(0xeed099,.92),0,-.015,0);
+ for(const x of [-3.5,3.5])mesh(volleyRoot,new THREE.BoxGeometry(.055,.016,9),ivory,x,.009,0);
+ for(const z of [-4.5,4.5])mesh(volleyRoot,new THREE.BoxGeometry(7,.016,.055),ivory,0,.009,z);
+ for(const x of [-3.7,3.7]){
+  mesh(volleyRoot,new THREE.CylinderGeometry(.065,.085,2.05,12),coral,x,1,0);
+  sphere(volleyRoot,gold,x,2.06,0,.11,.11,.11);
+  tube(volleyRoot,ivory,[new THREE.Vector3(x,1.8,0),new THREE.Vector3(x*1.25,.02,.7)],.013);
+ }
+ const volleyNet=new THREE.Group();volleyNet.name='Volleyball net';volleyRoot.add(volleyNet);
+ for(const y of [.75,VOLLEY_NET_HEIGHT])mesh(volleyNet,new THREE.BoxGeometry(7.4,.055,.045),ivory,0,y,0);
+ for(let x=-3.6;x<=3.6;x+=.3)mesh(volleyNet,new THREE.BoxGeometry(.012,VOLLEY_NET_HEIGHT-.75,.012),ivory,x,(VOLLEY_NET_HEIGHT+.75)/2,0);
+ for(let y=.9;y<VOLLEY_NET_HEIGHT;y+=.15)mesh(volleyNet,new THREE.BoxGeometry(7.3,.012,.012),ivory,0,y,0);
+ const volleyball=new THREE.Group();volleyball.name='Playable volleyball';volleyRoot.add(volleyball);
+ sphere(volleyball,ivory,0,0,0,.16,.16,.16);
+ for(let i=0;i<3;i++){const stripe=mesh(volleyball,new THREE.TorusGeometry(.159,.019,6,28),i%2?gold:teal);stripe.rotation.set(i*Math.PI/3,i*Math.PI/2,0);}
+ const volleyShadow=mesh(volleyRoot,new THREE.CircleGeometry(.2,24),new THREE.MeshBasicMaterial({color:0x765440,transparent:true,opacity:.2,depthWrite:false}),0,.022,0);volleyShadow.rotation.x=-Math.PI/2;
+ const receiveMarker=mesh(volleyRoot,new THREE.TorusGeometry(.55,.035,6,32),gold,0,.03,3.05);receiveMarker.name='Volleyball receive marker';receiveMarker.rotation.x=-Math.PI/2;
+ // Coco is a little articulated doll, rather than a flat billboard opponent.
+ const coco=new THREE.Group();coco.name='Coco volleyball opponent';volleyRoot.add(coco);
+ const skin=material(0xb87959,.65),hair=material(0x493031,.6),jersey=material(0xf387a7,.6),shorts=material(0x377f88,.7);
+ sphere(coco,jersey,0,1.02,0,.28,.4,.18);
+ mesh(coco,new THREE.CylinderGeometry(.2,.26,.3,12),shorts,0,.64,0);
+ const cocoLegs=[-1,1].map(side=>{const leg=new THREE.Group();leg.position.set(side*.13,.56,0);coco.add(leg);mesh(leg,new THREE.CapsuleGeometry(.075,.37,4,8),skin,0,-.22,0);sphere(leg,ivory,0,-.48,.07,.1,.075,.17);return leg;});
+ const cocoArms=[-1,1].map(side=>{const arm=new THREE.Group();arm.position.set(side*.26,1.2,0);coco.add(arm);mesh(arm,new THREE.CapsuleGeometry(.065,.36,4,8),skin,0,-.21,0);sphere(arm,skin,0,-.45,0,.075,.09,.065);return arm;});
+ sphere(coco,skin,0,1.61,0,.24,.29,.23);sphere(coco,hair,0,1.77,-.035,.255,.19,.24);sphere(coco,hair,.22,1.83,-.15,.13,.17,.13);
+ for(const x of [-.09,.09]){sphere(coco,hair,x,1.64,.21,.025,.034,.018);sphere(coco,coral,x*1.4,1.54,.205,.045,.026,.013);}
+ tube(coco,coral,[new THREE.Vector3(-.04,1.51,.218),new THREE.Vector3(0,1.495,.225),new THREE.Vector3(.04,1.51,.218)],.009);
+ const headband=mesh(coco,new THREE.TorusGeometry(.235,.022,6,28),gold,0,1.75,0);headband.rotation.x=Math.PI/2;
+
+ let kind:ActivityKind|null=null,surf=new SurfSession(),pour=new PourSession(),netball=new NetballSession(),volley=new VolleySession(),input=0,clock=0,eventTimer=0;
  let saved:{avatarPosition:THREE.Vector3;avatarQuaternion:THREE.Quaternion;cameraPosition:THREE.Vector3;cameraQuaternion:THREE.Quaternion;cameraFov:number}|null=null;
  function state():ActivityState{
   if(kind==='surf')return {kind,progress:surf.elapsed/SURF_DURATION,score:surf.score,combo:surf.combo,timeLeft:Math.max(0,SURF_DURATION-surf.elapsed),feedback:surf.feedback,finished:surf.finished};
+  if(kind==='volley')return {kind,progress:volley.finished?1:volley.elapsed/VOLLEY_DURATION,score:volley.score,combo:volley.combo,timeLeft:volley.timeLeft,feedback:volley.feedback,finished:volley.finished,playerPoints:volley.playerPoints,opponentScore:volley.opponentScore,fill:volley.charge};
   if(kind==='netball')return {kind,progress:netball.finished?1:(netball.round-1)/5,score:netball.score,combo:netball.combo,timeLeft:netball.timeLeft,feedback:netball.feedback,finished:netball.finished,round:netball.round,fill:netball.charge,target:NETBALL_CHARGE_TARGET};
   return {kind:'pour',progress:pour.finished?1:(pour.round-1)/3,score:pour.score,combo:pour.combo,timeLeft:pour.timeLeft,feedback:pour.feedback,finished:pour.finished,round:pour.round,fill:pour.fill,target:pour.target};
  }
  function sendState(){emit({type:'activity',state:state()} as unknown as GameEvent);}
- function pose(value:'idle'|'surf'){
+ function pose(value:'idle'|'surf'|'jump'){
   // Optional at runtime for old preview harnesses; v2 Avatar provides setPose.
-  (avatar as Avatar & {setPose?:(id:'idle'|'surf')=>void}).setPose?.(value);
+  (avatar as Avatar & {setPose?:(id:'idle'|'surf'|'jump')=>void}).setPose?.(value);
  }
  function renderSurf(dt:number){
   const t=clock,positions=oceanPositions;
@@ -215,8 +279,25 @@ export function createActivityStage(camera:THREE.PerspectiveCamera,avatar:Avatar
   hoop.material=netball.lastScored?gold:coral;
   camera.position.set(netball.playerX*.12,5,14);camera.lookAt(0,-1.3,-1);
  }
+ function renderVolley(dt:number){
+  const ball=volley.ballPosition;volleyball.position.set(ball.x,ball.y,ball.z);volleyball.rotation.x+=dt*ball.vz*2;volleyball.rotation.z-=dt*ball.vx*2;
+  volleyShadow.position.set(ball.x,.022,ball.z);volleyShadow.scale.setScalar(1+ball.y*.12);
+  const landingTime=(ball.vy+Math.sqrt(ball.vy*ball.vy+2*7.2*Math.max(0,ball.y-.16)))/7.2;
+  receiveMarker.visible=volley.phase==='rally'&&ball.vz>0&&!volley.finished;
+  receiveMarker.position.x=Math.max(-3.5,Math.min(3.5,ball.x+ball.vx*landingTime));
+  receiveMarker.position.z=Math.max(2.4,Math.min(4.4,ball.z+ball.vz*landingTime));
+  receiveMarker.material=volley.swing>0?coral:gold;
+  const jump=volley.jump>0?Math.sin(volley.jump/.62*Math.PI)*.55:0;
+  avatar.group.position.set(volley.playerX,jump,3.05);avatar.group.rotation.set(0,Math.PI,0);pose(volley.jump>0?'jump':volley.charging?'surf':'idle');
+  avatar.update(dt,{moving:Math.abs(input)>.05,speed:Math.abs(input)*3,grounded:jump<.03,dancing:false,sitting:false});
+  coco.position.set(volley.npcX,0,-3.05);coco.rotation.y=0;
+  const reach=volley.phase==='rally'&&ball.vz<0&&ball.z< -1.6;
+  cocoArms.forEach((arm,i)=>{arm.rotation.x=reach?-2.2:-.2;arm.rotation.z=(i===0?1:-1)*(reach?.15:.3);});
+  cocoLegs.forEach((leg,i)=>{leg.rotation.x=Math.sin(clock*10+i*Math.PI)*Math.min(.25,Math.abs(ball.x-volley.npcX)*.15);});
+  camera.position.set(0,7.2,13);camera.lookAt(0,-2.5,-.4);
+ }
  function stop(){
-  kind=null;root.visible=false;input=0;pour.setPouring(false);netball.cancelCharge();pose('idle');
+  kind=null;root.visible=false;input=0;pour.setPouring(false);netball.cancelCharge();volley.cancelCharge();pose('idle');
   if(saved){avatar.group.position.copy(saved.avatarPosition);avatar.group.quaternion.copy(saved.avatarQuaternion);camera.position.copy(saved.cameraPosition);camera.quaternion.copy(saved.cameraQuaternion);camera.fov=saved.cameraFov;camera.updateProjectionMatrix();saved=null;}
  }
  return {
@@ -224,19 +305,24 @@ export function createActivityStage(camera:THREE.PerspectiveCamera,avatar:Avatar
   start(next:ActivityKind){
    if(kind)stop();
    saved={avatarPosition:avatar.group.position.clone(),avatarQuaternion:avatar.group.quaternion.clone(),cameraPosition:camera.position.clone(),cameraQuaternion:camera.quaternion.clone(),cameraFov:camera.fov};
-   kind=next;clock=0;eventTimer=0;input=0;surf=new SurfSession();pour=new PourSession();netball=new NetballSession();buildCourse(surf);
-   root.visible=true;surfRoot.visible=next==='surf';barRoot.visible=next==='pour';courtRoot.visible=next==='netball';
-   camera.fov=next==='surf'?57:next==='netball'?49:43;camera.updateProjectionMatrix();
-   if(next==='surf')renderSurf(0);else if(next==='netball')renderNetball(0);else renderPour(0);sendState();
+   kind=next;clock=0;eventTimer=0;input=0;surf=new SurfSession();pour=new PourSession();netball=new NetballSession();volley=new VolleySession();buildCourse(surf);
+   root.visible=true;surfRoot.visible=next==='surf';barRoot.visible=next==='pour';courtRoot.visible=next==='netball';volleyRoot.visible=next==='volley';
+   camera.fov=next==='surf'?57:next==='netball'?49:next==='volley'?51:43;camera.updateProjectionMatrix();
+   if(next==='surf')renderSurf(0);else if(next==='netball')renderNetball(0);else if(next==='volley')renderVolley(0);else renderPour(0);sendState();
   },
   stop,
   setInput(value:number){input=normalizedInput(value);},
-  setPouring(on:boolean){if(kind==='pour')pour.setPouring(on);else if(kind==='netball')netball.setCharging(on);},
+  setPouring(on:boolean){if(kind==='pour')pour.setPouring(on);else if(kind==='netball')netball.setCharging(on);else if(kind==='volley')volley.setCharging(on);},
   update(dt:number){
    if(!kind)return;dt=Math.max(0,Math.min(.1,Number.isFinite(dt)?dt:0));clock+=dt;
-   if(kind==='surf'){surf.update(dt,input);renderSurf(dt);}else if(kind==='netball'){netball.update(dt,input);renderNetball(dt);}else {pour.update(dt);renderPour(dt);}
+   if(kind==='surf'){surf.update(dt,input);renderSurf(dt);}else if(kind==='netball'){netball.update(dt,input);renderNetball(dt);}else if(kind==='volley'){volley.update(dt,input);renderVolley(dt);}else {pour.update(dt);renderPour(dt);}
    eventTimer+=dt;if(eventTimer>=.1-1e-8){eventTimer=Math.max(0,eventTimer-.1);sendState();}
   },
   active(){return kind!==null;},
+  dispose(){
+   stop();const geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>();
+   root.traverse(object=>{const item=object as THREE.Mesh;if(item.geometry)geometries.add(item.geometry);if(item.material){for(const mat of Array.isArray(item.material)?item.material:[item.material])materials.add(mat);}});
+   geometries.forEach(geometry=>geometry.dispose());materials.forEach(mat=>mat.dispose());root.removeFromParent();
+  },
  };
 }

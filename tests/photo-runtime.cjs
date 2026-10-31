@@ -73,7 +73,7 @@ try{
  React.act(()=>paired.click());React.act(()=>document.querySelector('[aria-label="Pair pose: Hug"]').click());
  assert.equal(document.querySelectorAll('select').length,0,'Aippy photo controls never depend on native select windows');
  assert.equal(poses.at(-1),'hug');assert.equal(groups.at(-1)[2],'hug');
- const cameraRegion=document.querySelector('.photo-camera-region');
+ const cameraRegion=document.querySelector('.camera-controls');
  const pointer=(type,id,x,y)=>{const event=new dom.window.MouseEvent(type,{bubbles:true,clientX:x,clientY:y});Object.defineProperty(event,'pointerId',{value:id});React.act(()=>cameraRegion.dispatchEvent(event));};
  pointer('pointerdown',1,0,0);pointer('pointermove',1,20,5);assert.deepEqual(orbits.at(-1),[20,5]);
  pointer('pointerdown',2,120,5);pointer('pointermove',2,150,5);assert.equal(zooms.at(-1),-90,'pinch uses camera wheel units');
@@ -99,7 +99,41 @@ try{
  residents.setPhotoGroup(['barbie','nikki'],'dance',null);residents.update(1/60,player,true,1);
  const nikki=residents.root.children.find(person=>person.name==='Nikki');
  for(const person of [barbie,nikki]) {assert.equal(person.children[0].visible,false);assert(person.children.slice(1).some(child=>child instanceof THREE.Group&&child.visible),'both selected residents get a detailed rig even on the low budget');}
- residents.setPhotoCompanion(null);residents.update(1/60,player,true,1);assert.equal(ken.position.x,37.6);assert.equal(barbie.position.x,-2.8);
- residents.dispose();document.createElement=originalCreate;
+ residents.setPhotoCompanion(null);residents.update(1/60,player,true,1);assert(Math.abs(ken.position.x-37.6)<.1,'leaving a photo resumes Ken near his route position');assert.equal(barbie.position.x,-2.8);
+ residents.dispose();
+ const walkers=createResidents(),observer=new THREE.Vector3(20,0,10);
+ const resident=name=>walkers.root.children.find(person=>person.name===name);
+ const initial=new Map(['Ken','Brooklyn','Nikki','Daisy','Barbie','Teresa'].map(name=>[name,resident(name).position.clone()]));
+ let kenStride=false;
+ for(let i=0;i<360;i++) {
+   walkers.update(1/60,observer,false,1);
+   const body=resident('Ken').children[0];
+   kenStride ||= body.children.some(child=>child instanceof THREE.Group&&child.position.y===.91&&Math.abs(child.rotation.x)>.1);
+ }
+ for(const name of ['Ken','Brooklyn','Nikki','Daisy']) assert(resident(name).position.distanceTo(initial.get(name))>1,`${name} follows a real pedestrian route`);
+ for(const name of ['Barbie','Teresa']) {assert.equal(resident(name).position.x,initial.get(name).x);assert.equal(resident(name).position.z,initial.get(name).z);}
+ assert(kenStride,'Ken swings his actual leg pivots while walking');
+ const current=resident('Ken').position.clone();
+ assert.equal(walkers.nearest(current.x,current.y,current.z)?.id,'ken','interaction follows current walking position');
+ assert.notEqual(walkers.nearest(initial.get('Ken').x,.04,initial.get('Ken').z)?.id,'ken','empty home is no longer an interaction target');
+ for(let i=0;i<60;i++)walkers.update(1/60,current,false,1);
+ assert(resident('Ken').position.distanceTo(current)<1e-8,'nearby residents stop to greet the player');
+ walkers.setPhotoCompanion('ken');
+ for(let i=0;i<60;i++)walkers.update(1/60,observer,false,1);
+ assert(resident('Ken').position.distanceTo(current)<1e-8,'talk invitation pauses the route after the player moves away');
+ const stage=new THREE.Vector3(2,0,3),heading=Math.PI/2;
+ walkers.setPhotoGroup(['ken'],'wave');walkers.update(1/60,stage,true,1,heading);
+ assert(Math.abs(resident('Ken').position.x-(stage.x+.05))<1e-8);
+ assert(Math.abs(resident('Ken').position.z-(stage.z-.92))<1e-8,'photo group rotates around the player heading');
+ assert(Math.abs(resident('Ken').rotation.y-(heading-.1))<1e-8,'photo resident faces the selected player orientation');
+ walkers.setPhotoGroup(['ken'],'wave','hug');walkers.update(1/60,stage,true,1,heading);
+ assert(Math.abs(resident('Ken').position.x-(stage.x-.04))<1e-8);
+ assert(Math.abs(resident('Ken').position.z-(stage.z+.62))<1e-8,'hug remains on the player’s local side at any heading');
+ assert(Math.abs(resident('Ken').rotation.y-(heading+Math.PI/2))<1e-8);
+ walkers.setPhotoCompanion(null);walkers.update(0,observer,false,1);
+ assert(resident('Ken').position.distanceTo(current)<1e-8,'photo restores the exact prior walking position');
+ for(let i=0;i<60;i++)walkers.update(1/60,observer,false,1);
+ assert(resident('Ken').position.distanceTo(current)>.5,'closing photo resumes the saved route');
+ walkers.dispose();document.createElement=originalCreate;
  console.log('PASS: compact photo/runway panels, exact poses, six scored captures, 108 runway points, initial pet companion, captured album image, offline feed, follower reward, two co-star limit, independent and paired poses, camera controls, Ken silhouette and resident cleanup');
 }finally{global.setTimeout=oldSet;global.clearTimeout=oldClear;Math.random=oldRandom;global.performance=oldPerformance;}

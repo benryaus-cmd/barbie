@@ -1,0 +1,131 @@
+{
+  "errors": [],
+  "stats": {
+    "beach": {
+      "frame": 36,
+      "calls": 476,
+      "triangles": 82856,
+      "points": 0,
+      "lines": 28
+    },
+    "flowers": {
+      "frame": 37,
+      "calls": 76,
+      "triangles": 31402,
+      "points": 0,
+      "lines": 0
+    },
+    "netball": {
+      "frame": 38,
+      "calls": 210,
+      "triangles": 49584,
+      "points": 0,
+      "lines": 28
+    },
+    "pier": {
+      "frame": 39,
+      "calls": 507,
+      "triangles": 85070,
+      "points": 0,
+      "lines": 28
+    }
+  },
+  "batches": {
+    "count": 155,
+    "maxX": 11.400001525878906,
+    "maxZ": 11.320000261068344,
+    "largest": [
+      {
+        "cell": [
+          -4,
+          1
+        ],
+        "size": [
+          11.400001525878906,
+          1.14000004529953,
+          8.400001525878906
+        ],
+        "vertices": 48
+      },
+      {
+        "cell": [
+          -5,
+          0
+        ],
+        "size": [
+          1.7000007629394531,
+          1.7750000953674316,
+          11.320000261068344
+        ],
+        "vertices": 168
+      },
+      {
+        "cell": [
+          -1,
+          -4
+        ],
+        "size": [
+          5.299999952316284,
+          1.6250000149011612,
+          11.174999237060547
+        ],
+        "vertices": 72
+      },
+      {
+        "cell": [
+          2,
+          3
+        ],
+        "size": [
+          5.19999885559082,
+          0.0599999874830246,
+          11.10000228881836
+        ],
+        "vertices": 96
+      },
+      {
+        "cell": [
+          -3,
+          1
+        ],
+        "size": [
+          10.990001678466797,
+          3.6300001126527786,
+          9
+        ],
+        "vertices": 940
+      },
+      {
+        "cell": [
+          1,
+          2
+        ],
+        "size": [
+          10.84000015258789,
+          0.08779753744602203,
+          8.80000114440918
+        ],
+        "vertices": 246
+      }
+    ],
+    "cutawayWalls": 31,
+    "wideNamedGround": [
+      {
+        "name": "ocean",
+        "cell": null
+      },
+      {
+        "name": "island",
+        "cell": null
+      },
+      {
+        "name": "district shore",
+        "cell": null
+      },
+      {
+        "name": "district shore",
+        "cell": null
+      }
+    ]
+  }
+}

@@ -14,10 +14,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.node.json --noEmit",
-    "test": "node --test tests/profile.test.mjs tests/preferences.test.mjs tests/importer.test.mjs tests/lifestyle.test.mjs tests/social.test.mjs tests/activities.test.mjs && node tests/joystick-runtime.cjs && node tests/stage-controls-runtime.cjs && node tests/photo-runtime.cjs && node tests/activity-runtime.cjs && node tests/engine-runtime.cjs && node tests/camera-runtime.cjs && node tests/pet-runtime.cjs && node tests/pet-panel-runtime.cjs && node tests/movement-runtime.cjs && node tests/world-physics-runtime.cjs",
-    "test:browser": "npm run build && node scripts/browser-check-v2.mjs",
+    "test": "node --test tests/profile.test.mjs tests/preferences.test.mjs tests/importer.test.mjs tests/lifestyle.test.mjs tests/social.test.mjs tests/activities.test.mjs && node tests/joystick-runtime.cjs && node tests/stage-controls-runtime.cjs && node tests/photo-runtime.cjs && node tests/activity-runtime.cjs && node tests/engine-runtime.cjs && node tests/camera-runtime.cjs && node tests/pet-runtime.cjs && node tests/pet-panel-runtime.cjs && node tests/movement-runtime.cjs && node tests/world-physics-runtime.cjs && node tests/camera-controls-runtime.cjs",
+    "test:browser": "npm run build && node scripts/browser-check-v4.mjs",
     "test:fashion": "node tests/fashion-browser.mjs",
-    "test:browser:v3": "node scripts/browser-check-v3.mjs"
+    "test:browser:v3": "node scripts/browser-check-v3.mjs",
+    "test:chrome-layout": "node tests/chrome-layout-browser.mjs"
   },
   "dependencies": {
     "@ai-sdk/react": "^3.0.269",

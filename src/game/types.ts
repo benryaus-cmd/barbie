@@ -21,6 +21,7 @@ export type SpotId =
   | 'slide'
   | 'petbed'
   | 'surf'
+  | 'netball'
   | 'volley'
   | 'photo'
   | 'cafe'

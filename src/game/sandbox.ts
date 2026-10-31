@@ -157,6 +157,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
   let clock = 0;
   let jumpQueued = false;
   let facing = Math.PI;
+  let presentationFacing = facing;
   let dancing = false;
   let presentation: PresentationMode = 'world';
   let mounted: VehicleId | null = null;
@@ -168,6 +169,76 @@ export function createSandbox(options: SandboxOptions): Sandbox {
   const ndc = new THREE.Vector2();
   const hitPoint = new THREE.Vector3();
   const cameraTarget = new THREE.Vector3();
+  const cutawayRaycaster = new THREE.Raycaster();
+  const cutawaySample = new THREE.Vector3();
+  const cutawayDirection = new THREE.Vector3();
+  const cutawayObjects = new Map<THREE.Object3D, boolean>();
+  const cutawayBounds = new THREE.Box3();
+  const cutawayCandidates: {mesh: THREE.Mesh; bounds: THREE.Box3}[] = [];
+  let cutawayScenery: typeof cutawayCandidates | null = null;
+
+  function indexCutawayScenery() {
+    // Scenery transforms are fixed after buildWorld. Animated station markers
+    // and ambience are excluded, so no world-wide matrix update is needed later.
+    world.root.updateMatrixWorld(true);
+    const moving = new Set(world.bobbers.map(bobber => bobber.obj));
+    const ambience = world.root.getObjectByName('Sunset, pool water & party lights');
+    if (ambience) moving.add(ambience);
+    const scenery: typeof cutawayCandidates = [];
+    world.root.traverse(object => {
+      if (!(object instanceof THREE.Mesh) || (object as THREE.InstancedMesh).isInstancedMesh) return;
+      for (let parent: THREE.Object3D | null = object; parent && parent !== world.root; parent = parent.parent) {
+        if (moving.has(parent)) return;
+      }
+      object.geometry.computeBoundingBox();
+      if (!object.geometry.boundingBox) return;
+      scenery.push({mesh: object, bounds: object.geometry.boundingBox.clone().applyMatrix4(object.matrixWorld)});
+    });
+    cutawayScenery = scenery;
+  }
+
+  function restoreCameraCutaway() {
+    cutawayObjects.forEach((visible, object) => { object.visible = visible; });
+    cutawayObjects.clear();
+  }
+
+  function updateCameraCutaway(feet: THREE.Vector3) {
+    if (!cutawayScenery) indexCutawayScenery();
+    cutawayBounds.setFromPoints([feet, options.camera.position]);
+    cutawayBounds.max.y = Math.max(cutawayBounds.max.y, feet.y + 2.2);
+    cutawayBounds.expandByScalar(.7);
+    cutawayCandidates.length = 0;
+    for (const entry of cutawayScenery!) {
+      if (entry.mesh.visible && cutawayBounds.intersectsBox(entry.bounds)) cutawayCandidates.push(entry);
+    }
+    // Sample the silhouette as well as the center. Thin mirrors and decorative
+    // panels have no physics collider but must not cover the full-body preview.
+    for (const side of [-.4, 0, .4]) {
+      for (const height of [.12, .9, 1.85]) {
+        cutawaySample.set(feet.x + Math.cos(presentationFacing) * side, feet.y + height, feet.z - Math.sin(presentationFacing) * side);
+        cutawayDirection.copy(cutawaySample).sub(options.camera.position);
+        const distance = cutawayDirection.length();
+        cutawayDirection.divideScalar(distance || 1);
+        cutawayRaycaster.set(options.camera.position, cutawayDirection);
+        cutawayRaycaster.far = Math.max(0, distance - .08);
+        for (const {mesh, bounds} of cutawayCandidates) {
+          if (!mesh.visible || !cutawayRaycaster.ray.intersectsBox(bounds)) continue;
+          let occludes = cutawayRaycaster.intersectObject(mesh, false).length > 0;
+          if (!occludes && bounds.containsPoint(options.camera.position)) {
+            // Front-sided triangles cannot be hit from inside a closed wall.
+            // The reverse segment finds its entry face without changing a
+            // material shared with unrelated scenery.
+            cutawayRaycaster.set(cutawaySample, cutawayDirection.clone().negate());
+            occludes = cutawayRaycaster.intersectObject(mesh, false).length > 0;
+            cutawayRaycaster.set(options.camera.position, cutawayDirection);
+          }
+          if (!occludes) continue;
+          cutawayObjects.set(mesh, mesh.visible);
+          mesh.visible = false;
+        }
+      }
+    }
+  }
 
   function effectBurst(x: number, y: number, z: number, count: number) {
     if (options.tuning.effects) particles.burst(x, y, z, count);
@@ -218,6 +289,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
   }
 
   function update(step: number) {
+    restoreCameraCutaway();
     if (activityRunning) {activity.update(step);return;}
     const hasInput = Math.hypot(move.x, move.y) > .12 && presentation === 'world' && !dancing;
     const direction=steering.direction(hasInput?move.x:0,hasInput?move.y:0,cameraRig.getYaw());
@@ -239,7 +311,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
 
     const seatHeight = mounted ? vehicles[mounted].seatY : 0;
     avatar.group.position.set(position.x, feetY + seatHeight + 0.02, position.z);
-    avatar.group.rotation.y = presentation === 'world' ? facing : presentation==='photo'&&photoPair==='hug' ? -Math.PI/2 : 0;
+    avatar.group.rotation.y = presentation === 'world' ? facing : presentationFacing + (presentation==='photo'&&photoPair==='hug' ? -Math.PI/2 : 0);
     avatar.update(step, {
       moving,
       speed: travel,
@@ -288,15 +360,21 @@ export function createSandbox(options: SandboxOptions): Sandbox {
     }
 
     petTarget.set(position.x, feetY, position.z);
-    residents.update(step, petTarget, presentation === 'photo', options.tuning.effects && options.tuning.quality !== 'low' ? 3 : 1);
-    pet.update(step, petTarget, facing, presentation === 'pet' || presentation === 'photo', presentation === 'photo' && (photoCompanion === 'pet' || photoGroup.includes('pet')), photoPair ? .92 : -.82);
+    residents.update(step, petTarget, presentation === 'photo', options.tuning.effects && options.tuning.quality !== 'low' ? 3 : 1, presentationFacing);
+    pet.update(step, petTarget, presentation === 'world' ? facing : presentationFacing, presentation === 'pet' || presentation === 'photo', presentation === 'photo' && (photoCompanion === 'pet' || photoGroup.includes('pet')), photoPair ? .92 : -.82);
     pet.root.visible = presentation !== 'photo' || (photoCompanion === 'pet' || photoGroup.includes('pet'));
-    cameraTarget.set(position.x + (presentation === 'photo' && photoGroup.filter(id=>id!=='pet').length === 1 ? .42 : presentation === 'pet' || presentation === 'photo' && (photoCompanion === 'pet' || photoGroup.includes('pet')) ? -.28 : 0), feetY, position.z);
+    const groupOffset = presentation === 'photo' && photoGroup.filter(id=>id!=='pet').length === 1 ? .42 : presentation === 'pet' || presentation === 'photo' && (photoCompanion === 'pet' || photoGroup.includes('pet')) ? -.28 : 0;
+    cameraTarget.set(position.x + Math.cos(presentationFacing) * groupOffset, feetY, position.z - Math.sin(presentationFacing) * groupOffset);
     cameraRig.setWalkHeading(moving ? Math.atan2(dirX, dirZ) : null, travel, direction.follow);
     const insideDreamhouse =
       position.x > -9.5 && position.x < 9.5 &&
       position.z > -52 && position.z < -39;
-    cameraRig.update(step, cameraTarget, mounted !== null, insideDreamhouse);
+    const cutaway = presentation === 'style' || presentation === 'photo';
+    world.setMarkersVisible?.(!cutaway);
+    tokens.group.visible = !cutaway;
+    cards.group.visible = !cutaway;
+    cameraRig.update(step, cameraTarget, mounted !== null, insideDreamhouse, cutaway);
+    if (cutaway) updateCameraCutaway(petTarget);
     particles.points.visible = options.tuning.effects && options.tuning.quality !== 'low';
     particles.update(step);
     world.update(step, options.tuning.effects && options.tuning.quality !== 'low');
@@ -349,6 +427,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
 
   function setActivity(kind: ActivityKind | null) {
     if (kind === activityKind) return;
+    restoreCameraCutaway();
     activityKind = kind;
     move.x = move.y = 0;
     steering.reset();
@@ -394,6 +473,8 @@ export function createSandbox(options: SandboxOptions): Sandbox {
       setPresentation(mode) {
         if (activityRunning && mode === 'world') return;
         if (activityRunning) setActivity(null);
+        restoreCameraCutaway();
+        if (presentation === 'world' && mode !== 'world') presentationFacing = facing;
         presentation = mode;
         if (mode === 'world') {avatar.setPose('idle');photoCompanion = null;photoGroup=[];photoPair=null;residents.setPhotoCompanion(null);}
 
@@ -401,7 +482,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
         move.y = 0;
         jumpQueued = false;
         if (mode !== 'world' && mounted) dismount();
-        cameraRig.setPresentation(mode);
+        cameraRig.setPresentation(mode, presentationFacing);
       },
       setMove(x, y) {
         move.x = Number.isFinite(x) ? THREE.MathUtils.clamp(x, -1, 1) : 0;
@@ -454,6 +535,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
         }
       },
       reset() {
+        restoreCameraCutaway();
         if(activityRunning) setActivity(null);
         pet.reset();
         residents.setPhotoCompanion(null);
@@ -472,7 +554,8 @@ export function createSandbox(options: SandboxOptions): Sandbox {
       },
     },
     dispose() {
-      if(activityRunning)activity.stop();
+      restoreCameraCutaway();
+      activity.dispose();
       residents.dispose();
       contactTexture.dispose();
       cards.dispose();

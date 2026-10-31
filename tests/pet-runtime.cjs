@@ -21,5 +21,10 @@ pet.setAction('frisbee');step(7);assert(dog.position.distanceTo(home)<.1,'fetch 
 step(12,true);assert(dog.position.distanceTo(player)<2,'pet joins a requested photo');
 step(15);assert(dog.position.distanceTo(home)<.01,'photo restores previous bed mode');
 pet.setAction('follow');step(12,true);step(2);assert(dog.position.distanceTo(player)<2,'photo preserves previous follow mode');
+const heading=Math.PI/2,offset=1.32;
+for(let i=0;i<720;i++)pet.update(1/60,player,heading,true,true,offset);
+assert(Math.abs(dog.position.x-(player.x+.18))<.002,'staged pet offset rotates with player heading');
+assert(Math.abs(dog.position.z-(player.z-offset))<.002,'staged pet honors its optional co-star offset');
+assert(Math.abs(dog.rotation.y-heading)<.002,'staged pet faces player presentation heading');
 pet.reset();step(1);assert(dog.position.distanceTo(home)<.01,'reset restores sleeping default');
 console.log('PASS sleeping bed default, breathing, whistle, following, real return home, fetch and temporary photos');
