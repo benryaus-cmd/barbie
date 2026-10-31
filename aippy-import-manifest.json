@@ -1,510 +1,528 @@
 {
   "schemaVersion": 1,
   "repository": "benryaus-cmd/barbie",
-  "sourceCommit": "3cf105aa3ac67e82c6ee328fdca46450151d9745",
+  "sourceCommit": "be880253a096e742681afc264eb3ceb90514277d",
   "files": [
     {
       "destination": "public/robots.txt",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/public/robots.txt",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/public/robots.txt",
       "size": 160,
       "sha256": "a3d27b3ca5ce32341fa9f96f01169b521b1657c05d1860c45d1e53a6258e9e8b"
     },
     {
       "destination": "src/App.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/App.tsx",
-      "size": 20561,
-      "sha256": "70f0ffe9e6d4a4905a7f0e80a7e67808dfdfeab69910d30fca1ecb757c4bdac5"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/App.tsx",
+      "size": 20517,
+      "sha256": "42525a4c641f9dd02d820c69f4e1d3e44fe54af4165fe69b3909d113d40b44b5"
     },
     {
       "destination": "src/collection.css",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/collection.css",
-      "size": 3854,
-      "sha256": "e5c0c1961ee92279fb367e78fc10172af8ac7be0af553dbbce4fd22e15a845db"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/collection.css",
+      "size": 3632,
+      "sha256": "9cfe7fb467d72cc31f8dffa1e4cb4d04a461bb7406d9008d890f04a55ca4d04a"
     },
     {
       "destination": "src/components/GameView.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/components/GameView.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/components/GameView.tsx",
       "size": 3613,
       "sha256": "a4e0954060b27601a75223e7dbf3a60d4421c6f503dccf60d2860d8a0ac17e1d"
     },
     {
       "destination": "src/components/SettingsModal.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/components/SettingsModal.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/components/SettingsModal.tsx",
       "size": 9258,
       "sha256": "2f38e5d0993078ae2fc46843e2a534184d3ecf007a462d6683ae3669b06d0589"
     },
     {
       "destination": "src/components/settings.css",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/components/settings.css",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/components/settings.css",
       "size": 3623,
       "sha256": "fc3c7789d1255208a5fc2a14b5e16889f1a0f5765fd5d6cdeccadab446944e6c"
     },
     {
       "destination": "src/config/tweaksConfig.json",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/config/tweaksConfig.json",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/config/tweaksConfig.json",
       "size": 862,
       "sha256": "8ead84b7428e827efe0fd1d3630985791bcd9f8350557d99b43d7225b288bdd9"
     },
     {
       "destination": "src/core/loop.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/core/loop.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/core/loop.ts",
       "size": 2416,
       "sha256": "5381b34e78842376db017b77f0f26f111bdabf6f1ce0e13a75926aaa53ecaea8"
     },
     {
       "destination": "src/core/pointer.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/core/pointer.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/core/pointer.ts",
       "size": 2413,
       "sha256": "81fb49488ddb15a22ad4cd6186725929fc3f7a88d1b799c2a3dc6b4f18f78076"
     },
     {
       "destination": "src/core/release-root.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/core/release-root.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/core/release-root.ts",
       "size": 981,
       "sha256": "2d116d5f676affa2ae42deda162f35f1f75bc7f42748a5d06233d832f7fe185d"
     },
     {
       "destination": "src/core/renderer.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/core/renderer.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/core/renderer.ts",
       "size": 2855,
       "sha256": "10c3dafc43b3e62e9ebdee56b989fe040da44c2e1b648f022ea9a63590e1e73d"
     },
     {
       "destination": "src/core/scope.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/core/scope.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/core/scope.ts",
       "size": 1857,
       "sha256": "d0fd7774e266471678e8dc2cbe3cebc7e9b7681944da00d0589c999f7a213a0c"
     },
     {
       "destination": "src/game/activity-model.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/activity-model.ts",
-      "size": 10257,
-      "sha256": "3dd8896c5db10da4d678b381c6dbfb2e4e1f44989bd47c7a52d83962f92163cb"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/activity-model.ts",
+      "size": 15132,
+      "sha256": "78fe7286f9d7c4cab25ed13001e26ec944f8023f451c981dbef69dad218a5aaa"
     },
     {
       "destination": "src/game/activity-stage.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/activity-stage.ts",
-      "size": 20434,
-      "sha256": "c952b2e98308d43faaac9a87700fdcd442ab76d917c7100d5408b15820c94e5e"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/activity-stage.ts",
+      "size": 28749,
+      "sha256": "44cd7185650206e4e3c590164354d80857a2ee33e660ec16cc478aa5ec111422"
     },
     {
       "destination": "src/game/avatar.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/avatar.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/avatar.ts",
       "size": 38958,
       "sha256": "8da26969f7a96f5e077296fe2e69854d470a7fc63cbb0b6db2e59c01ff010168"
     },
     {
       "destination": "src/game/builder.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/builder.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/builder.ts",
       "size": 2531,
       "sha256": "d33415ab6966f5e74e1dffcabcc724bc0aef7661581394ac57e9aa64124eca19"
     },
     {
       "destination": "src/game/camera.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/camera.ts",
-      "size": 9570,
-      "sha256": "46fac42f135550a29cb777a33a53acce9c3972099c85f413b6d9c34e98097f45"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/camera.ts",
+      "size": 10382,
+      "sha256": "930c2bd57c65dc06fd06bce20e6929a000b6c739a8949e01874377774a89e1ab"
     },
     {
       "destination": "src/game/card-collection.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/card-collection.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/card-collection.ts",
       "size": 2930,
       "sha256": "f06a3f3d5a9aebf17a2558dc398190380d99016c033493953c8469794419aa19"
     },
     {
       "destination": "src/game/card-pickups.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/card-pickups.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/card-pickups.ts",
       "size": 6950,
       "sha256": "88f4b3f0a3ceb35e3f97d0752077edd1df65ab5f15574d41ac3e71842e0ec481"
     },
     {
       "destination": "src/game/create-game.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/create-game.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/create-game.ts",
       "size": 14522,
       "sha256": "77ddd093509e20b81712720641edd2cfc332c0669a915ad06eafb32ae6a66d5d"
     },
     {
       "destination": "src/game/fashion.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/fashion.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/fashion.ts",
       "size": 5203,
       "sha256": "82af0b8762ed06dc5448695710971372efcb35f3a3637ba2222a1a8aeda1b3fa"
     },
     {
       "destination": "src/game/lifestyle-save.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/lifestyle-save.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/lifestyle-save.ts",
       "size": 5281,
       "sha256": "3125983a2a0d20536cb56c0b6c5ffea2c37ed5e1a6705a6b2e317694e8c1174e"
     },
     {
       "destination": "src/game/lifestyle-types.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/lifestyle-types.ts",
-      "size": 1125,
-      "sha256": "8d7c7c3b3305fcccce4ddfda46f228b180b3da54ac7ac97b73c9f81ba9016dba"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/lifestyle-types.ts",
+      "size": 1179,
+      "sha256": "e0ce2586d0f80f0a33bc5c23c8cb1d4776b68667ede22cd56d508c58de8c5ee9"
     },
     {
       "destination": "src/game/movement.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/movement.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/movement.ts",
       "size": 782,
       "sha256": "9506da5de31d02bd73bd5a2191215423d31e9877925706e85a00486768bf79bb"
     },
     {
       "destination": "src/game/palette.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/palette.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/palette.ts",
       "size": 1507,
       "sha256": "b2a5bfe96c8590f9c408e929cace9e42d67a8ca62e930f00d12cef6bc55f9820"
     },
     {
       "destination": "src/game/particles.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/particles.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/particles.ts",
       "size": 3859,
       "sha256": "38959f5af7fae196b768d9ac53d8385f818c198a1769e041641332ecb680b1b9"
     },
     {
       "destination": "src/game/pet-companion.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/pet-companion.ts",
-      "size": 7026,
-      "sha256": "c5d1532ec00793efd0c6c230ae8ded76119c72a8bc5c7e282950d99b4542e204"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/pet-companion.ts",
+      "size": 7199,
+      "sha256": "f3fecac31201bb4dd1fb08be560fcfd6e34567f37960d2916fbf8afdb5297a7b"
     },
     {
       "destination": "src/game/physics.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/physics.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/physics.ts",
       "size": 4672,
       "sha256": "afc249ade46c0a22cdbec887692bd478e463b77e6457e0a2fe6d2311784f3d2a"
     },
     {
       "destination": "src/game/preferences.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/preferences.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/preferences.ts",
       "size": 1272,
       "sha256": "98dbfb66e49b18db8fc8adb470952d401dcb95bc8e34e390cc177d07575870d3"
     },
     {
       "destination": "src/game/profile.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/profile.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/profile.ts",
       "size": 1929,
       "sha256": "eef86fb8790a9a3b7598d7d06fd8fe849b4e0d39e54bb58c5f4820935610b9c1"
     },
     {
       "destination": "src/game/resident-data.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/resident-data.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/resident-data.ts",
       "size": 1435,
       "sha256": "5da61513835557b7fdfe081555cdaaf75d320c9bf0b9f4b8d87f09a0319e974b"
     },
     {
       "destination": "src/game/residents.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/residents.ts",
-      "size": 18620,
-      "sha256": "939b68425509c18e8fa41146ae5eb58489452808e843253584e2d710a64b7253"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/residents.ts",
+      "size": 21541,
+      "sha256": "1707ce5115ee2dae5f7036515c02ef4b180ef7178fe70b2dd192b82aee551deb"
     },
     {
       "destination": "src/game/sandbox.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/sandbox.ts",
-      "size": 17127,
-      "sha256": "26a651a81c068c28917047baa97cd3b77dcbdca7e5b2df41ada52a43ecc6d467"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/sandbox.ts",
+      "size": 21486,
+      "sha256": "227829eedb134e5eb7e273da0018033a875c4e838e732d0d50197ca4e317f2fa"
     },
     {
       "destination": "src/game/social.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/social.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/social.ts",
       "size": 11189,
       "sha256": "4ba1b72275089dad643bfaffe89689a44827199883b2ecce4b44f19128b2c2b4"
     },
     {
       "destination": "src/game/spots.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/spots.ts",
-      "size": 4743,
-      "sha256": "eaa8c3b16de259334c94da0424903795ebb7132fd846a8c5e505fd5cd788cf2a"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/spots.ts",
+      "size": 4911,
+      "sha256": "1d9b4152c22f808f229f884d600ea13e5153d3cc365f397b209b4af17ea1f36e"
     },
     {
       "destination": "src/game/tokens.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/tokens.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/tokens.ts",
       "size": 2776,
       "sha256": "e3a714ca11e9acaf811cc93bfc431428fa45281a8eea145abce7e7b98f978527"
     },
     {
       "destination": "src/game/types.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/types.ts",
-      "size": 1610,
-      "sha256": "106ec7017bbc9b59ed6b6b9bdc5897e5651472f98b302c73ce13c066a36feb0e"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/types.ts",
+      "size": 1624,
+      "sha256": "d476ce8c7907bc8e99125ca8a0ab4ef59c986304c5eaadbe8d01350c85f6e34d"
     },
     {
       "destination": "src/game/vehicles.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/vehicles.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/vehicles.ts",
       "size": 5758,
       "sha256": "de0fbb3aaedcc6ccfb1b9e9b956bf40af7d3817e3c60d1b853bd2bd6dc00bd08"
     },
     {
       "destination": "src/game/world/ambience.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/ambience.ts",
-      "size": 4572,
-      "sha256": "2a72a716401a4860a5a488aee6951914dfcdd854564fa0984034b037942824fc"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/ambience.ts",
+      "size": 5543,
+      "sha256": "a16af80a2e037ee4528be9a6691a2bb8989bbb8f9dd3f8abb55a8812da992e35"
     },
     {
       "destination": "src/game/world/avenue.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/avenue.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/avenue.ts",
       "size": 3647,
       "sha256": "6fa73f2a567d4082b563abb4c30de142d1228ce9c56cca6955da0b9cd9308927"
     },
     {
       "destination": "src/game/world/beach.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/beach.ts",
-      "size": 4093,
-      "sha256": "5f3a585842a9b14aa49c317a10595d87471354763cf18b8dd686d58d65da547a"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/beach.ts",
+      "size": 3826,
+      "sha256": "401571e68c0b157dbb972028a2260ae574e8409bcb96846bf15fcbd8618154b2"
     },
     {
       "destination": "src/game/world/dreamhouse.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/dreamhouse.ts",
-      "size": 14108,
-      "sha256": "f867e19c7a13048452847233dcdc7aefda452cbe72cfcc1bf6a64e6cb924737b"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/dreamhouse.ts",
+      "size": 15111,
+      "sha256": "6c8e00c96cd389b10b70452b168f1e40b78138e8a3b566070bc27a10ba9f756d"
     },
     {
       "destination": "src/game/world/ground.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/ground.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/ground.ts",
       "size": 324,
       "sha256": "4c41d8c66f7909224f1f13e6beb645ece389ff803362e967094529bbee147342"
     },
     {
       "destination": "src/game/world/index.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/index.ts",
-      "size": 3853,
-      "sha256": "2fba4ba052cc1fb6bb018f96c4eca6713baa848d08bae73847bfaf4090a04e64"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/index.ts",
+      "size": 6306,
+      "sha256": "a9622b660e21a035c3524aad3b30e08ed65f42bf5b488a426b8da33902866afa"
     },
     {
       "destination": "src/game/world/materials.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/materials.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/materials.ts",
       "size": 2675,
       "sha256": "1091dd40c7c904120b298258e043b76d448c637bd4b29a5efbc4c0183b64eba9"
     },
     {
       "destination": "src/game/world/props.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/props.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/props.ts",
       "size": 4356,
       "sha256": "b52cc110d213c28bb1f8e788205de3c3ab80dac0d14dde639928babc1d61b9c8"
     },
     {
       "destination": "src/game/world/salon.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/salon.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/salon.ts",
       "size": 3323,
       "sha256": "aaa78fe19afd95caa01b20296bc540c89308af354ec25994945ad6d251b9fc23"
     },
     {
       "destination": "src/game/world/stations.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/stations.ts",
-      "size": 9076,
-      "sha256": "592e21344ec3abf601d3d8afa16d2b22a410a0f9bc32c9ce96a01ee801c92a0a"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/stations.ts",
+      "size": 10456,
+      "sha256": "77943246521de39cd5c4150bea285a6f120e6b891134fefb70396f139266bd72"
     },
     {
       "destination": "src/game/world/terrain.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/game/world/terrain.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/terrain.ts",
       "size": 4681,
       "sha256": "a67dce2c079c04339fba9e9fcf922083ed6dd4e29eb72e5a7c803cafcf6a20a4"
     },
     {
+      "destination": "src/game/world/vistas.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/game/world/vistas.ts",
+      "size": 8038,
+      "sha256": "41de07ec05d9c99a728711c2f84821453ee75c587a168bbd3c58c96fd3131c09"
+    },
+    {
       "destination": "src/hooks/useSfx.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/hooks/useSfx.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/hooks/useSfx.ts",
       "size": 3522,
       "sha256": "476a9457c4dcc323e39906f1148359fd918b8f7903ff7f606c71f6ad9611fe22"
     },
     {
       "destination": "src/index.css",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/index.css",
-      "size": 26960,
-      "sha256": "189b179c487c88635313413d1895109c7edfce32aa43605c9704ef2cd722f523"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/index.css",
+      "size": 27028,
+      "sha256": "c6e411d298ba0b686ca026eb5c6f6525f7312a7b5196aaf78a9c82d4ba60f501"
     },
     {
       "destination": "src/tailwind.config.aippy.json",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/tailwind.config.aippy.json",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/tailwind.config.aippy.json",
       "size": 65,
       "sha256": "6d9fb10a9b9a9083173ff067a00392812ed39485f238d043a67cfdf6b3a5fa9d"
     },
     {
       "destination": "src/ui/ActionButtons.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/ActionButtons.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/ActionButtons.tsx",
       "size": 1336,
       "sha256": "33a9854390637304159a481c89606e5705b814d7b421d290baa92ae2f1b563bb"
     },
     {
       "destination": "src/ui/ActivityPanel.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/ActivityPanel.tsx",
-      "size": 8048,
-      "sha256": "165bc80cc377802c4d3e3280f9e391f43412ddd3726104ebe60d80df09ad9403"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/ActivityPanel.tsx",
+      "size": 8714,
+      "sha256": "47aadc135f7855fb61a1c23f43d0c5d4d5e309632770ea210b9aeeda0cdb9201"
     },
     {
       "destination": "src/ui/BeautyStudio.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/BeautyStudio.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/BeautyStudio.tsx",
       "size": 3702,
       "sha256": "8d403afffc1a16134a08c7d2ba969ac4b64f2e6ce0c343acab8b7bcde5bbfc21"
     },
     {
+      "destination": "src/ui/CameraControls.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/CameraControls.tsx",
+      "size": 4403,
+      "sha256": "77a8a2213c1b09aff318dae48555d6965105fa6f73291b1ac5dfb63898788162"
+    },
+    {
       "destination": "src/ui/CardAlbum.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/CardAlbum.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/CardAlbum.tsx",
       "size": 5008,
       "sha256": "328e77dd623e49445cf7535462f7a0e419da57faf3e3d6f2eaad5e9ab643ba72"
     },
     {
       "destination": "src/ui/Celebration.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/Celebration.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/Celebration.tsx",
       "size": 1443,
       "sha256": "fd0cac728e8d98d3bdbec0c8c531216331aed89e2656f24bd2f863177869530d"
     },
     {
       "destination": "src/ui/DanceTilesGame.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/DanceTilesGame.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/DanceTilesGame.tsx",
       "size": 3654,
       "sha256": "89b6affb2dfea8ee33a30064e7be36b005610e6d32ec79f12d1cf6e73c199a6b"
     },
     {
       "destination": "src/ui/DiscoveryCard.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/DiscoveryCard.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/DiscoveryCard.tsx",
       "size": 1173,
       "sha256": "c61c88d90687ca70fe3cd0616c664f36076507fe05618bb81c8e0b9c645057a2"
     },
     {
       "destination": "src/ui/DjGame.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/DjGame.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/DjGame.tsx",
       "size": 3017,
       "sha256": "e154b63057384910e9704155c26c95a4a6c4e49567afc017f694fa2cd4b937b9"
     },
     {
       "destination": "src/ui/Hud.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/Hud.tsx",
-      "size": 1897,
-      "sha256": "29ff35d75080fea4aff43e7dde2238b2b308bc31078fa9ac43725f6f25a27397"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/Hud.tsx",
+      "size": 2635,
+      "sha256": "167bb856c4f5e4970155fd65aab9215f0e5dde971bd6b0be35fd43a7a0c32d88"
     },
     {
       "destination": "src/ui/Joystick.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/Joystick.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/Joystick.tsx",
       "size": 3512,
       "sha256": "11d0fa944d737741b72e4dfd64efe398ec0e8946f2aa4783f1152b27aab38ed7"
     },
     {
       "destination": "src/ui/KitchenGame.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/KitchenGame.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/KitchenGame.tsx",
       "size": 4807,
       "sha256": "1679d9d3f0687eadc504f848ad38cb0dca97c8770d5b9fb1347e393ddc8abdb7"
     },
     {
       "destination": "src/ui/LeaderboardSheet.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/LeaderboardSheet.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/LeaderboardSheet.tsx",
       "size": 2294,
       "sha256": "42eebc9fee07e5aa183d687458c8604512d82049bc2f3933f0ce4611d9d7a45c"
     },
     {
       "destination": "src/ui/LifestylePanels.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/LifestylePanels.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/LifestylePanels.tsx",
       "size": 7901,
       "sha256": "bd652761011e5692d759061273cc623fe37b5935b61f573d1d72a42b059674ea"
     },
     {
       "destination": "src/ui/MoodPanel.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/MoodPanel.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/MoodPanel.tsx",
       "size": 2512,
       "sha256": "3f3518803229a60573eb370d018a40356a1d24ea985364308de5be39dd195a6c"
     },
     {
       "destination": "src/ui/Panel.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/Panel.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/Panel.tsx",
       "size": 2872,
       "sha256": "c5819ab1ee939a5daf0d3fcb0d0a0a8be8c4a246139ff3acb4a73193d8a67151"
     },
     {
       "destination": "src/ui/PetGame.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/PetGame.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/PetGame.tsx",
       "size": 4085,
       "sha256": "748a8c12e9ab874876a6e8d578b07ea131fd2b42eae79607c25cc7b95d6e77b0"
     },
     {
       "destination": "src/ui/PhotoGame.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/PhotoGame.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/PhotoGame.tsx",
       "size": 4042,
       "sha256": "1473c5d3af1a8d6d662741e87afe26d15d188ffc6f52d31d784313f2fca63a5d"
     },
     {
       "destination": "src/ui/PhotoStudio.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/PhotoStudio.tsx",
-      "size": 17577,
-      "sha256": "64202db8c4dab0cfa2272e4f963108c3980f082bece3bb978a81893d7f4d7bd1"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/PhotoStudio.tsx",
+      "size": 15577,
+      "sha256": "45d09f94ecf358408545e1f0ccf1b606fbc4f4fbebe51f4d4e9800472faba79c"
     },
     {
       "destination": "src/ui/RunwayGame.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/RunwayGame.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/RunwayGame.tsx",
       "size": 3437,
       "sha256": "285b2ca8f42d98edcbd45547a39193bb13dbecccf0bca5ab9f3b6f792182ef2a"
     },
     {
       "destination": "src/ui/Sheets.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/Sheets.tsx",
-      "size": 5195,
-      "sha256": "f89c079585a6f32292eaf31fc99bea46c80488ed71ced97382f31fa538c507b6"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/Sheets.tsx",
+      "size": 5204,
+      "sha256": "a01d5cb1c2106fb47033103f21b0bcaf10690193dce0b2bcc98a75a939c20656"
     },
     {
       "destination": "src/ui/SlideGame.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/SlideGame.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/SlideGame.tsx",
       "size": 5819,
       "sha256": "3bea08b861715739ba1d3fb8dd6ad52fa7d3f596d18ec38ec5339a1a058c395a"
     },
     {
       "destination": "src/ui/StartScreen.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/StartScreen.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/StartScreen.tsx",
       "size": 3269,
       "sha256": "32815b5318804dfd24dd6176cd74b7ad591564b5952c8006f9b481eb217c1fc1"
     },
     {
       "destination": "src/ui/SurfGame.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/SurfGame.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/SurfGame.tsx",
       "size": 4578,
       "sha256": "533aa9e6d532aee7245110400ca410813be1ca8c20f48f9b052ecc7c7ede1e53"
     },
     {
       "destination": "src/ui/VolleyGame.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/VolleyGame.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/VolleyGame.tsx",
       "size": 4710,
       "sha256": "283301ef3fed97093d0354e4c0d5b16ee59394d791b5863ea501f36128a1c33a"
     },
     {
       "destination": "src/ui/WardrobeSheet.tsx",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/WardrobeSheet.tsx",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/WardrobeSheet.tsx",
       "size": 8228,
       "sha256": "87ca9e5dba2f525c04742fc6334e38b4c9700bb086c9e6169557a98c7ff0be4a"
     },
     {
       "destination": "src/ui/activities.css",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/activities.css",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/activities.css",
       "size": 4138,
       "sha256": "f445b9ee7df36807fdad03f9b5c67601244f3e29677506e171e8b44abecdcbb1"
     },
     {
       "destination": "src/ui/beauty.css",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/beauty.css",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/beauty.css",
       "size": 3977,
       "sha256": "f469e8f80dd5feee9295217f0b2feb88402f01b388a1254d187e5b862b84eb7a"
     },
     {
+      "destination": "src/ui/camera-controls.css",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/camera-controls.css",
+      "size": 755,
+      "sha256": "b096006d4cece142b87315552fc0bdba298339282d5cfe9cf5f9b9d8bd2fc693"
+    },
+    {
       "destination": "src/ui/fashion.css",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/fashion.css",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/fashion.css",
       "size": 4883,
       "sha256": "f5cddb2b5cd20480783b16c2270831c630b7224f7d67053a26a31607f203375e"
     },
     {
       "destination": "src/ui/lifestyle.css",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/lifestyle.css",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/lifestyle.css",
       "size": 3381,
       "sha256": "2cb2d293a1309080e3ae3f02d5c993bb0e67bf127920edaedf449936da6e0d96"
     },
     {
       "destination": "src/ui/social.css",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/ui/social.css",
-      "size": 12747,
-      "sha256": "381479f33e40a772c6a076c2504dcbf751f12ec3d6a78338140afdeb730f9742"
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/ui/social.css",
+      "size": 11827,
+      "sha256": "bedd276f842a634c9a2722d058645eb094f907e7f9fbff473c886ee7e559ecc1"
     },
     {
       "destination": "src/vite-env.d.ts",
-      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/vite-env.d.ts",
+      "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/vite-env.d.ts",
       "size": 214,
       "sha256": "ab26036a183d2a6c7447b58e3791a5c570b92ad39aac431de7398ba41e969def"
     }
   ],
   "assetConfigUpdate": {
     "destination": "src/config/assets.json",
-    "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/config/assets.json",
+    "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/config/assets.json",
     "size": 1133,
     "sha256": "7265d02a0794caa70a8c0cc736a0d89509fec2feffdabe088213ab2f887e6e62",
     "strategy": "merge-json-object",
@@ -523,7 +541,7 @@
   },
   "assetConfigWrapper": {
     "destination": "src/config/assets.ts",
-    "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/3cf105aa3ac67e82c6ee328fdca46450151d9745/src/config/assets.ts",
+    "url": "https://raw.githubusercontent.com/benryaus-cmd/barbie/be880253a096e742681afc264eb3ceb90514277d/src/config/assets.ts",
     "size": 377,
     "sha256": "5c9fb076a7e24b56ca78718f4699083e12e19e6ce2ec504dca5909b51cb28a23",
     "strategy": "create-if-missing"
