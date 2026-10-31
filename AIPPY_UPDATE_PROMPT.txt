@@ -1,0 +1,70 @@
+UPDATE THIS CURRENT AIPPY PROJECT IN PLACE — BARBIE: ULTIMATE DREAMLAND
+
+Use Node at Vite BUILD TIME to apply the exact files in this verified manifest directly to their matching project paths. This is a specification for local source/config changes and the normal Vite build. The Node plugin performs the HTTP/filesystem work during that build. Do not ask the conversational model to browse, clone or manually transcribe remote game files.
+
+Manifest URL:
+https://raw.githubusercontent.com/benryaus-cmd/barbie/abb44e0291cfdc8f95c6617e3854cd1c2ffd0928/aippy-import-manifest.json
+
+Expected manifest SHA-256:
+2d1f2e13734197d143e47674fff1ca634eaaeff97a4e8ee4da43db397a732a0b
+
+Expected game source commit:
+6a607ea96f13e0e6ede11954cb6cc45552aa6e09
+
+1. INSPECT AND REUSE THE HOST
+
+Inspect vite.config.ts, package.json, tsconfig.node.json, eslint.config.js, any existing vite-plugin-github-import.ts/github-import.config.json, and the existing hidden project viewer. There must be ONE importer, ONE live src/ tree and ONE existing React root. Reuse and modify the existing importer if present. If absent, create vite-plugin-github-import.ts using the complete implementation supplied below BEFORE adding its Vite import. Do not depend on a nonexistent plugin arriving later.
+
+Preserve all existing Vite/Aippy plugins, aliases, server settings, index.html, main.tsx, hidden viewer/ZIP exporter, and unrelated files. Never create upstream/, importedGame/, an iframe, an adapter or a second game tree. Root config/dependency files are not part of the source manifest; make only the targeted local integration edits described here.
+
+2. ACTIVATE THIS SINGLE IMMUTABLE REQUEST
+
+Set github-import.config.json to this (keep unrelated existing fields only if needed):
+
+```json
+{
+  "enabled": true,
+  "mode": "manifest",
+  "repository": "benryaus-cmd/barbie",
+  "branch": "main",
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/abb44e0291cfdc8f95c6617e3854cd1c2ffd0928/aippy-import-manifest.json",
+  "manifestSha256": "2d1f2e13734197d143e47674fff1ca634eaaeff97a4e8ee4da43db397a732a0b",
+  "sourceCommit": "6a607ea96f13e0e6ede11954cb6cc45552aa6e09",
+  "requestId": "barbie-6a607ea-manifest-v1"
+}
+```
+
+Manifest mode MUST NOT resolve current main, use a recursive Git-tree selector, insist on importing src/main.tsx, or protect every file in src/components/. This manifest deliberately updates src/components/GameView.tsx, src/components/SettingsModal.tsx and src/components/settings.css. The updated SettingsModal preserves the original secret Settings-title tap/password flow while adding real quality, audio, accessibility and About controls. The viewer components, src/dev/**, src/types/** and src/main.tsx remain protected.
+
+The manifest contains 60 game files. Its explicit assetConfigUpdate merges EXACTLY the ten supplied original asset keys into the real src/config/assets.json, preserving every unrelated existing key (including radio streams). Its verified assets.ts wrapper is create-if-missing: preserve an existing host wrapper. Keep a working default assets export for imported modules. No downloaded third-party character models are required: the substantially upgraded articulated doll is genuine source in src/game/avatar.ts.
+
+3. USE THE VERIFIED MANIFEST TRANSACTION
+
+The implementation below verifies manifest bytes before parsing; validates repository/source identity and safe paths; uses only manifest.files plus explicit asset merge/wrapper entries; downloads binary bytes with bounded concurrency/retry; awaits ALL workers on failure; verifies size/SHA-256 before promotion; backs up and rolls back changed destinations; verifies promoted bytes; and records a completion receipt. Keep these guarantees if adapting an existing importer. Reuse the same root plugin file/export and do not register a second importer.
+
+A completed requestId skips the update on subsequent builds, preserving later Aippy edits. Failed requests remain retryable. Do not mutate the config from inside the plugin or install packages from a Vite hook. Do not use branch HEAD after a receipt is written.
+
+4. TARGETED VITE / NODE INTEGRATION
+
+- Register githubImportPlugin() FIRST in the existing plugins array, preserving every existing entry. Its awaited async config hook is the barrier before later source scanning and compilation. Do not move the operation to configResolved, a browser button or a background task.
+- Add vite-plugin-github-import.ts to tsconfig.node.json include. It is Node-only and stays outside browser src/.
+- Preserve ESLint rules and add a narrow globals.node override for root Vite/importer TS files if needed. Keep caught error causes; do not add ts-nocheck or disable lint wholesale.
+- Merge '@dimforge/rapier3d' into Vite optimizeDeps.exclude without removing other exclusions. This fixes a reproduced development-only WASM callback-heap split. No physics rewrite or Rapier init() call is needed.
+- Use the available modern Node 20/22 runtime. Do not impose Node22, upgrade engines, downgrade Vite, or replace package.json. The imported game retains the original runtime dependencies. Compare requiredDependencies against the host; only if missing/incompatible, add the exact needed package through Aippy's normal dependency workflow before building.
+- Preserve source development tools. If the existing src/dev/projectFileManifestPlugin.ts has a BLOCKED_FILES entry `/token/i`, change ONLY that overly broad entry to `/(?:access|refresh|auth)[-_.]?tokens?/i`. The original filter wrongly omitted gameplay src/game/tokens.ts from ZIP exports. Keep the rest of its credential/secret exclusions, hidden unlock, viewer and ZIP implementation unchanged.
+
+5. BUILD AND VERIFY THE RESULT
+
+Run the normal project build (and available lint/type checks). The Node importer must finish verification, asset merge and promotion before Vite compiles the updated game. Report the actual build result, not merely configuration success.
+
+Check the receipt under .github-import-state/receipt.json records this exact manifest URL/hash, source commit and requestId. Check these promoted source hashes:
+- src/game/avatar.ts: f0053dc1d9300b087cff31bf7e39b5bcbdd4a042c862f0d6f51682fcc9776b55
+- src/ui/Joystick.tsx: 11d0fa944d737741b72e4dfd64efe398ec0e8946f2aa4783f1152b27aab38ed7
+- src/ui/DanceTilesGame.tsx: 89b6affb2dfea8ee33a30064e7be36b005610e6d32ec79f12d1cf6e73c199a6b
+- src/components/SettingsModal.tsx: 2f38e5d0993078ae2fc46843e2a534184d3ecf007a462d6683ae3669b06d0589
+
+Confirm all ten manifest asset keys have the supplied values in the working src/config/assets.json, and at least one unrelated pre-existing asset key survives if one existed. Run a second ordinary build with the same requestId; it must skip import and preserve local edits.
+
+Check mobile layout and actual runtime where possible: movement stick plus independent second-finger camera, clean release/cancel, wardrobe character visible above the sheet, dancer visible above four compact pads, quality presets change real resolution/shadows/particles, and Settings/About retain the hidden project viewer. Keep the user's saves and original collector-card storage key. Never clear localStorage.
+
+Do not redesign or reinterpret the already-finished game. Apply the verified source directly. If a download/hash/dependency check fails, stop compilation and report the exact failure rather than generating replacement gameplay or compiling a partial update.

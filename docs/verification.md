@@ -15,3 +15,7 @@ Tested 2026-10-31 in Node 24.22.1, exact project dependencies including Three 0.
 Original-source repairs: tokens.ts was absent from the supplied ZIP because the hidden exporter blocked every filename containing `token`. Recovered exact source from the hosted source map; narrowed the credential-name filter so gameplay tokens.ts survives future exports. Rapier's dev prebundling split its WASM callback heap; optimizeDeps.exclude fixes it without changing physics. Dev and production isolated physics fixtures ran120 steps with finite position and grounded=true.
 
 Limits: no actual-device FPS benchmark, no multiplayer, no imported Quaternius mesh or animations. Existing eight collector portraits and soundtrack retain their original remote URLs. Graphics quality choices do not imply measured FPS guarantees. The requested8/10 is an artistic target, not an objective test result.
+
+## Published import verification
+
+Ran the real Node importer against the published immutable GitHub manifest, not a mocked download: all60 game files passed size/SHA-256 verification; ten supplied asset values matched; an unrelated radio asset and protected main.tsx sentinel survived. A second identical request skipped all downloads and preserved a later App.tsx edit. Source6a607ea96f13e0e6ede11954cb6cc45552aa6e09; manifestabb44e0291cfdc8f95c6617e3854cd1c2ffd0928. See import-verification.json. A fresh review found no high-severity integration issues; its manifest-generation robustness suggestion was implemented using git-show against immutable commit bytes.

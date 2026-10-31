@@ -1,0 +1,275 @@
+UPDATE THIS CURRENT AIPPY PROJECT IN PLACE — BARBIE: ULTIMATE DREAMLAND
+
+Use Node at Vite BUILD TIME to apply the exact files in this verified manifest directly to their matching project paths. This is a specification for local source/config changes and the normal Vite build. The Node plugin performs the HTTP/filesystem work during that build. Do not ask the conversational model to browse, clone or manually transcribe remote game files.
+
+Manifest URL:
+https://raw.githubusercontent.com/benryaus-cmd/barbie/abb44e0291cfdc8f95c6617e3854cd1c2ffd0928/aippy-import-manifest.json
+
+Expected manifest SHA-256:
+2d1f2e13734197d143e47674fff1ca634eaaeff97a4e8ee4da43db397a732a0b
+
+Expected game source commit:
+6a607ea96f13e0e6ede11954cb6cc45552aa6e09
+
+1. INSPECT AND REUSE THE HOST
+
+Inspect vite.config.ts, package.json, tsconfig.node.json, eslint.config.js, any existing vite-plugin-github-import.ts/github-import.config.json, and the existing hidden project viewer. There must be ONE importer, ONE live src/ tree and ONE existing React root. Reuse and modify the existing importer if present. If absent, create vite-plugin-github-import.ts using the complete implementation supplied below BEFORE adding its Vite import. Do not depend on a nonexistent plugin arriving later.
+
+Preserve all existing Vite/Aippy plugins, aliases, server settings, index.html, main.tsx, hidden viewer/ZIP exporter, and unrelated files. Never create upstream/, importedGame/, an iframe, an adapter or a second game tree. Root config/dependency files are not part of the source manifest; make only the targeted local integration edits described here.
+
+2. ACTIVATE THIS SINGLE IMMUTABLE REQUEST
+
+Set github-import.config.json to this (keep unrelated existing fields only if needed):
+
+```json
+{
+  "enabled": true,
+  "mode": "manifest",
+  "repository": "benryaus-cmd/barbie",
+  "branch": "main",
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/abb44e0291cfdc8f95c6617e3854cd1c2ffd0928/aippy-import-manifest.json",
+  "manifestSha256": "2d1f2e13734197d143e47674fff1ca634eaaeff97a4e8ee4da43db397a732a0b",
+  "sourceCommit": "6a607ea96f13e0e6ede11954cb6cc45552aa6e09",
+  "requestId": "barbie-6a607ea-manifest-v1"
+}
+```
+
+Manifest mode MUST NOT resolve current main, use a recursive Git-tree selector, insist on importing src/main.tsx, or protect every file in src/components/. This manifest deliberately updates src/components/GameView.tsx, src/components/SettingsModal.tsx and src/components/settings.css. The updated SettingsModal preserves the original secret Settings-title tap/password flow while adding real quality, audio, accessibility and About controls. The viewer components, src/dev/**, src/types/** and src/main.tsx remain protected.
+
+The manifest contains 60 game files. Its explicit assetConfigUpdate merges EXACTLY the ten supplied original asset keys into the real src/config/assets.json, preserving every unrelated existing key (including radio streams). Its verified assets.ts wrapper is create-if-missing: preserve an existing host wrapper. Keep a working default assets export for imported modules. No downloaded third-party character models are required: the substantially upgraded articulated doll is genuine source in src/game/avatar.ts.
+
+3. USE THE VERIFIED MANIFEST TRANSACTION
+
+The implementation below verifies manifest bytes before parsing; validates repository/source identity and safe paths; uses only manifest.files plus explicit asset merge/wrapper entries; downloads binary bytes with bounded concurrency/retry; awaits ALL workers on failure; verifies size/SHA-256 before promotion; backs up and rolls back changed destinations; verifies promoted bytes; and records a completion receipt. Keep these guarantees if adapting an existing importer. Reuse the same root plugin file/export and do not register a second importer.
+
+A completed requestId skips the update on subsequent builds, preserving later Aippy edits. Failed requests remain retryable. Do not mutate the config from inside the plugin or install packages from a Vite hook. Do not use branch HEAD after a receipt is written.
+
+4. TARGETED VITE / NODE INTEGRATION
+
+- Register githubImportPlugin() FIRST in the existing plugins array, preserving every existing entry. Its awaited async config hook is the barrier before later source scanning and compilation. Do not move the operation to configResolved, a browser button or a background task.
+- Add vite-plugin-github-import.ts to tsconfig.node.json include. It is Node-only and stays outside browser src/.
+- Preserve ESLint rules and add a narrow globals.node override for root Vite/importer TS files if needed. Keep caught error causes; do not add ts-nocheck or disable lint wholesale.
+- Merge '@dimforge/rapier3d' into Vite optimizeDeps.exclude without removing other exclusions. This fixes a reproduced development-only WASM callback-heap split. No physics rewrite or Rapier init() call is needed.
+- Use the available modern Node 20/22 runtime. Do not impose Node22, upgrade engines, downgrade Vite, or replace package.json. The imported game retains the original runtime dependencies. Compare requiredDependencies against the host; only if missing/incompatible, add the exact needed package through Aippy's normal dependency workflow before building.
+- Preserve source development tools. If the existing src/dev/projectFileManifestPlugin.ts has a BLOCKED_FILES entry `/token/i`, change ONLY that overly broad entry to `/(?:access|refresh|auth)[-_.]?tokens?/i`. The original filter wrongly omitted gameplay src/game/tokens.ts from ZIP exports. Keep the rest of its credential/secret exclusions, hidden unlock, viewer and ZIP implementation unchanged.
+
+5. BUILD AND VERIFY THE RESULT
+
+Run the normal project build (and available lint/type checks). The Node importer must finish verification, asset merge and promotion before Vite compiles the updated game. Report the actual build result, not merely configuration success.
+
+Check the receipt under .github-import-state/receipt.json records this exact manifest URL/hash, source commit and requestId. Check these promoted source hashes:
+- src/game/avatar.ts: f0053dc1d9300b087cff31bf7e39b5bcbdd4a042c862f0d6f51682fcc9776b55
+- src/ui/Joystick.tsx: 11d0fa944d737741b72e4dfd64efe398ec0e8946f2aa4783f1152b27aab38ed7
+- src/ui/DanceTilesGame.tsx: 89b6affb2dfea8ee33a30064e7be36b005610e6d32ec79f12d1cf6e73c199a6b
+- src/components/SettingsModal.tsx: 2f38e5d0993078ae2fc46843e2a534184d3ecf007a462d6683ae3669b06d0589
+
+Confirm all ten manifest asset keys have the supplied values in the working src/config/assets.json, and at least one unrelated pre-existing asset key survives if one existed. Run a second ordinary build with the same requestId; it must skip import and preserve local edits.
+
+Check mobile layout and actual runtime where possible: movement stick plus independent second-finger camera, clean release/cancel, wardrobe character visible above the sheet, dancer visible above four compact pads, quality presets change real resolution/shadows/particles, and Settings/About retain the hidden project viewer. Keep the user's saves and original collector-card storage key. Never clear localStorage.
+
+Do not redesign or reinterpret the already-finished game. Apply the verified source directly. If a download/hash/dependency check fails, stop compilation and report the exact failure rather than generating replacement gameplay or compiling a partial update.
+
+
+COMPLETE MANIFEST-MODE IMPLEMENTATION FOR THE SINGLE EXISTING ROOT PLUGIN
+
+If an importer already exists, adapt or replace its manifest download/transaction logic in that SAME file/export with this implementation. If missing, create this exact root file before registering it. Do not paste Node code into src/ or create an additional plugin.
+
+File: vite-plugin-github-import.ts
+
+```ts
+import type { Plugin } from 'vite';
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
+import { createHash } from 'node:crypto';
+
+type Entry = { destination: string; url: string; size: number; sha256: string };
+type Update = Entry & { strategy: string; keys?: string[] };
+type Manifest = { schemaVersion: number; repository: string; sourceCommit: string; files: Entry[]; assetConfigUpdate?: Update; assetConfigWrapper?: Update; requiredDependencies?: Record<string,string>; obsoleteGameFiles?: string[] };
+const sha256 = (data: Uint8Array) => createHash('sha256').update(data).digest('hex');
+const protectedPath = (p: string) => p === 'src/main.tsx' || p.startsWith('src/dev/') || p.startsWith('src/types/') || /^src\/components\/(ProjectFileViewer|ProjectFilePreview|DevUnlockOverlay)\./.test(p);
+
+async function download(url: string): Promise<Buffer> {
+  let cause: unknown;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 25000);
+    try {
+      const response = await fetch(url, { signal: controller.signal, redirect: 'error' });
+      if (!response.ok) {
+        const error = new Error(`${url}: HTTP ${response.status}; remaining requests ${response.headers.get('x-ratelimit-remaining') ?? 'unknown'}`);
+        if (response.status !== 429 && response.status < 500) throw Object.assign(error, { permanent: true });
+        throw error;
+      }
+      return Buffer.from(await response.arrayBuffer());
+    } catch (error) {
+      cause = error;
+      if ((error as { permanent?: boolean }).permanent) break;
+      if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
+    } finally { clearTimeout(timer); }
+  }
+  throw new Error(`GitHub import download failed: ${url}`, { cause });
+}
+
+export function githubImportPlugin(): Plugin {
+  return {
+    name: 'dreamland-manifest-import', enforce: 'pre',
+    async config(viteConfig, env) {
+      if (env.command !== 'build') return;
+      const root = path.resolve(viteConfig.root || process.cwd());
+      const configPath = path.join(root, 'github-import.config.json');
+      let config: { enabled?: boolean; mode?: string; repository?: string; manifestUrl?: string; manifestSha256?: string; sourceCommit?: string; requestId?: string };
+      try { config = JSON.parse(await fs.readFile(configPath, 'utf8')); }
+      catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
+        throw new Error('Cannot read github-import.config.json', { cause: error });
+      }
+      if (!config.enabled) return;
+      const { repository, manifestUrl, manifestSha256, sourceCommit, requestId } = config;
+      if (config.mode !== 'manifest' || repository !== 'benryaus-cmd/barbie' || !requestId || !/^[a-f0-9]{40}$/.test(sourceCommit || '') || !/^[a-f0-9]{64}$/.test(manifestSha256 || '')) throw new Error('Active importer requires manifest mode, exact Barbie repository, requestId, sourceCommit and manifestSha256.');
+      const manifestPattern = /^https:\/\/raw\.githubusercontent\.com\/benryaus-cmd\/barbie\/[a-f0-9]{40}\/aippy-import-manifest\.json$/;
+      if (!manifestPattern.test(manifestUrl || '')) throw new Error('Manifest URL must use an immutable commit on the Barbie repository.');
+      const stateDir = path.join(root, '.github-import-state');
+      const receiptPath = path.join(stateDir, 'receipt.json');
+      let receipt: { requestId?: string; manifestSha256?: string } | null = null;
+      try { receipt = JSON.parse(await fs.readFile(receiptPath, 'utf8')); }
+      catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw new Error('Unreadable import receipt; refusing to overwrite it.', { cause: error }); }
+      if (receipt?.requestId === requestId) {
+        if (receipt.manifestSha256 !== manifestSha256) throw new Error('A completed requestId cannot be reused for a different manifest.');
+        console.log(`[github-import] ${requestId} already completed; preserving local edits.`);
+        return;
+      }
+      const bytes = await download(manifestUrl!);
+      if (sha256(bytes) !== manifestSha256) throw new Error('Manifest SHA-256 mismatch; no local files changed.');
+      const manifest: Manifest = JSON.parse(bytes.toString('utf8'));
+      if (manifest.schemaVersion !== 1 || manifest.repository !== repository || manifest.sourceCommit !== sourceCommit || !Array.isArray(manifest.files) || !manifest.files.length) throw new Error('Manifest identity/schema mismatch.');
+      if (manifest.obsoleteGameFiles?.length) throw new Error('This import contains obsolete paths; review deletions explicitly before enabling them.');
+      const safePath = async (relative: string) => {
+        if (typeof relative !== 'string' || !/^(src|public)\//.test(relative) || /[\\\0]/.test(relative) || relative.split('/').some(p => !p || p === '.' || p === '..') || protectedPath(relative)) throw new Error(`Protected or unsafe destination: ${relative}`);
+        const full = path.resolve(root, relative);
+        if (!full.startsWith(root + path.sep)) throw new Error(`Destination escapes root: ${relative}`);
+        let current = root;
+        for (const part of relative.split('/')) {
+          current = path.join(current, part);
+          try { if ((await fs.lstat(current)).isSymbolicLink()) throw new Error(`Symlink destination rejected: ${relative}`); }
+          catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+        }
+        return full;
+      };
+      const extras = [manifest.assetConfigUpdate, manifest.assetConfigWrapper].filter(Boolean) as Update[];
+      const entries = [...manifest.files, ...extras];
+      const seen = new Set<string>();
+      for (const entry of entries) {
+        await safePath(entry.destination);
+        if (seen.has(entry.destination)) throw new Error(`Duplicate import path: ${entry.destination}`);
+        seen.add(entry.destination);
+        if (!Number.isSafeInteger(entry.size) || entry.size < 0 || !/^[a-f0-9]{64}$/.test(entry.sha256)) throw new Error(`Bad file metadata: ${entry.destination}`);
+        const expected = `https://raw.githubusercontent.com/${repository}/${sourceCommit}/${entry.destination}`;
+        if (entry.url !== expected) throw new Error(`File URL is not pinned to source commit: ${entry.destination}`);
+        if (entry.destination.startsWith('src/config/assets.') && !extras.includes(entry as Update)) throw new Error('Asset registry must use the explicit merge/create strategy.');
+      }
+      const localPackage = JSON.parse(await fs.readFile(path.join(root, 'package.json'), 'utf8'));
+      const missing = Object.entries(manifest.requiredDependencies || {}).filter(([name, required]) => {
+        const declared = localPackage.dependencies?.[name] || localPackage.devDependencies?.[name];
+        if (typeof declared !== 'string') return true;
+        if (declared === required || declared === '*') return false;
+        const have = declared.match(/(\d+)\.(\d+)\.(\d+)/);
+        const need = required.match(/(\d+)\.(\d+)\.(\d+)/);
+        if (!have || !need) return true;
+        const a = have.slice(1).map(Number), b = need.slice(1).map(Number);
+        // Conservative: never silently accept a breaking major/minor (for 0.x) upgrade.
+        if (a[0] !== b[0] || (b[0] === 0 && a[1] !== b[1])) return true;
+        return a[1] < b[1] || (a[1] === b[1] && a[2] < b[2]);
+      });
+      if (missing.length) throw new Error(`Before building, add these dependencies through the host package manager: ${missing.map(([n,v]) => `${n}@${v}`).join(', ')}`);
+      const stage = path.join(root, '.github-import-staging');
+      await fs.rm(stage, { recursive: true, force: true });
+      await fs.mkdir(stage, { recursive: true });
+      const verified = new Map<string, Buffer>();
+      let cursor = 0;
+      let downloadFailure: unknown;
+      const worker = async () => {
+        while (cursor < entries.length && !downloadFailure) {
+          const entry = entries[cursor++];
+          try {
+            const data = await download(entry.url);
+            if (data.length !== entry.size || sha256(data) !== entry.sha256) throw new Error(`Size/hash mismatch: ${entry.destination}`);
+            const staged = path.join(stage, entry.destination);
+            await fs.mkdir(path.dirname(staged), { recursive: true });
+            await fs.writeFile(staged, data);
+            verified.set(entry.destination, data);
+          } catch (error) { downloadFailure = error; }
+        }
+      };
+      await Promise.allSettled(Array.from({ length: Math.min(4, entries.length) }, worker));
+      if (downloadFailure) { await fs.rm(stage, { recursive: true, force: true }); throw new Error('Import staging failed; all workers stopped and no live files changed.', { cause: downloadFailure }); }
+      const output = new Map<string, Buffer>(manifest.files.map(e => [e.destination, verified.get(e.destination)!]));
+      const update = manifest.assetConfigUpdate;
+      if (update) {
+        if (update.destination !== 'src/config/assets.json' || update.strategy !== 'merge-json-object' || !Array.isArray(update.keys)) throw new Error('Invalid asset merge strategy.');
+        const source = JSON.parse(verified.get(update.destination)!.toString('utf8'));
+        let local: Record<string, unknown> = {};
+        try { local = JSON.parse(await fs.readFile(path.join(root, update.destination), 'utf8')); }
+        catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw new Error('Local assets.json is invalid; no promotion attempted.', { cause: error }); }
+        if (!local || Array.isArray(local) || typeof local !== 'object') throw new Error('Local assets.json must be an object.');
+        for (const key of update.keys) {
+          if (['__proto__', 'prototype', 'constructor'].includes(key) || typeof source[key] !== 'string') throw new Error(`Invalid asset key: ${key}`);
+          local[key] = source[key];
+        }
+        output.set(update.destination, Buffer.from(JSON.stringify(local, null, 2) + '\n'));
+      }
+      const wrapper = manifest.assetConfigWrapper;
+      if (wrapper) {
+        if (wrapper.destination !== 'src/config/assets.ts' || wrapper.strategy !== 'create-if-missing') throw new Error('Invalid asset wrapper strategy.');
+        try { await fs.access(path.join(root, wrapper.destination)); }
+        catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; output.set(wrapper.destination, verified.get(wrapper.destination)!); }
+      }
+      const backups = new Map<string, Buffer | null>();
+      const changed: string[] = [];
+      try {
+        for (const [relative, data] of output) {
+          const full = await safePath(relative);
+          let previous: Buffer | null = null;
+          try { previous = await fs.readFile(full); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+          backups.set(relative, previous);
+          if (previous?.equals(data)) continue;
+          const diskBackup = path.join(stage, '.backup', relative);
+          if (previous) { await fs.mkdir(path.dirname(diskBackup), { recursive: true }); await fs.writeFile(diskBackup, previous); }
+          await fs.mkdir(path.dirname(full), { recursive: true });
+          changed.push(relative);
+          await fs.writeFile(full + '.github-import-tmp', data);
+          await fs.rename(full + '.github-import-tmp', full);
+          if (sha256(await fs.readFile(full)) !== sha256(data)) throw new Error(`Promoted file verification failed: ${relative}`);
+        }
+        await fs.mkdir(stateDir, { recursive: true });
+        const result = { requestId, manifestUrl, manifestSha256, sourceCommit, completedAt: new Date().toISOString(), files: [...output].map(([destination, data]) => ({ destination, sha256: sha256(data), size: data.length })), protected: ['src/main.tsx', 'src/dev/**', 'src/types/**', 'hidden viewer' ] };
+        await fs.writeFile(receiptPath + '.tmp', JSON.stringify(result, null, 2));
+        await fs.rename(receiptPath + '.tmp', receiptPath);
+      } catch (error) {
+        const failures: string[] = [];
+        for (const relative of changed.reverse()) {
+          const full = path.join(root, relative);
+          try {
+            const backup = backups.get(relative);
+            if (backup === null) await fs.rm(full, { force: true });
+            else if (backup) await fs.writeFile(full, backup);
+            await fs.rm(full + '.github-import-tmp', { force: true });
+          } catch { failures.push(relative); }
+        }
+        if (failures.length) throw new Error(`Import rollback failed for ${failures.join(', ')}. Recovery files retained at ${stage}`, { cause: error });
+        throw new Error('Import failed and live files were rolled back.', { cause: error });
+      }
+      await fs.rm(stage, { recursive: true, force: true });
+      console.log(`[github-import] Verified ${output.size} files; promoted ${changed.length}; source ${sourceCommit}; request ${requestId}.`);
+    },
+  };
+}
+
+```
+
+In the EXISTING vite.config.ts add this import if absent:
+
+```ts
+import { githubImportPlugin } from './vite-plugin-github-import';
+```
+
+Place githubImportPlugin() first in its existing plugins array, then preserve all current React/Tailwind/Aippy/file-manifest/single-file plugins. Merge optimizeDeps.exclude as described above. Set the exact active config provided at the top and execute the normal build.
