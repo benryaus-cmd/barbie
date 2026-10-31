@@ -1,10 +1,12 @@
 {
-  "passed": true,
-  "sourceCommit": "be880253a096e742681afc264eb3ceb90514277d",
-  "manifestSha256": "ae040f78887353a3b75eebcd4b903fd8390c47aeb86677825beb738e0572af9a",
-  "verifiedGameFiles": 86,
-  "verifiedAssetKeys": 10,
-  "unrelatedAssetPreserved": true,
-  "entryPreserved": true,
-  "repeatPreservedLocalEdit": true
+  "status": "manifest-generated-for-quick-patch",
+  "sourceCommit": "6fb0d198189237801c8b499fd67efff50b490a2d",
+  "manifestSha256": "170be2adaa096b4a4d8ef8884c2948a659e15561907d7a09a95be8f2bb691b82",
+  "gameFiles": 86,
+  "checks": [
+    "targeted movement/activity checks",
+    "TypeScript",
+    "exact Git tree match"
+  ],
+  "liveImport": "Not repeated for this quick patch at user request; previous unchanged importer proof in release8548d1ec213ee5a677ffd1abb25d55f667244923."
 }

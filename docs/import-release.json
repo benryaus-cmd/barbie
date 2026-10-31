@@ -1,9 +1,9 @@
 {
-  "sourceCommit": "be880253a096e742681afc264eb3ceb90514277d",
-  "manifestCommit": "c6e961751eb0fc0688118ac3c120daf65ce3ab14",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/c6e961751eb0fc0688118ac3c120daf65ce3ab14/aippy-import-manifest.json",
-  "manifestSha256": "ae040f78887353a3b75eebcd4b903fd8390c47aeb86677825beb738e0572af9a",
-  "requestId": "barbie-resort-be88025-manifest-v4",
+  "sourceCommit": "6fb0d198189237801c8b499fd67efff50b490a2d",
+  "manifestCommit": "e1e2ef09b29ceeb884771b2aaea123cfcfc70d52",
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/e1e2ef09b29ceeb884771b2aaea123cfcfc70d52/aippy-import-manifest.json",
+  "manifestSha256": "170be2adaa096b4a4d8ef8884c2948a659e15561907d7a09a95be8f2bb691b82",
+  "requestId": "barbie-hotfix-6fb0d19-v4-1",
   "gameFiles": 86,
   "assetKeys": [
     "dreamland_pop_music",

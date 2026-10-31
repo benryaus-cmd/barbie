@@ -3,13 +3,13 @@ UPDATE THIS CURRENT AIPPY PROJECT IN PLACE — BARBIE: ULTIMATE DREAMLAND / RESO
 Use Node at Vite BUILD TIME to apply the exact files in this verified manifest directly to their matching project paths. This is a specification for local source/config changes and the normal Vite build. The Node plugin performs the HTTP/filesystem work during that build. Do not ask the conversational model to browse, clone or manually transcribe remote game files.
 
 Manifest URL:
-https://raw.githubusercontent.com/benryaus-cmd/barbie/c6e961751eb0fc0688118ac3c120daf65ce3ab14/aippy-import-manifest.json
+https://raw.githubusercontent.com/benryaus-cmd/barbie/e1e2ef09b29ceeb884771b2aaea123cfcfc70d52/aippy-import-manifest.json
 
 Expected manifest SHA-256:
-ae040f78887353a3b75eebcd4b903fd8390c47aeb86677825beb738e0572af9a
+170be2adaa096b4a4d8ef8884c2948a659e15561907d7a09a95be8f2bb691b82
 
 Expected game source commit:
-be880253a096e742681afc264eb3ceb90514277d
+6fb0d198189237801c8b499fd67efff50b490a2d
 
 1. INSPECT AND REUSE THE HOST
 
@@ -27,10 +27,10 @@ Set github-import.config.json to this (keep unrelated existing fields only if ne
   "mode": "manifest",
   "repository": "benryaus-cmd/barbie",
   "branch": "main",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/c6e961751eb0fc0688118ac3c120daf65ce3ab14/aippy-import-manifest.json",
-  "manifestSha256": "ae040f78887353a3b75eebcd4b903fd8390c47aeb86677825beb738e0572af9a",
-  "sourceCommit": "be880253a096e742681afc264eb3ceb90514277d",
-  "requestId": "barbie-resort-be88025-manifest-v4"
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/e1e2ef09b29ceeb884771b2aaea123cfcfc70d52/aippy-import-manifest.json",
+  "manifestSha256": "170be2adaa096b4a4d8ef8884c2948a659e15561907d7a09a95be8f2bb691b82",
+  "sourceCommit": "6fb0d198189237801c8b499fd67efff50b490a2d",
+  "requestId": "barbie-hotfix-6fb0d19-v4-1"
 }
 ```
 
@@ -58,7 +58,7 @@ A completed requestId skips the update on subsequent builds, preserving later Ai
 Run the normal project build (and available lint/type checks). The Node importer must finish verification, asset merge and promotion before Vite compiles the updated game. Report the actual build result, not merely configuration success.
 
 Check the receipt under .github-import-state/receipt.json records this exact manifest URL/hash, source commit and requestId. Check these promoted source hashes:
-- src/game/avatar.ts: 8da26969f7a96f5e077296fe2e69854d470a7fc63cbb0b6db2e59c01ff010168
+- src/game/avatar.ts: 51924e9b1722a5997f3b2068780980fc1de9a0d19781057ffeee12324967cd7c
 - src/ui/Joystick.tsx: 11d0fa944d737741b72e4dfd64efe398ec0e8946f2aa4783f1152b27aab38ed7
 - src/ui/DanceTilesGame.tsx: 89b6affb2dfea8ee33a30064e7be36b005610e6d32ec79f12d1cf6e73c199a6b
 - src/components/SettingsModal.tsx: 2f38e5d0993078ae2fc46843e2a534184d3ecf007a462d6683ae3669b06d0589
