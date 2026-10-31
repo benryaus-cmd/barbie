@@ -8,6 +8,7 @@ import { buildDreamhouse, type DreamhouseMood } from '@/game/world/dreamhouse';
 import { buildStations, type Bobber } from '@/game/world/stations';
 import { createWorldAmbience } from '@/game/world/ambience';
 import { buildTerrain } from '@/game/world/terrain';
+import { buildSalon } from '@/game/world/salon';
 
 export type World = {
   root: THREE.Group;
@@ -59,6 +60,7 @@ export function buildWorld(): World {
   const mood = buildDreamhouse(builder);
   buildAvenue(builder);
   buildBeach(builder);
+  buildSalon(builder);
   const stations = buildStations(builder);
   const ambience = createWorldAmbience();
   builder.group.add(ambience.root);

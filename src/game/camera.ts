@@ -7,7 +7,9 @@ export type CameraRig = {
   setPresentation(mode: PresentationMode): void;
   rotate(dx: number, dy: number): void;
   getYaw(): number;
-  setWalkHeading(heading: number | null): void;
+  setWalkHeading(heading: number | null, speed?: number, allowFollow?: boolean): void;
+  /** Positive wheel/pinch delta zooms out; negative delta zooms in. */
+  zoom(delta: number): void;
   update(dt: number, target: THREE.Vector3, zoomOut: boolean, indoor: boolean): void;
   reset(): void;
 };
@@ -17,6 +19,10 @@ const MAX_PITCH = 1.05;
 const CAMERA_RADIUS = 0.22;
 const CAMERA_CLEARANCE = 0.38;
 const MIN_CAMERA_DISTANCE = 1.35;
+const WALK_FOLLOW_DELAY = 0.6;
+const WALK_FOLLOW_DISTANCE = 1;
+const WALK_FOLLOW_DEADZONE = 0.2;
+const WALK_FOLLOW_MIN_SPEED = 0.65;
 
 export function createCameraRig(
   camera: THREE.PerspectiveCamera,
@@ -29,9 +35,17 @@ export function createCameraRig(
   let yaw = 0;
   let walkHeading: number | null = null;
   let manualHold = 0;
+  let walkSpeed = 0;
+  let followAllowed = true;
+  let walkTime = 0;
+  let walkDistance = 0;
+  let previousHeading: number | null = null;
+  let hasPreviousTarget = false;
   let pitch = 0.3;
   let presentation: PresentationMode = 'world';
   let presentationYaw = 0;
+  let photoPitch = 0.26;
+  let photoZoom = 1;
   let currentDistance = distance;
   let started = false;
 
@@ -40,6 +54,13 @@ export function createCameraRig(
   const offset = new THREE.Vector3();
   const lookAt = new THREE.Vector3();
   const rayDirection = new THREE.Vector3();
+  const previousTarget = new THREE.Vector3();
+
+  function clearFollowProgress() {
+    walkTime = 0;
+    walkDistance = 0;
+    previousHeading = null;
+  }
 
   function keepCameraClear(candidate: THREE.Vector3) {
     rayDirection.copy(candidate).sub(lookAt);
@@ -105,20 +126,37 @@ export function createCameraRig(
       if (presentation === mode) return;
       presentation = mode;
       presentationYaw = 0;
+      photoPitch = 0.26;
+      photoZoom = 1;
+      clearFollowProgress();
+      hasPreviousTarget = false;
       started = false;
     },
     rotate(dx: number, dy: number) {
       if (!Number.isFinite(dx) || !Number.isFinite(dy)) return;
+      if (presentation === 'photo') {
+        presentationYaw -= dx * 0.004;
+        photoPitch = THREE.MathUtils.clamp(photoPitch + dy * 0.004, -0.15, 1.05);
+        return;
+      }
       if (presentation !== 'world') {
         presentationYaw = THREE.MathUtils.clamp(presentationYaw - dx * 0.004, -0.62, 0.62);
         return;
       }
-      manualHold = 1.25;
+      manualHold = 2;
+      clearFollowProgress();
       yaw -= dx * 0.006;
       pitch = THREE.MathUtils.clamp(pitch + dy * 0.004, MIN_PITCH, MAX_PITCH);
     },
-    setWalkHeading(heading) {
+    setWalkHeading(heading, speed = 5.4, allowFollow = true) {
       walkHeading = heading !== null && Number.isFinite(heading) ? heading : null;
+      walkSpeed = Number.isFinite(speed) ? Math.max(0, speed) : 0;
+      followAllowed = allowFollow;
+      if (walkHeading === null || !followAllowed || walkSpeed < WALK_FOLLOW_MIN_SPEED) clearFollowProgress();
+    },
+    zoom(delta) {
+      if (!Number.isFinite(delta) || presentation !== 'photo') return;
+      photoZoom = THREE.MathUtils.clamp(photoZoom * Math.exp(delta * 0.0015), 0.58, 1.9);
     },
     getYaw() {
       return yaw;
@@ -129,21 +167,47 @@ export function createCameraRig(
         // The doll faces +Z while presenting. Preserve the exploration orbit separately.
         const companion = presentation === 'pet' || presentation === 'photo';
         const dist = companion ? (camera.aspect < 1 ? 4.7 : 4.3) : camera.aspect < 1 ? 4.25 : 4.4;
-        desired.set(target.x + Math.sin(presentationYaw) * dist, target.y + 1.4, target.z + Math.cos(presentationYaw) * dist);
         lookAt.set(target.x, target.y + (presentation === 'pet' ? 0 : .25), target.z);
+        if (presentation === 'photo') {
+          const radius = dist * photoZoom;
+          desired.set(
+            target.x + Math.sin(presentationYaw) * radius * Math.cos(photoPitch),
+            lookAt.y + Math.sin(photoPitch) * radius,
+            target.z + Math.cos(presentationYaw) * radius * Math.cos(photoPitch)
+          );
+        } else {
+          desired.set(target.x + Math.sin(presentationYaw) * dist, target.y + 1.4, target.z + Math.cos(presentationYaw) * dist);
+        }
         current.copy(desired);
         camera.position.copy(current);
         camera.lookAt(lookAt);
         started = true;
         return;
       }
-      // Following changes the view only. Sandbox freezes the movement basis for
-      // the current stick gesture, so this cannot steer a held direction into a spiral.
-      manualHold = Math.max(0, manualHold - dt);
-      if (walkHeading !== null && manualHold === 0) {
-        const wantedYaw = walkHeading + Math.PI;
-        const difference = Math.atan2(Math.sin(wantedYaw - yaw), Math.cos(wantedYaw - yaw));
-        yaw += difference * (1 - Math.exp(-dt * 2.7));
+      // Follow only after real, sustained travel. Small taps, blocked walking,
+      // lateral/backward input, and manual orbit all leave the view in place.
+      const elapsed = Number.isFinite(dt) ? THREE.MathUtils.clamp(dt, 0, 0.1) : 0;
+      manualHold = Math.max(0, manualHold - elapsed);
+      const travelled = hasPreviousTarget ? Math.hypot(target.x - previousTarget.x, target.z - previousTarget.z) : 0;
+      previousTarget.copy(target);
+      hasPreviousTarget = true;
+      if (walkHeading !== null && followAllowed && walkSpeed >= WALK_FOLLOW_MIN_SPEED && manualHold === 0 && travelled > 0.0001) {
+        const turn = previousHeading === null ? 0 : Math.atan2(Math.sin(walkHeading - previousHeading), Math.cos(walkHeading - previousHeading));
+        if (Math.abs(turn) > 0.6) clearFollowProgress();
+        previousHeading = walkHeading;
+        walkTime += elapsed;
+        // Ignore teleports and target offsets when measuring walking distance.
+        walkDistance += Math.min(travelled, walkSpeed * elapsed * 1.5);
+        if (walkTime >= WALK_FOLLOW_DELAY && walkDistance >= WALK_FOLLOW_DISTANCE) {
+          const wantedYaw = walkHeading + Math.PI;
+          const difference = Math.atan2(Math.sin(wantedYaw - yaw), Math.cos(wantedYaw - yaw));
+          if (Math.abs(difference) > WALK_FOLLOW_DEADZONE) {
+            const turnStep = difference * (1 - Math.exp(-elapsed * 1.65));
+            yaw += THREE.MathUtils.clamp(turnStep, -elapsed * 0.8, elapsed * 0.8);
+          }
+        }
+      } else {
+        clearFollowProgress();
       }
       const wanted = (indoor ? 3.8 : distance) * (zoomOut ? 1.5 : 1);
       currentDistance += (wanted - currentDistance) * Math.min(1, dt * 5);
@@ -174,9 +238,16 @@ export function createCameraRig(
       yaw = 0;
       walkHeading = null;
       manualHold = 0;
+      walkSpeed = 0;
+      followAllowed = true;
+      clearFollowProgress();
+      hasPreviousTarget = false;
       pitch = 0.3;
       presentation = 'world';
       presentationYaw = 0;
+      photoPitch = 0.26;
+      photoZoom = 1;
+      currentDistance = distance;
       started = false;
     },
   };

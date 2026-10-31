@@ -2,10 +2,11 @@ import * as THREE from 'three';
 import type { Builder } from '@/game/builder';
 import { PALETTE, gloss, glassMaterial, neonMaterial } from '@/game/palette';
 import { lounger, palm, umbrella } from '@/game/world/props';
+import { surface } from '@/game/world/materials';
 
 export function buildBeach(b: Builder) {
-  const wood = gloss(PALETTE.wood, { roughness: 0.75, metalness: 0.1 });
-  const lightWood = gloss(0xd9a072, { roughness: 0.7 });
+  const wood = surface(PALETTE.wood, 'wood', { roughness: 0.82, metalness: 0.02 });
+  const lightWood = surface(0xd9a072, 'wood', { roughness: 0.8 });
   const white = gloss(PALETTE.white, { roughness: 0.24, metalness: 0.35 });
   const trim = gloss(PALETTE.magenta, { roughness: 0.28, metalness: 0.35 });
   const gold = gloss(PALETTE.gold, { metalness: 0.9, roughness: 0.16 });
@@ -64,6 +65,14 @@ export function buildBeach(b: Builder) {
   lounger(b, 41.6, 26.6, 0, PALETTE.gold);
   lounger(b, 38.4, 41, Math.PI, PALETTE.sky);
   lounger(b, 41.6, 41, Math.PI, PALETTE.pastelPink);
+
+  // A real open-front beach kiosk frames the surfboards and wave activity marker.
+  b.box(5.8,.2,4.4,lightWood,47,.13,24.1);
+  b.solid(5.8,3.4,.18,wood,47,1.7,22.1);
+  for(const x of [44.2,49.8]) b.cyl(.12,.14,3.4,8,white,x,1.7,25.9);
+  const roof=b.box(6.5,.18,5.2,trim,47,3.5,24.1);roof.rotation.x=.08;
+  b.box(6.5,.45,.2,white,47,3.48,26.65);
+  for(let i=0;i<7;i++) b.box(.055,3.2,.06,lightWood,44.4+i*.86,1.7,22.21);
 
   // Surf shack props
   b.box(2.2, 0.3, 1, gloss(PALETTE.pastelPink, { roughness: 0.4 }), 47, 0.16, 24);

@@ -18,3 +18,13 @@
 .discovery-actions button:last-child{background:#fff0f7;color:#96265d;border-color:#fff}
 @media(max-height:680px){.dream-next{top:auto;bottom:140px;padding:6px 10px}.discovery-screen{gap:9px}.discovery-card img{height:30dvh}.discovery-card{width:min(245px,64vw)}}
 @media(prefers-reduced-motion:reduce){.discovery-card{transition:none;transform:none;opacity:1}}
+
+/* Keep menu tools within the actual embedded game viewport. */
+.hud-bottom {margin-top:7px;}
+.hud-tools {width:100%;justify-content:space-between;gap:4px;}
+.hud-tool {min-width:42px;min-height:42px;border-radius:13px;}
+.hud-inline-progress {display:flex;align-items:center;gap:4px;font-size:8px;font-weight:800;color:#87566d;letter-spacing:0;}
+.dream-controls {padding-bottom:max(6px,env(safe-area-inset-bottom))!important;}
+.dream-next {bottom:127px;padding:6px 10px;}
+.dream-next-label {font-size:7px;letter-spacing:.1em;}
+@media(max-height:680px){.dream-hud{padding-top:6px}.dream-next{bottom:117px}.dream-next button{font-size:10px}.hud-tool{min-height:40px}.hud-wallet{min-height:38px;padding-block:5px}.hud-zone{font-size:13px}}

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import type { Builder } from '@/game/builder';
 import { PALETTE, gloss, glassMaterial, neonMaterial } from '@/game/palette';
 import { neonPanel } from '@/game/world/props';
+import { surface, signTexture } from '@/game/world/materials';
 
 export type DreamhouseMood = {
   light: THREE.PointLight;
@@ -9,8 +10,8 @@ export type DreamhouseMood = {
 };
 
 export function buildDreamhouse(b: Builder): DreamhouseMood {
-  const wall = gloss(PALETTE.cream, { roughness: 0.22, metalness: 0.34 });
-  const inner = gloss(0xfff2f9, { roughness: 0.35, metalness: 0.15 });
+  const wall = surface(PALETTE.cream, 'plaster', { roughness: 0.66, metalness: 0.06 });
+  const inner = surface(0xfff2f9, 'plaster', { roughness: 0.7, metalness: 0.04 });
   const pink = gloss(PALETTE.pastelPink, { roughness: 0.2, metalness: 0.4 });
   const trim = gloss(PALETTE.magenta, { roughness: 0.26, metalness: 0.35 });
   const gold = gloss(PALETTE.gold, { metalness: 0.92, roughness: 0.14 });
@@ -35,30 +36,32 @@ export function buildDreamhouse(b: Builder): DreamhouseMood {
   // Interior partition between living room and kitchen (open doorway at front)
   b.solid(0.5, 3.7, 4.9, inner, 0, 1.85, -44.95);
   // Back partition (stair hall) with doorway gap x[1.5,4.5]
-  b.solid(11.4, 3.7, 0.5, inner, -3.8, 1.85, -47.4);
+  b.solid(8.4, 3.7, 0.5, inner, -2.3, 1.85, -47.4);
   b.solid(5.25, 3.7, 0.5, inner, 7.125, 1.85, -47.4);
 
   // Second-floor slab over the back half (stair opening at x[-9.75,-6.5])
   b.solid(16.25, 0.3, 5.6, white, 1.625, 3.75, -50.2);
 
-  // Stairs: 12 steps rising along -z at x = -8.1
-  for (let i = 0; i < 12; i += 1) {
-    b.solid(3, 0.3, 0.45, pink, -8.1, 0.15 + i * 0.3, -46.9 - 0.225 - i * 0.45);
+  // A full-width stair passage avoids the old partition across the flight.
+  // Closed risers use a comfortable 0.15m rise, with a clear 3m flight.
+  for (let i = 0; i < 26; i += 1) {
+    const height = (i + 1) * 0.15;
+    b.solid(3, height, 8.4 / 26, pink, -8.1, height / 2, -42.3 - (i + 0.5) * 8.4 / 26);
+    b.box(2.9, 0.025, 0.07, white, -8.1, height + 0.012, -42.32 - i * 8.4 / 26);
   }
-  // Stair side rail
-  b.box(0.12, 0.1, 5.6, gold, -6.55, 2.4, -49.7);
+  // The top landing turns right into the loft, with 1.8m depth and clear headroom.
+  b.solid(3.1, 0.3, 1.8, white, -8.05, 3.75, -51.6);
 
-  // Loft railings (front edge + stair-hole edge)
+  // Loft guards stop before the landing opening; the old continuous rail
+  // sealed off the only route from the stairs onto the upper floor.
   b.box(16.25, 0.1, 0.12, gold, 1.625, 4.95, -47.4);
-  b.collider(1.625, 4.45, -47.4, 8.1, 0.55, 0.12);
-  b.box(0.12, 0.1, 5.6, gold, -6.5, 4.95, -50.2);
-  b.collider(-6.5, 4.45, -50.2, 0.12, 0.55, 2.8);
+  b.collider(1.625, 4.45, -47.4, 8.1, 0.55, 0.06);
+  b.box(0.12, 0.1, 3.15, gold, -6.5, 4.95, -48.975);
+  b.collider(-6.5, 4.45, -48.975, 0.06, 0.55, 1.575);
   for (let i = 0; i <= 6; i += 1) {
-    b.cyl(0.06, 0.06, 1.05, 6, gold, -6.5 + i * 2.7, 4.42, -47.4);
+    b.cyl(0.05, 0.05, 1.05, 6, gold, -6.5 + i * 2.7, 4.42, -47.4);
   }
-  for (let i = 0; i < 3; i += 1) {
-    b.cyl(0.06, 0.06, 1.05, 6, gold, -6.5, 4.42, -47.9 - i * 2.2);
-  }
+  for (const z of [-47.9, -49.2, -50.5]) b.cyl(0.05, 0.05, 1.05, 6, gold, -6.5, 4.42, z);
 
   // ---- Facade dressing ----
   // Front windows
@@ -87,10 +90,18 @@ export function buildDreamhouse(b: Builder): DreamhouseMood {
   b.box(0.8, 7.7, 6, gold, -10.05, 3.85, -50.2);
   b.box(0.8, 7.7, 6, gold, 10.05, 3.85, -50.2);
 
+  // Porcelain-pink architectural crown and a readable arrival landmark.
+  if (typeof document !== 'undefined') {
+    b.add(new THREE.PlaneGeometry(7.4,1.85),new THREE.MeshStandardMaterial({map:signTexture('Dreamhouse','#fff9ef','#d52f81',true),roughness:.45,emissive:0xff92ba,emissiveIntensity:.12}),0,5.55,-47.05);
+  }
+  b.box(8, .18, .38, pink, 0, 6.65, -47.3);
+  for (const px of [-4,4]) b.cyl(.12,.16,2.1,10,pink,px,5.6,-47.3);
+  for (let i=0;i<7;i++) b.box(.22,.22,5.9,pink,-8.4+i*2.8,7.65,-50.2);
+
   // ---- Living room (left-front) ----
   b.box(6, 0.06, 4.6, gloss(PALETTE.pastelPink, { roughness: 0.4 }), -5, 0.18, -43.2);
-  const sofa = gloss(PALETTE.white, { roughness: 0.45 });
-  const cushion = gloss(PALETTE.magenta, { roughness: 0.42, metalness: 0.3 });
+  const sofa = surface(PALETTE.white, 'fabric', { roughness: 0.88 });
+  const cushion = surface(PALETTE.magenta, 'fabric', { roughness: 0.8, metalness: 0.02 });
   b.box(4.2, 0.75, 1.3, sofa, -5, 0.58, -46);
   b.box(4.2, 1.15, 0.35, sofa, -5, 1.15, -46.7);
   b.box(4, 0.24, 1.1, cushion, -5, 1.02, -45.95);
@@ -175,6 +186,13 @@ export function buildDreamhouse(b: Builder): DreamhouseMood {
   b.box(2, 2.2, 0.14, glassMaterial(PALETTE.white, 0.45), -4.5, 5.6, -52.42);
   b.box(2.2, 2.4, 0.1, gold, -4.5, 5.6, -52.5);
   b.collider(-4.5, 4.35, -52, 1.2, 0.5, 0.5);
+  // Lit makeup mirror and cosmetic trays distinguish the vanity from wardrobe.
+  for (const x of [-5.47,-3.53]) for(let i=0;i<5;i++) b.sphere(.075,neonMaterial(0xffefcf,.8),x,4.7+i*.43,-52.26);
+  for (let i=0;i<4;i++) {
+    b.cyl(.07,.07,.2+i*.035,8,gloss([0xff6a9b,0xd54272,0xf2b788,0x9d5cf0][i]),-5.2+i*.25,4.96,-51.87);
+    b.cyl(.072,.072,.06,8,gold,-5.2+i*.25,5.09+i*.0175,-51.87);
+  }
+  b.box(.5,.045,.35,gold,-3.8,4.88,-51.9);
   // Stool at the vanity
   b.cyl(0.3, 0.3, 0.14, 10, cushion, -4.5, 4.12, -50.9);
   b.cyl(0.09, 0.12, 0.6, 8, gold, -4.5, 3.75, -50.9);

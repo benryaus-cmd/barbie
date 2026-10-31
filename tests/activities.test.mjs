@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { SurfSession, PourSession, judgePour } from '../src/game/activity-model.ts';
+import { SurfSession, PourSession, NetballSession, activityReward, NETBALL_HOOP, NETBALL_BALL_RADIUS, NETBALL_RING_RADIUS, netballTrajectory, netballRimCrossing, judgePour } from '../src/game/activity-model.ts';
 const advance = (model, seconds, input = 0) => { for (let t=0;t<seconds;t+=1/120) model.update(1/120,input); };
 
 test('pour accuracy is driven by released fill, with overflow worth zero', () => {
@@ -45,4 +45,52 @@ test('surf rewards crossing a ring, obstacles break combo, session finishes in 3
  session.update(.1,0);assert.equal(session.combo,0);assert.ok(session.wipeout>0);
  advance(session,31);assert.equal(session.finished,true);
  const score=session.score;advance(session,5,1);assert.equal(session.score,score);
+});
+
+test('netball requires aiming and charging, scores only a made shot and ends after five shots',()=>{
+ const session=new NetballSession();
+ for(let shot=0;shot<5;shot++){
+  session.update(.1,Infinity);assert.ok(Number.isFinite(session.aim));
+  while(Math.abs(session.aim)>.002)session.update(.001,session.aim>0?-1:1);
+  session.setCharging(true);
+  while(session.charge<.64)session.update(.001,0);
+  session.setCharging(false);
+  assert.equal(session.phase,'flight');assert.equal(session.score,shot*10);
+  const before=session.ballPosition;session.update(.1);assert.ok(session.ballPosition.z<before.z);
+  advance(session,1.1);assert.equal(session.score,(shot+1)*10);
+  session.setCharging(false);assert.equal(session.score,(shot+1)*10,'repeated release cannot score');
+  advance(session,1.7);
+ }
+ assert.equal(session.finished,true);assert.equal(session.score,50);
+ session.setCharging(true);advance(session,8);session.setCharging(false);assert.equal(session.score,50);
+});
+test('netball misses poor aim or power and shot clock guarantees a finite session',()=>{
+ const miss=new NetballSession();miss.setCharging(true);advance(miss,.15);miss.setCharging(false);advance(miss,2);
+ assert.equal(miss.score,0);
+ const idle=new NetballSession();advance(idle,100);assert.equal(idle.finished,true);assert.equal(idle.score,0);
+ const cancel=new NetballSession();cancel.setCharging(true);advance(cancel,.5);cancel.cancelCharge();assert.equal(cancel.phase,'aim');assert.equal(cancel.charge,0);
+});
+test('collectible rewards normalize raw accuracy scores and cap each activity',()=>{
+ assert.equal(activityReward('pour',300),30);assert.equal(activityReward('pour',200),20);
+ assert.equal(activityReward('surf',9999),45);assert.equal(activityReward('netball',50),50);
+ assert.equal(activityReward('pour',NaN),0);assert.equal(activityReward('netball',-30),0);
+});
+
+test('netball awards only when the descending 3D ball fits through the actual ring',()=>{
+ for(const playerX of [-1.9,1.9,-2.7,2.7,0])for(const [aim,charge] of [[0,.64],[0,.70],[0,.75],[.1,.64],[-.1,.64],[0,.50]]){
+  const crossing=netballRimCrossing(playerX,aim,charge);
+  const before=netballTrajectory(playerX,aim,charge,crossing.time-.001);
+  const point=netballTrajectory(playerX,aim,charge,crossing.time);
+  const after=netballTrajectory(playerX,aim,charge,crossing.time+.001);
+  assert(before.y>NETBALL_HOOP.y);assert(after.y<NETBALL_HOOP.y,'the judged crossing is descending');
+  assert(Math.abs(point.y-NETBALL_HOOP.y)<1e-9);
+  const fits=Math.hypot(point.x-NETBALL_HOOP.x,point.z-NETBALL_HOOP.z)+NETBALL_BALL_RADIUS<=NETBALL_RING_RADIUS;
+  assert.equal(crossing.made,fits);
+ }
+ for(const [aim,charge,expected] of [[0,.64,10],[0,.75,0],[.1,.64,0]]){
+  const shot=new NetballSession();shot.aim=aim;shot.setCharging(true);
+  while(shot.charge<charge)shot.update(.0001);
+  shot.setCharging(false);advance(shot,1.5);assert.equal(shot.score,expected);
+  if(expected){const point=shot.ballPosition;assert(point.y<NETBALL_HOOP.y,'made ball drops through the net');assert(Math.abs(point.z-NETBALL_HOOP.z)<.4,'net slows the ball after the ring');}
+ }
 });

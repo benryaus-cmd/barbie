@@ -1,9 +1,10 @@
 export type TopId = 'glam'|'beach'|'popstar'|'casual'|'sunset'|'denim'|'sport'|'midnight';
 export type BottomId = 'gown'|'wrap'|'pleated'|'shorts'|'palazzo'|'tennis'|'denim-skirt'|'satin-mini';
-export type WearableId = 'tiara'|'sunglasses'|'earrings'|'necklace'|'bow';
-export type Look = { top:TopId; bottom:BottomId; accessories:WearableId[]; topColor:string; bottomColor:string };
-export type PoseId = 'idle'|'wave'|'peace'|'heart'|'kiss'|'spin'|'dance'|'pet'|'surf';
-export type ActivityKind = 'surf'|'pour';
+export type WearableId = 'tiara'|'sunglasses'|'earrings'|'necklace'|'bow'|'round-shades'|'star-shades'|'sunhat'|'beret'|'headband'|'choker'|'bracelets';
+export type MakeupId = 'fresh'|'rose'|'glam'|'sunset'|'bold';
+export type Look = { top:TopId; bottom:BottomId; accessories:WearableId[]; topColor:string; bottomColor:string; hairColor?:string; makeup?:MakeupId };
+export type PoseId = 'idle'|'wave'|'peace'|'heart'|'kiss'|'spin'|'dance'|'pet'|'surf'|'hug'|'arm-around'|'half-heart'|'salute'|'curtsy'|'jump';
+export type ActivityKind = 'surf'|'pour'|'netball';
 export type ActivityState = { kind:ActivityKind; progress:number; score:number; combo:number; timeLeft:number; feedback:string; finished:boolean; round?:number; fill?:number; target?:number };
-export type PetAction = 'pat'|'ball'|'frisbee'|'treat'|'idle';
+export type PetAction = 'pat'|'ball'|'frisbee'|'treat'|'idle'|'follow'|'bed'|'whistle';
 export type ResidentInfo = {id:string;name:string;role:string;color:string;bio:string};

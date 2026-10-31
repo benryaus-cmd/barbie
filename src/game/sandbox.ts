@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {createSteering} from '@/game/movement';
 import { createActivityStage } from '@/game/activity-stage';
 import { createResidents } from '@/game/residents';
 import { createPetCompanion } from '@/game/pet-companion';
@@ -36,6 +37,8 @@ export type SandboxApi = {
   setPouring(on: boolean): void;
   setPetAction(action: PetAction): void;
   setPhotoCompanion(id: string | null): void;
+  setPhotoGroup(ids:string[], pose:PoseId, pair:string|null):void;
+  zoomCamera(delta:number):void;
   setMove(x: number, y: number): void;
   rotateCamera(dx: number, dy: number): void;
   jump(): void;
@@ -141,7 +144,8 @@ export function createSandbox(options: SandboxOptions): Sandbox {
   let activityRunning = false;
   let activityKind: ActivityKind | null = null;
   let photoCompanion: string | null = null;
-  let steeringYaw: number | null = null;
+  let photoGroup: string[] = [];
+  let photoPair:string|null=null;
   const petTarget = new THREE.Vector3();
 
   const spots: Spot[] = SPOTS.map(spot => ({ ...spot }));
@@ -149,6 +153,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
   const cameraRig = createCameraRig(options.camera, 6.8, world.colliders);
 
   const move = { x: 0, y: 0 };
+  const steering=createSteering();
   let clock = 0;
   let jumpQueued = false;
   let facing = Math.PI;
@@ -214,24 +219,9 @@ export function createSandbox(options: SandboxOptions): Sandbox {
 
   function update(step: number) {
     if (activityRunning) {activity.update(step);return;}
-    // Lock the movement basis until the current gesture ends. Auto-follow then
-    // changes the view without feeding back into character steering.
-    const hasInput = Math.hypot(move.x, move.y) > .055 && presentation === 'world' && !dancing;
-    if (!hasInput) steeringYaw = null;
-    else if (steeringYaw === null) steeringYaw = cameraRig.getYaw();
-    const yaw = steeringYaw ?? cameraRig.getYaw();
-    const forwardX = -Math.sin(yaw);
-    const forwardZ = -Math.cos(yaw);
-    const rightX = Math.cos(yaw);
-    const rightZ = -Math.sin(yaw);
-    let dirX = rightX * move.x + forwardX * move.y;
-    let dirZ = rightZ * move.x + forwardZ * move.y;
-    if (!hasInput) {dirX = 0;dirZ = 0;}
-    const magnitude = Math.hypot(dirX, dirZ);
-    if (magnitude > 1) {
-      dirX /= magnitude;
-      dirZ /= magnitude;
-    }
+    const hasInput = Math.hypot(move.x, move.y) > .12 && presentation === 'world' && !dancing;
+    const direction=steering.direction(hasInput?move.x:0,hasInput?move.y:0,cameraRig.getYaw());
+    const dirX=direction.x,dirZ=direction.z;
 
     const walkSpeed = options.tuning.walkSpeed;
     const speed = dancing || presentation !== 'world' ? 0 : mounted ? walkSpeed * 2.7 : walkSpeed;
@@ -249,7 +239,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
 
     const seatHeight = mounted ? vehicles[mounted].seatY : 0;
     avatar.group.position.set(position.x, feetY + seatHeight + 0.02, position.z);
-    avatar.group.rotation.y = presentation === 'world' ? facing : 0;
+    avatar.group.rotation.y = presentation === 'world' ? facing : presentation==='photo'&&photoPair==='hug' ? -Math.PI/2 : 0;
     avatar.update(step, {
       moving,
       speed: travel,
@@ -299,10 +289,10 @@ export function createSandbox(options: SandboxOptions): Sandbox {
 
     petTarget.set(position.x, feetY, position.z);
     residents.update(step, petTarget, presentation === 'photo', options.tuning.effects && options.tuning.quality !== 'low' ? 3 : 1);
-    pet.update(step, petTarget, facing, presentation === 'pet' || presentation === 'photo', presentation === 'photo' && photoCompanion === 'pet');
-    pet.root.visible = presentation !== 'photo' || photoCompanion === 'pet';
-    cameraTarget.set(position.x + (presentation === 'photo' && photoCompanion && photoCompanion !== 'pet' ? .42 : presentation === 'pet' || presentation === 'photo' && photoCompanion === 'pet' ? -.28 : 0), feetY, position.z);
-    cameraRig.setWalkHeading(moving ? Math.atan2(dirX, dirZ) : null);
+    pet.update(step, petTarget, facing, presentation === 'pet' || presentation === 'photo', presentation === 'photo' && (photoCompanion === 'pet' || photoGroup.includes('pet')), photoPair ? .92 : -.82);
+    pet.root.visible = presentation !== 'photo' || (photoCompanion === 'pet' || photoGroup.includes('pet'));
+    cameraTarget.set(position.x + (presentation === 'photo' && photoGroup.filter(id=>id!=='pet').length === 1 ? .42 : presentation === 'pet' || presentation === 'photo' && (photoCompanion === 'pet' || photoGroup.includes('pet')) ? -.28 : 0), feetY, position.z);
+    cameraRig.setWalkHeading(moving ? Math.atan2(dirX, dirZ) : null, travel, direction.follow);
     const insideDreamhouse =
       position.x > -9.5 && position.x < 9.5 &&
       position.z > -52 && position.z < -39;
@@ -361,7 +351,8 @@ export function createSandbox(options: SandboxOptions): Sandbox {
     if (kind === activityKind) return;
     activityKind = kind;
     move.x = move.y = 0;
-    steeringYaw = null;
+    steering.reset();
+
     jumpQueued = false;
     if (activityRunning) activity.stop();
     activityRunning = kind !== null;
@@ -397,13 +388,15 @@ export function createSandbox(options: SandboxOptions): Sandbox {
       setActivityInput(value) {activity.setInput(Number.isFinite(value) ? THREE.MathUtils.clamp(value,-1,1) : 0);},
       setPouring(on) {activity.setPouring(on);},
       setPetAction(action) {pet.setAction(action); if (action === 'pat' || action === 'treat') avatar.setPose('pet');},
-      setPhotoCompanion(id) {photoCompanion = id;residents.setPhotoCompanion(id);},
+      setPhotoCompanion(id) {photoCompanion = id;photoGroup=id?[id]:[];photoPair=null;residents.setPhotoCompanion(id);},
+      setPhotoGroup(ids,pose,pair) {photoGroup=[...new Set(ids)].slice(0,2).sort((a,b)=>Number(a==='pet')-Number(b==='pet'));photoPair=pair;photoCompanion=photoGroup[0]||null;residents.setPhotoGroup(photoGroup,pose,pair);},
+      zoomCamera(delta) {cameraRig.zoom(delta);},
       setPresentation(mode) {
         if (activityRunning && mode === 'world') return;
         if (activityRunning) setActivity(null);
         presentation = mode;
-        if (mode === 'world') {avatar.setPose('idle');photoCompanion = null;residents.setPhotoCompanion(null);}
-        steeringYaw = null;
+        if (mode === 'world') {avatar.setPose('idle');photoCompanion = null;photoGroup=[];photoPair=null;residents.setPhotoCompanion(null);}
+
         move.x = 0;
         move.y = 0;
         jumpQueued = false;
@@ -415,6 +408,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
         move.y = Number.isFinite(y) ? THREE.MathUtils.clamp(y, -1, 1) : 0;
       },
       rotateCamera(dx, dy) {
+        steering.reset();
         cameraRig.rotate(dx, dy);
       },
       jump() {
@@ -463,8 +457,8 @@ export function createSandbox(options: SandboxOptions): Sandbox {
         if(activityRunning) setActivity(null);
         pet.reset();
         residents.setPhotoCompanion(null);
-        photoCompanion=null;
-        steeringYaw=null;
+        photoCompanion=null;photoGroup=[];photoPair=null;
+
         avatar.setPose('idle');
         mounted = null;
         dancing = false;

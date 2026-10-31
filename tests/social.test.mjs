@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { addPhoto, captionPhoto, deletePhoto, loadSocial, MAX_PHOTOS, MAX_SIGNATURES, photoSignature, publishPhoto, sanitizeSocial, saveSocial, SOCIAL_KEY, togglePhotoLike } from '../src/game/social.ts';
+import { addPhoto, captionPhoto, deletePhoto, followerTier, loadSocial, MAX_PHOTOS, MAX_SIGNATURES, photoSignature, publishPhoto, sanitizeSocial, saveSocial, SOCIAL_KEY, togglePhotoLike } from '../src/game/social.ts';
 const look = {top:'glam',bottom:'gown',accessories:['tiara','earrings'],topColor:'#ff66aa',bottomColor:'#ffffff'};
 const input = {image:'data:image/jpeg;base64,/9j/AA==',pose:'peace',companionId:null,companionName:null,zone:'Beach',look};
 const empty = () => sanitizeSocial(null);
@@ -60,4 +60,42 @@ test('malformed local data and signature history stay bounded without reopening 
   const next=addPhoto(state,input,100);
   assert.equal(publishPhoto(next,next.photos[0].id).gained,0,'full reward ledger cannot drop old identities and reopen farming');
   assert.equal(photoSignature({...input,look:{...look,accessories:['earrings','tiara']}}),photoSignature(input));
+});
+
+
+test('group composition, independent co-star poses and paired poses have stable reward identities', () => {
+  const group = {...input, companionId:'ken', companionName:'Ken & Barbie', groupIds:['ken','barbie'], groupNames:['Ken','Barbie'], companionPose:'wave', pair:null};
+  assert.equal(photoSignature(group),photoSignature({...group,groupIds:['barbie','ken']}),'selection order does not create a new reward');
+  assert.notEqual(photoSignature(group),photoSignature({...group,groupIds:['ken']}));
+  assert.notEqual(photoSignature(group),photoSignature({...group,companionPose:'peace'}));
+  assert.notEqual(photoSignature(group),photoSignature({...group,pair:'hug'}));
+  assert.notEqual(photoSignature({...group,pair:'hug'}),photoSignature({...group,groupIds:['barbie','ken'],pair:'hug'}),'the paired partner is part of the composition');
+  let state=addPhoto(empty(),group,1);state=publishPhoto(state,state.photos[0].id).state;
+  const reloaded=sanitizeSocial(JSON.parse(JSON.stringify(state)));
+  assert.deepEqual(reloaded.photos[0].groupIds,['ken','barbie']);
+  assert.equal(reloaded.photos[0].companionPose,'wave');
+  let next=addPhoto(reloaded,{...group,pair:'half-heart'},2);
+  assert(publishPhoto(next,next.photos[0].id).gained>0);
+  next=addPhoto(reloaded,{...group,groupIds:['barbie','ken']},3);
+  assert.equal(publishPhoto(next,next.photos[0].id).gained,0);
+});
+test('legacy single-companion saves retain their original signature and reward ledger', () => {
+  const legacy={...input,id:'old',createdAt:1,caption:'Old memory',companionId:'ken',companionName:'Ken'};
+  const signature=JSON.stringify([look.top,look.bottom,[...look.accessories].sort(),look.topColor,look.bottomColor,'peace','beach','ken']);
+  const state=sanitizeSocial({followers:12,photos:[legacy],rewardedSignatures:[signature]});
+  assert.deepEqual(state.photos[0].groupIds,['ken']);assert.equal(state.photos[0].companionPose,'wave');
+  assert.equal(state.photos[0].signature,signature);assert.equal(publishPhoto(state,'old').gained,0);
+  assert.equal(addPhoto(empty(),{...input,groupIds:['ken','barbie','pet']},2).photos[0].groupIds.length,2);
+});
+test('follower tiers show a capped activity point multiplier and clear next milestones', () => {
+  assert.deepEqual([0,39,40,100,250,500,10000].map(value=>followerTier(value).multiplier),[1,1,1.1,1.2,1.35,1.5,1.5]);
+  assert.equal(followerTier(39).next,40);assert.equal(followerTier(500).next,null);
+});
+
+test('extended accessories, hair colour and makeup survive photo saves and affect creative identity', () => {
+  const styled={...input,look:{...look,accessories:['round-shades','sunhat','bracelets'],hairColor:'#bb6633',makeup:'rose'}};
+  const state=addPhoto(empty(),styled,20);const reloaded=sanitizeSocial(JSON.parse(JSON.stringify(state)));
+  assert.deepEqual(reloaded.photos[0].look,styled.look);
+  assert.notEqual(photoSignature(styled),photoSignature({...styled,look:{...styled.look,makeup:'bold'}}));
+  assert.equal(photoSignature(input),photoSignature({...input,look:{...look,makeup:'fresh'}}));
 });

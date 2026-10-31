@@ -7,19 +7,39 @@ export function createWorldAmbience() {
     side:THREE.BackSide,depthWrite:false,
     uniforms:{},
     vertexShader:'varying vec3 vDirection; void main(){vDirection=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
-    fragmentShader:`varying vec3 vDirection;void main(){float h=vDirection.y;vec3 peach=vec3(1.0,.55,.42);vec3 rose=vec3(.79,.38,.59);vec3 violet=vec3(.24,.22,.47);vec3 c=mix(peach,rose,smoothstep(-.02,.28,h));c=mix(c,violet,smoothstep(.18,.85,h));gl_FragColor=vec4(c,1.0);#include <tonemapping_fragment>\n#include <colorspace_fragment>}`,
+    fragmentShader:`varying vec3 vDirection;
+void main(){
+  vec3 d=normalize(vDirection);float h=d.y;
+  vec3 horizon=vec3(1.0,.60,.27);
+  vec3 coral=vec3(.93,.35,.44);
+  vec3 violet=vec3(.34,.22,.50);
+  vec3 zenith=vec3(.10,.16,.34);
+  vec3 c=mix(horizon,coral,smoothstep(-.03,.23,h));
+  c=mix(c,violet,smoothstep(.12,.57,h));
+  c=mix(c,zenith,smoothstep(.45,.98,h));
+  float sunGlow=pow(max(0.0,dot(d,normalize(vec3(-170.,27.,-240.)))),9.0);
+  c+=sunGlow*vec3(.34,.19,.045);
+  // Long, quiet cloud bands stay deterministic and require no textures.
+  float band=sin(d.x*11.0+d.z*7.0+sin(d.z*22.0)*.18);
+  float cloud=smoothstep(.52,.85,band)*smoothstep(.07,.13,h)*(1.0-smoothstep(.17,.27,h));
+  c=mix(c,vec3(.97,.53,.43),cloud*.35);
+  gl_FragColor=vec4(c,1.0);
+  #include <tonemapping_fragment>
+  #include <colorspace_fragment>
+}`,
+
   }));
   // Shader chunks require preprocessor directives to begin on a new line.
   (sky.material as THREE.ShaderMaterial).fragmentShader=(sky.material as THREE.ShaderMaterial).fragmentShader.replace(';#include',';\n#include');
   root.add(sky);
-  const sun=new THREE.Mesh(new THREE.SphereGeometry(19,20,12),new THREE.MeshBasicMaterial({color:0xffcc8c,fog:false}));sun.position.set(-170,27,-240);root.add(sun);
+  const sun=new THREE.Mesh(new THREE.SphereGeometry(17,20,12),new THREE.MeshBasicMaterial({color:0xffd387,fog:false}));sun.position.set(-170,27,-240);root.add(sun);
   const waterMaterial=new THREE.ShaderMaterial({
     transparent:true,depthWrite:false,side:THREE.DoubleSide,
     uniforms:{time:{value:0}},
     vertexShader:`uniform float time;varying vec2 vUv;varying float wave;void main(){vUv=uv;vec3 p=position;wave=sin(p.x*3.0+time*1.4)*cos(p.y*3.2-time)*.025;p.z+=wave;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`,
     fragmentShader:`uniform float time;varying vec2 vUv;varying float wave;void main(){vec2 q=vUv*vec2(11.2,8.2);float a=sin(q.x*5.0+time*1.6+sin(q.y*3.3-time));float b=sin(q.y*6.0-time*1.4+sin(q.x*3.0+time));float caustic=pow(max(0.0,a*b),5.0);float glint=pow(max(0.0,sin(q.x*2.5+q.y*3.0-time*1.5)),16.0);vec3 c=mix(vec3(.04,.49,.66),vec3(.21,.83,.87),vUv.y*.4+.35+wave*4.0);c+=caustic*.26+glint*vec3(.27,.21,.14);gl_FragColor=vec4(c,.93);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>}`,
   });
-  const water=new THREE.Mesh(new THREE.PlaneGeometry(11.2,8.2,36,28),waterMaterial);water.rotation.x=-Math.PI/2;water.position.set(0,.73,-25);water.name='Living pool water';root.add(water);
+  const water=new THREE.Mesh(new THREE.PlaneGeometry(11.2,8.2,24,18),waterMaterial);water.rotation.x=-Math.PI/2;water.position.set(0,.73,-25);water.name='Living pool water';root.add(water);
   const party=new THREE.Group();party.name='Optional party effects';root.add(party);
   const beams:THREE.Group[]=[];
   const lasers:THREE.Mesh[]=[];

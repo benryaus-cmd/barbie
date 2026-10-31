@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Check, Crown, Footprints, Glasses, Heart, LockKeyhole, Scissors, Shirt, Sparkles } from 'lucide-react';
+import { Check, Crown, Footprints, Glasses, Heart, LockKeyhole, Scissors, Shirt, Sparkles, BookmarkPlus, Trash2 } from 'lucide-react';
 import type { AccessoryId, HairId, OutfitId, ShoesId } from '@/game/types';
 import type { Look } from '@/game/lifestyle-types';
-import { BOTTOMS, COLORS, EXTRAS, TOPS } from '@/game/fashion';
+import { BOTTOMS, COLORS, EXTRAS, TOPS, HAIRSTYLES } from '@/game/fashion';
+import type { SavedLook } from '@/game/lifestyle-save';
 import { ChoiceRow, Panel } from '@/ui/Panel';
 import './fashion.css';
 
@@ -14,6 +15,8 @@ type WardrobeSheetProps = {
   look:Look; ownedFashion:string[]; followers:number;
   onFashion:(slot:'top'|'bottom'|'accessory',id:string)=>void;
   onColor:(slot:'top'|'bottom',color:string)=>void;
+  savedLooks?:SavedLook[]; onSaveLook?:(name:string)=>void; onLoadLook?:(id:string)=>void; onDeleteLook?:(id:string)=>void;
+  ownedColors?:string[]; onBuyColor?:(color:string)=>void;
 };
 const OUTFITS = [
   {id:'glam',label:'Glam Party',emoji:'👗',price:0},
@@ -21,18 +24,14 @@ const OUTFITS = [
   {id:'popstar',label:'Popstar',emoji:'🎤',price:40},
   {id:'casual',label:'Designer',emoji:'🕶️',price:25},
 ];
-const HAIRS = [
-  {id:'blonde',label:'Golden waves',emoji:'👱‍♀️'}, {id:'pink',label:'Bubble pony',emoji:'🎀'},
-  {id:'updo',label:'Chic updo',emoji:'💇‍♀️'}, {id:'bob',label:'Glossy bob',emoji:'💇‍♀️'},
-  {id:'curls',label:'Copper curls',emoji:'💇‍♀️'},
-];
 const SHOES = [
   {id:'heels',label:'Pink heels',emoji:'👠'}, {id:'sneakers',label:'Sneakers',emoji:'👟'},
   {id:'boots',label:'Gold boots',emoji:'🥾'}, {id:'sandals',label:'Gold sandals',emoji:'🩴'},
   {id:'platforms',label:'Lilac platforms',emoji:'👡'},
 ];
 const CATEGORIES=['Tops','Bottoms','Extras','Hair','Shoes','Sets'] as const;
-export function WardrobeSheet({title,outfit,hair,shoes,unlocked,points,notice,onOutfit,onHair,onShoes,onClose,look,ownedFashion,followers,onFashion,onColor}:WardrobeSheetProps) {
+export function WardrobeSheet({title,outfit,hair,shoes,unlocked,points,notice,onOutfit,onHair,onShoes,onClose,look,ownedFashion,followers,onFashion,onColor,savedLooks=[],onSaveLook,onLoadLook,onDeleteLook,ownedColors=[],onBuyColor}:WardrobeSheetProps) {
+  const [setName,setSetName]=useState('');
   const [category,setCategory]=useState<typeof CATEGORIES[number]>('Tops');
   const slot=category==='Tops'?'top':category==='Bottoms'?'bottom':'accessory';
   const catalog=slot==='top'?TOPS:slot==='bottom'?BOTTOMS:EXTRAS;
@@ -58,10 +57,19 @@ export function WardrobeSheet({title,outfit,hair,shoes,unlocked,points,notice,on
             </button>;
           })}
         </div>
-        {slot==='top'||slot==='bottom'?<section className="fashion-colors" aria-label={`${category} color`}><div className="fashion-section-heading"><h3>{category==='Tops'?'Top':'Bottom'} color</h3><span>Free · independent</span></div><div className="fashion-color-row">{COLORS.map(color=><button key={color.value} type="button" title={color.label} aria-label={`${color.label} ${slot} color`} aria-pressed={look[slot==='top'?'topColor':'bottomColor'].toLowerCase()===color.value.toLowerCase()} onClick={()=>onColor(slot,color.value)} style={{backgroundColor:color.value}}>{look[slot==='top'?'topColor':'bottomColor'].toLowerCase()===color.value.toLowerCase()?<Check size={15}/>:null}</button>)}</div></section>:<p className="fashion-tip">Tap an extra to put it on or take it off. Tiara, shades, jewelry and bow can all be worn together.</p>}
+        {slot==='top'||slot==='bottom'?<section className="fashion-colors" aria-label={`${category} color`}><div className="fashion-section-heading"><h3>{category==='Tops'?'Top':'Bottom'} color</h3><span>10 free · collectible colors</span></div><div className="fashion-color-row">{COLORS.map(color=>{
+          const owned=!color.price||ownedColors.includes(color.value);
+          const active=look[slot==='top'?'topColor':'bottomColor'].toLowerCase()===color.value.toLowerCase();
+          return <button key={color.value} type="button" title={`${color.label}${owned?'':` · ${color.price} points`}`} aria-label={`${color.label} ${slot} color${owned?'':`, ${color.price} points to unlock`}`} aria-pressed={active} className={owned?'':'color-locked'} onClick={()=>owned?onColor(slot,color.value):onBuyColor?.(color.value)} style={{backgroundColor:color.value}}>{active?<Check size={15}/>:!owned?<LockKeyhole size={10}/>:null}</button>;
+        })}</div></section>:<p className="fashion-tip">Tap an extra to put it on or take it off. Mix hats, shades, jewelry and bows to finish your look.</p>}
       </>:null}
-      {category==='Sets'?<><ChoiceRow title="Complete looks · choose then customize" items={OUTFITS} activeId={outfit} unlockedIds={unlocked} points={points} onSelect={id=>onOutfit(id as OutfitId)}/><p className="fashion-tip">A set changes your top and bottom together. Open Tops or Bottoms to make the look your own.</p></>:null}
-      {category==='Hair'?<div className="fashion-basics"><h3><Scissors size={14}/> A fresh point of view</h3><ChoiceRow title="Five signature hairstyles" items={HAIRS} activeId={hair} onSelect={id=>onHair(id as HairId)}/></div>:null}
+      {category==='Sets'?<><ChoiceRow title="Complete looks · choose then customize" items={OUTFITS} activeId={outfit} unlockedIds={unlocked} points={points} onSelect={id=>onOutfit(id as OutfitId)}/><p className="fashion-tip">A set changes your top and bottom together. Open Tops or Bottoms to make the look your own.</p>
+        {onSaveLook?<section className="saved-look-section"><div className="fashion-section-heading"><h3>Your saved looks</h3><span>{savedLooks.length} / 8 sets</span></div>
+          <form className="save-look-form" onSubmit={event=>{event.preventDefault();if(savedLooks.length<8){onSaveLook(setName.trim()||`Dream look ${savedLooks.length+1}`);setSetName('');}}}><input aria-label="Name your look" maxLength={32} placeholder="Name this look…" value={setName} onChange={event=>setSetName(event.target.value)}/><button type="submit" disabled={savedLooks.length>=8}><BookmarkPlus size={14}/> Save look</button></form>
+          <p className="fashion-tip">Save your mix, colors, hairstyle, makeup, shoes and extras together.</p>
+          {savedLooks.length?<div className="saved-look-list">{savedLooks.map(set=><article key={set.id} className="saved-look-card"><span className="saved-look-dots" aria-hidden="true"><i style={{background:set.look.topColor}}/><i style={{background:set.look.bottomColor}}/></span><button type="button" onClick={()=>onLoadLook?.(set.id)} aria-label={`Wear ${set.name}`}><strong>{set.name}</strong><small>Wear complete look</small></button><button type="button" className="saved-look-delete" onClick={()=>onDeleteLook?.(set.id)} aria-label={`Delete ${set.name}`}><Trash2 size={14}/></button></article>)}</div>:<p className="saved-look-empty">Your next favorite outfit starts here. Mix a look and save it.</p>}
+        </section>:null}</>:null}
+      {category==='Hair'?<div className="fashion-basics"><h3><Scissors size={14}/> A fresh point of view</h3><ChoiceRow title="Nine signature hairstyles · visit the salon for color" items={HAIRSTYLES} activeId={hair} onSelect={id=>onHair(id as HairId)}/></div>:null}
       {category==='Shoes'?<div className="fashion-basics"><h3><Footprints size={14}/> A perfect pair</h3><ChoiceRow title="From beach strolls to the runway" items={SHOES} activeId={shoes} onSelect={id=>onShoes(id as ShoesId)}/></div>:null}
     </div>
   </Panel>;

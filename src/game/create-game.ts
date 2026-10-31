@@ -38,6 +38,8 @@ export type GameHandle = {
   setPouring(on: boolean): void;
   setPetAction(action: PetAction): void;
   setPhotoCompanion(id: string | null): void;
+  setPhotoGroup(ids:string[], pose:PoseId, pair:string|null):void;
+  zoomCamera(delta:number):void;
   capturePhoto(): string | null;
   setInputEnabled(enabled: boolean): void;
   setMove(x: number, y: number): void;
@@ -85,6 +87,7 @@ const noop: GameHandle = {
   setPresentation() {},
   setLook() {}, setPose() {}, setActivity() {}, setActivityInput() {},
   setPouring() {}, setPetAction() {}, setPhotoCompanion() {}, capturePhoto() {return null;},
+  setPhotoGroup() {}, zoomCamera() {},
   setInputEnabled() {},
   setMove() {},
   rotateCamera() {},
@@ -146,8 +149,8 @@ export function createGame(
   room.dispose();
   pmrem.dispose();
 
-  scene.add(new THREE.HemisphereLight(0xe5cbff, 0x93576d, .95));
-  const sun = new THREE.DirectionalLight(0xffc38d, 1.6);
+  scene.add(new THREE.HemisphereLight(0xbac8ff, 0x825462, 1.15));
+  const sun = new THREE.DirectionalLight(0xffb474, 2.25);
   sun.position.set(-25, 18, -12);
   // One bounded shadow map follows the doll; only the character casts into it.
   sun.castShadow = true;
@@ -158,7 +161,7 @@ export function createGame(
   sun.shadow.radius = 3;
   scene.add(sun.target);
   scene.add(sun);
-  const fill = new THREE.DirectionalLight(0xc5bcff, .5);
+  const fill = new THREE.DirectionalLight(0xb8c5ff, .65);
   fill.position.set(-32, 22, -28);
   scene.add(fill);
 
@@ -349,6 +352,8 @@ export function createGame(
     setPouring(on) {if (!disposed) sandbox.api.setPouring(on);},
     setPetAction(action) {if (!disposed) sandbox.api.setPetAction(action);},
     setPhotoCompanion(id) {if (!disposed) sandbox.api.setPhotoCompanion(id);},
+    setPhotoGroup(ids,pose,pair) {if (!disposed) sandbox.api.setPhotoGroup(ids,pose,pair);},
+    zoomCamera(delta) {if (!disposed) sandbox.api.zoomCamera(delta);},
     capturePhoto() {
       if (disposed || view.renderer.getContext().isContextLost()) return null;
       try {

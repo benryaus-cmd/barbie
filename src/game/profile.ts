@@ -21,7 +21,7 @@ export function sanitizeProfile(value: unknown): Profile {
   return {
     points, earned, unlocked,
     outfit: unlocked.includes(p.outfit) ? p.outfit : DEFAULT.outfit,
-    hair: ['blonde', 'pink', 'updo', 'bob', 'curls'].includes(p.hair) ? p.hair : DEFAULT.hair,
+    hair: ['blonde', 'pink', 'updo', 'bob', 'curls', 'braids', 'pixie', 'twin-buns', 'straight'].includes(p.hair) ? p.hair : DEFAULT.hair,
     accessory: ['none', 'sunglasses', 'tiara'].includes(p.accessory) ? p.accessory : DEFAULT.accessory,
     shoes: ['heels', 'sneakers', 'boots', 'sandals', 'platforms'].includes(p.shoes) ? p.shoes : DEFAULT.shoes,
   };

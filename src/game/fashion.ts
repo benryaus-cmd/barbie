@@ -1,5 +1,5 @@
-import type { OutfitId } from '@/game/types';
-import type { BottomId, Look, TopId, WearableId } from '@/game/lifestyle-types';
+import type { HairId, OutfitId } from '@/game/types';
+import type { BottomId, Look, TopId, WearableId, MakeupId } from '@/game/lifestyle-types';
 
 export type FashionItem<T extends string> = { id:T; label:string; price:number; followers?:number; color?:string };
 export const TOPS:FashionItem<TopId>[] = [
@@ -28,13 +28,24 @@ export const EXTRAS:FashionItem<WearableId>[] = [
   {id:'earrings',label:'Pearl hoops',price:15,color:'#f6c35e'},
   {id:'necklace',label:'Heart pendant',price:25,color:'#f6c35e'},
   {id:'bow',label:'Silk hair bow',price:20,color:'#ffb3d6'},
+  {id:'round-shades',label:'Round sun lenses',price:25,color:'#b898f0'},
+  {id:'star-shades',label:'Starlet shades',price:40,color:'#53dbe4'},
+  {id:'sunhat',label:'Riviera sunhat',price:45,color:'#f6d99c'},
+  {id:'beret',label:'Parisian beret',price:35,color:'#ec4899'},
+  {id:'headband',label:'Pearl headband',price:20,color:'#fffaf3'},
+  {id:'choker',label:'Velvet choker',price:30,color:'#493355'},
+  {id:'bracelets',label:'Rainbow bangles',price:25,color:'#98d7ad'},
 ];
-export const COLORS = [
+export const COLORS:{label:string;value:string;price?:number}[] = [
   {label:'Rose',value:'#ec4899'}, {label:'Blush',value:'#ffb3d6'},
   {label:'Pearl',value:'#fffaf3'}, {label:'Lilac',value:'#b898f0'},
   {label:'Lagoon',value:'#53dbe4'}, {label:'Denim',value:'#658fda'},
   {label:'Sunset',value:'#ff9878'}, {label:'Midnight',value:'#493355'},
   {label:'Mint',value:'#98d7ad'}, {label:'Cherry',value:'#c52e56'},
+  {label:'Champagne',value:'#e8c77b',price:30}, {label:'Electric blue',value:'#4058ef',price:35},
+  {label:'Orchid',value:'#c25ddb',price:35}, {label:'Emerald',value:'#248c73',price:40},
+  {label:'Ruby',value:'#a51f45',price:40}, {label:'Starlight silver',value:'#bdc9d9',price:50},
+  {label:'Espresso',value:'#674639',price:30}, {label:'Peach sorbet',value:'#ffc28b',price:30},
 ];
 export const DEFAULT_LOOK:Look = {top:'glam',bottom:'gown',accessories:[],topColor:'#ec4899',bottomColor:'#ec4899'};
 export function presetLook(outfit:OutfitId):Look {
@@ -45,3 +56,24 @@ export function presetLook(outfit:OutfitId):Look {
   const [top,bottom,topColor,bottomColor] = combinations[outfit];
   return {top,bottom,topColor,bottomColor,accessories:[]};
 }
+
+export const HAIRSTYLES:{id:HairId;label:string;emoji:string}[] = [
+ {id:'blonde',label:'Golden waves',emoji:'✨'}, {id:'pink',label:'Bubble pony',emoji:'🎀'},
+ {id:'updo',label:'Chic updo',emoji:'💎'}, {id:'bob',label:'Glossy bob',emoji:'✂️'},
+ {id:'curls',label:'Soft curls',emoji:'🌀'}, {id:'braids',label:'Twin braids',emoji:'🎀'},
+ {id:'pixie',label:'Feathered pixie',emoji:'✂️'}, {id:'twin-buns',label:'Space buns',emoji:'🪐'},
+ {id:'straight',label:'Silk cascade',emoji:'✨'},
+];
+export const HAIR_COLORS = [
+ {label:'Golden blonde',value:'#eec86b'}, {label:'Espresso',value:'#412a39'},
+ {label:'Chestnut',value:'#69412f'}, {label:'Copper',value:'#b86c43'},
+ {label:'Bubblegum',value:'#f378b7'}, {label:'Lavender',value:'#b69ae4'},
+ {label:'Platinum',value:'#f5ecce'}, {label:'Ocean teal',value:'#388c94'},
+];
+export const MAKEUP_LOOKS:{id:MakeupId;label:string;lip:string;blush:string;shadow:string;description:string}[] = [
+ {id:'fresh',label:'Fresh glow',lip:'#e87994',blush:'#f4b4a7',shadow:'#e5b9ac',description:'Soft peach cheeks · natural lip'},
+ {id:'rose',label:'Rosy romantic',lip:'#e84a82',blush:'#f39bb3',shadow:'#c98cab',description:'Petal pink eyes · rose gloss'},
+ {id:'glam',label:'Party shimmer',lip:'#c63676',blush:'#e68dab',shadow:'#b79bea',description:'Lilac shimmer · berry gloss'},
+ {id:'sunset',label:'Golden hour',lip:'#db7255',blush:'#f0a278',shadow:'#d9a35f',description:'Warm gold eyes · coral lip'},
+ {id:'bold',label:'Red carpet',lip:'#ae254f',blush:'#df8f9b',shadow:'#79638f',description:'Smoky plum eyes · cherry lip'},
+];

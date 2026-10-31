@@ -138,16 +138,27 @@ function surfShack(b: Builder, fx: StationFx) {
   fx.bobbers.push({ obj: wave, baseY: 1.4, phase: 0.4, spin: 0.3 });
 }
 
-function volleyNet(b: Builder) {
-  const gold = gloss(PALETTE.gold, { metalness: 0.9, roughness: 0.16 });
-  for (const px of [40.6, 47.4]) {
-    b.cyl(0.1, 0.13, 2.7, 8, gold, px, 1.35, 35);
-    b.sphere(0.16, neonMaterial(PALETTE.magenta, 1.5), px, 2.78, 35);
+function netballCourt(b: Builder) {
+  const rose = gloss(0xe291af,{roughness:.88});
+  const stripe = gloss(0xfff6df,{roughness:.8});
+  const brass = gloss(PALETTE.gold,{metalness:.65,roughness:.3});
+  b.box(11,.035,9,rose,44,.035,36.2);
+  for(const x of [38.6,49.4]) b.box(.08,.04,8.8,stripe,x,.07,36.2);
+  for(const z of [31.85,36.2,40.55]) b.box(10.8,.04,.08,stripe,44,.07,z);
+  const circle=b.add(new THREE.TorusGeometry(1.05,.045,5,28),stripe,44,.09,36.2);circle.rotation.x=-Math.PI/2;
+  const goalArc=b.add(new THREE.TorusGeometry(3.5,.045,5,36,Math.PI),stripe,44,.09,31.85);goalArc.rotation.x=-Math.PI/2;
+  // Netball has a freestanding ring with an open net, without a backboard.
+  b.cyl(.085,.12,3.05,10,brass,44,1.53,31.7);
+  b.box(.08,.08,.6,brass,44,3.04,31.98);
+  const rim=b.add(new THREE.TorusGeometry(.4,.045,8,24),gloss(0xd95080),44,3.05,32.35);rim.rotation.x=-Math.PI/2;
+  const netMat=gloss(0xfff5e6,{roughness:.85});
+  for(let i=0;i<12;i++) {
+    const a=i*Math.PI*2/12;
+    const curve=new THREE.LineCurve3(new THREE.Vector3(44+Math.cos(a)*.4,3.03,32.35+Math.sin(a)*.4),new THREE.Vector3(44+Math.cos(a+.3)*.22,2.48,32.35+Math.sin(a+.3)*.22));
+    b.add(new THREE.TubeGeometry(curve,1,.012,4,false),netMat);
   }
-  b.box(6.8, 0.95, 0.06, glassMaterial(PALETTE.white, 0.42), 44, 2.15, 35);
-  b.box(6.9, 0.08, 0.1, gloss(PALETTE.magenta, { roughness: 0.3 }), 44, 2.62, 35);
-  b.box(6.9, 0.08, 0.1, gloss(PALETTE.magenta, { roughness: 0.3 }), 44, 1.68, 35);
-  b.sphere(0.26, gloss(PALETTE.white, { roughness: 0.28 }), 41.4, 0.4, 37.4);
+  for(const [y,r] of [[2.86,.35],[2.67,.28],[2.48,.22]]) {const ring=b.add(new THREE.TorusGeometry(r,.012,4,16),netMat,44,y,32.35);ring.rotation.x=-Math.PI/2;}
+  b.sphere(.23,gloss(0xf8eee4,{roughness:.78}),41.4,.25,37.4);
 }
 
 function photoBooth(b: Builder, fx: StationFx) {
@@ -210,7 +221,7 @@ export function buildStations(b: Builder): StationFx {
   petBed(b, fx);
   slideSign(b, fx);
   surfShack(b, fx);
-  volleyNet(b);
+  netballCourt(b);
   photoBooth(b, fx);
   cafeKiosk(b, fx);
 

@@ -5,6 +5,7 @@ export type ZoneId = 'dreamhouse' | 'beach' | 'avenue';
 export type VehicleId = 'convertible' | 'scooter' | 'buggy';
 
 export type SpotId =
+  | 'salon' | 'makeup'
   | 'resident'
   | 'runway'
   | 'dj'
@@ -56,7 +57,7 @@ export type NearbySpot = {
 } | null;
 
 export type OutfitId = 'glam' | 'beach' | 'popstar' | 'casual';
-export type HairId = 'blonde' | 'pink' | 'updo' | 'bob' | 'curls';
+export type HairId = 'blonde' | 'pink' | 'updo' | 'bob' | 'curls' | 'braids' | 'pixie' | 'twin-buns' | 'straight';
 export type AccessoryId = 'none' | 'sunglasses' | 'tiara';
 export type ShoesId = 'heels' | 'sneakers' | 'boots' | 'sandals' | 'platforms';
 

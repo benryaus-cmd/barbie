@@ -25,3 +25,7 @@ Mix eight tops and eight bottoms, recolor them independently, and layer five ext
 The surf shack launches a real3D board ride. Sunset Sips uses an actual glass fill/target game with graded pours. The camera gently follows walking direction while preserving stationary manual views.
 
 The camera button captures actual scene photos with residents or your pet. Keep12 memories, write captions and share them to fictional offline DreamFeed. Fresh look/pose/place/co-star combinations earn followers that unlock special fashion. Your old wallet, full-set purchases and collector-card saves migrate without reset. See [v2 verification](docs/v2-verification.md) for actual checks and limits.
+
+### Golden Hour
+
+Personal outfit sets, nine salon hairstyles and hair dye, five makeup looks, twelve stackable accessory types, Ken, group and paired photographs, photo orbit/zoom, explicit Mochi follow/home/whistle, five-shot 3D netball and balanced activity rewards. DreamFeed milestones apply a capped 1.0–1.5× style-point multiplier. The world adds matching beach ground collision, comfortable stairs, a salon and warmer textured resort scenery.

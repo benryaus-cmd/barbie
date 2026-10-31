@@ -1,3 +1,4 @@
+import type { SavedLook } from '@/game/lifestyle-save';
 import type { Look, PoseId } from '@/game/lifestyle-types';
 import type { AccessoryId, HairId, OutfitId, ShoesId } from '@/game/types';
 import { DanceTilesGame } from '@/ui/DanceTilesGame';
@@ -14,7 +15,7 @@ import { VolleyGame } from '@/ui/VolleyGame';
 import { WardrobeSheet } from '@/ui/WardrobeSheet';
 
 export type PanelId =
-  | 'camera' | 'emotes' | 'resident' | 'pour'
+  | 'camera' | 'emotes' | 'resident' | 'pour' | 'netball' | 'salon' | 'makeup'
   | 'none'
   | 'wardrobe'
   | 'boutique'
@@ -32,6 +33,7 @@ export type PanelId =
 
 type SheetsProps = {
   panel: PanelId;
+  savedLooks?:SavedLook[]; onSaveLook?:(name:string)=>void; onLoadLook?:(id:string)=>void; onDeleteLook?:(id:string)=>void; ownedColors?:string[]; onBuyColor?:(color:string)=>void;
   look:Look; ownedFashion:string[]; followers:number;
   onFashion:(slot:'top'|'bottom'|'accessory',id:string)=>void;
   onColor:(slot:'top'|'bottom',color:string)=>void;
@@ -59,7 +61,7 @@ type SheetsProps = {
 };
 
 export function Sheets({
-  panel, look, ownedFashion, followers, onFashion, onColor, onPose, onCapture,
+  panel, savedLooks,onSaveLook,onLoadLook,onDeleteLook,ownedColors,onBuyColor, look, ownedFashion, followers, onFashion, onColor, onPose, onCapture,
   points,
   earned,
   notice,
@@ -81,11 +83,12 @@ export function Sheets({
   onMood,
   onBonus,
 }: SheetsProps) {
-  if (['surf','pour','camera','emotes','resident','pet'].includes(panel)) return null;
+  if (['surf','pour','netball','salon','makeup','camera','emotes','resident','pet'].includes(panel)) return null;
   if (panel === 'wardrobe' || panel === 'boutique') {
     return (
       <WardrobeSheet
         title={panel === 'boutique' ? 'Fashion Avenue Boutique' : 'Walk-in Closet'}
+        savedLooks={savedLooks} onSaveLook={onSaveLook} onLoadLook={onLoadLook} onDeleteLook={onDeleteLook} ownedColors={ownedColors} onBuyColor={onBuyColor}
         look={look} ownedFashion={ownedFashion} followers={followers} onFashion={onFashion} onColor={onColor}
         outfit={outfit}
         hair={hair}

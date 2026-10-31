@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as RAPIER from '@dimforge/rapier3d';
 import type { ColliderBox } from '@/game/types';
+import { GROUND_FOOTPRINTS } from '@/game/world/ground';
 
 export const CAPSULE_HALF = 0.55;
 export const CAPSULE_RADIUS = 0.3;
@@ -31,9 +32,19 @@ export function createPhysics(
   const world = new RAPIER.World({ x: 0, y: -GRAVITY, z: 0 });
   world.timestep = 1 / 60;
 
-  world.createCollider(
-    RAPIER.ColliderDesc.cylinder(2.5, 63).setTranslation(0, -2.5, 0)
-  );
+  // Rendered district extensions are walkable too; share their exact footprints.
+  for (const ground of GROUND_FOOTPRINTS) {
+    // A planar triangle cap is exact at every radius; very wide, shallow
+    // cylinders produced visibly sunken contact points near district edges.
+    const vertices: number[] = [ground.x, ground.elevation, ground.z];
+    const indices: number[] = [];
+    for (let i = 0; i < 64; i += 1) {
+      const a = i * Math.PI * 2 / 64;
+      vertices.push(ground.x + Math.cos(a) * ground.radius, ground.elevation, ground.z + Math.sin(a) * ground.radius);
+      indices.push(0, (i + 1) % 64 + 1, i + 1);
+    }
+    world.createCollider(RAPIER.ColliderDesc.trimesh(new Float32Array(vertices), new Uint32Array(indices)));
+  }
   for (const box of colliders) {
     world.createCollider(
       RAPIER.ColliderDesc.cuboid(box.hx, box.hy, box.hz).setTranslation(
@@ -54,7 +65,9 @@ export function createPhysics(
     body
   );
   const controller = world.createCharacterController(0.02);
-  controller.enableAutostep(0.4, 0.25, true);
+  controller.enableAutostep(0.4, 0.08, true);
+  // Keep the capsule on descending treads without enabling snap during jumps.
+  controller.enableSnapToGround(0.2);
   controller.setMaxSlopeClimbAngle((52 * Math.PI) / 180);
   controller.setMinSlopeSlideAngle((38 * Math.PI) / 180);
 
@@ -72,6 +85,8 @@ export function createPhysics(
       return grounded;
     },
     step(dirX, dirZ, speed, jump, dt) {
+      if (!Number.isFinite(dt) || dt <= 0) return;
+      dt = Math.min(dt, 1 / 30);
       const blend = Math.min(1, dt * 12);
       velocityX += (dirX * speed - velocityX) * blend;
       velocityZ += (dirZ * speed - velocityZ) * blend;
@@ -128,10 +143,15 @@ export function createPhysics(
     },
     teleport(x, y, z) {
       body.setTranslation({ x, y, z }, true);
+      body.setNextKinematicTranslation({ x, y, z });
+      world.propagateModifiedBodyPositionsToColliders();
       position.set(x, y, z);
       velocityX = 0;
       velocityY = 0;
       velocityZ = 0;
+      grounded = false;
+      airTime = 1;
+      jumpBuffer = 0;
     },
     free() {
       world.free();

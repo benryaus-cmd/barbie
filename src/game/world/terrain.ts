@@ -2,6 +2,8 @@ import * as THREE from 'three';
 import type { Builder } from '@/game/builder';
 import { PALETTE, gloss, glassMaterial } from '@/game/palette';
 import { flowerPatch, palm } from '@/game/world/props';
+import { GROUND_FOOTPRINTS } from '@/game/world/ground';
+import { surface } from '@/game/world/materials';
 
 function pad(
   b: Builder,
@@ -35,17 +37,17 @@ export function buildTerrain(b: Builder) {
   );
   ocean.name = 'ocean';
 
-  const island = b.add(
-    new THREE.CylinderGeometry(62, 57, 5, 18),
-    gloss(PALETTE.sand, { roughness: 0.88, metalness: 0.04 }),
-    0,
-    -2.5,
-    0
-  );
-  island.name = 'island';
+  // Offset districts used to be paper discs hanging beyond the physics island.
+  // All three now use the same 64-sided footprint as their exact collision caps.
+  for (const ground of GROUND_FOOTPRINTS) {
+    const island = b.add(
+      new THREE.CylinderGeometry(ground.radius, ground.radius - 3, 5, 64),
+      surface(ground.color, 'sand', { roughness: 0.92, metalness: 0 }),
+      ground.x, -2.5 + ground.elevation, ground.z
+    );
+    island.name = ground.x === 0 ? 'island' : 'district shore';
+  }
 
-  pad(b, 42, 34, 25, PALETTE.sandDeep);
-  pad(b, -46, 14, 21, 0x6d1b4c);
   pad(b, 0, 4, 15, PALETTE.blush);
 
   b.box(30, 0.14, 30, gloss(PALETTE.blush, { roughness: 0.2, metalness: 0.4 }), 0, 0.07, -34);
@@ -109,4 +111,9 @@ export function buildTerrain(b: Builder) {
   palm(b, -14, -10, 0.85);
   palm(b, 16, 2, 1);
   palm(b, 22, -12, 0.9);
+  palm(b, -17, -35, 1.2);
+  palm(b, 21, -48, 1.05);
+  flowerPatch(b, -13, -38, PALETTE.hotPink);
+  flowerPatch(b, 12, -38, PALETTE.purple);
+  flowerPatch(b, -35, 22, PALETTE.magenta);
 }

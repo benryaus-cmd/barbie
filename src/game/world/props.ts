@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import type { Builder } from '@/game/builder';
 import { PALETTE, gloss, neonMaterial } from '@/game/palette';
+import { surface } from '@/game/world/materials';
 
 export function palm(b: Builder, x: number, z: number, scale = 1) {
-  const trunkMat = gloss(PALETTE.wood, { roughness: 0.88, metalness: 0.04 });
-  const leafMat = gloss(0x2ebd7c, { roughness: 0.55, metalness: 0.1 });
+  const trunkMat = surface(PALETTE.wood, 'wood', { roughness: 0.88, metalness: 0.04 });
+  const leafMat = surface(0x309c69, 'leaf', { roughness: 0.65, metalness: 0.02 });
   const nutMat = gloss(0x7a4b2a, { roughness: 0.8 });
   const height = 5.2 * scale;
   const trunk = b.add(
@@ -18,11 +19,13 @@ export function palm(b: Builder, x: number, z: number, scale = 1) {
   // Seven broad curved fronds share a tiny geometry, with no alpha textures.
   const vertices: number[] = [];
   const indices: number[] = [];
+  const uv: number[] = [];
   const steps = 8;
   for (let i = 0; i <= steps; i += 1) {
     const t = i / steps;
     const width = Math.sin(t * Math.PI) * 0.43 * scale;
     const y = (Math.sin(t * Math.PI) * 0.65 - t * t * 1.15) * scale;
+    uv.push(0,t,.5,t,1,t);
     vertices.push(-width, y - width * 0.18, t * 3.4 * scale);
     vertices.push(0, y + width * 0.22, t * 3.4 * scale);
     vertices.push(width, y - width * 0.18, t * 3.4 * scale);
@@ -33,6 +36,7 @@ export function palm(b: Builder, x: number, z: number, scale = 1) {
   }
   const frond = new THREE.BufferGeometry();
   frond.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  frond.setAttribute('uv', new THREE.Float32BufferAttribute(uv,2));
   frond.setIndex(indices);
   frond.computeVertexNormals();
   leafMat.side = THREE.DoubleSide;
@@ -72,7 +76,7 @@ export function lounger(
   color: number
 ) {
   const frame = gloss(PALETTE.white, { metalness: 0.4, roughness: 0.25 });
-  const cushion = gloss(color, { roughness: 0.45 });
+  const cushion = surface(color, 'fabric', { roughness: 0.85 });
   b.box(1.1, 0.16, 2.2, frame, x, 0.52, z, angle);
   b.box(1, 0.14, 2, cushion, x, 0.63, z, angle);
   const back = b.add(
@@ -84,6 +88,13 @@ export function lounger(
   );
   back.rotation.y = angle;
   back.rotation.x = -0.42;
+  for (const side of [-.43,.43]) {
+    for (const end of [-.78,.78]) {
+      const px=x+Math.cos(angle)*side+Math.sin(angle)*end;
+      const pz=z-Math.sin(angle)*side+Math.cos(angle)*end;
+      b.cyl(.035,.035,.48,6,frame,px,.25,pz);
+    }
+  }
 }
 
 export function lamp(b: Builder, x: number, z: number) {

@@ -66,3 +66,52 @@
 .dream-comments p { margin:3px 0; color:#ab8396; font-size:9px; line-height:1.5; }
 .dream-comments strong { margin-right:3px; color:#8d5670; }
 @media(max-height:560px) { .photo-studio .panel-heading { margin-bottom:3px; } .photo-studio .panel-heading p { margin-top:2px; } .photo-pose { min-height:40px; } .photo-companions { padding:4px 0; } .photo-status { font-size:8px; } .photo-browser .panel-sheet { height:96%; max-height:96%; } }
+.photo-camera-region { position:absolute; z-index:29; inset:64px 8px auto; height:42%; border:1px solid #fff5; border-radius:22px; touch-action:none; pointer-events:auto; cursor:grab; outline-offset:-3px; }
+.photo-camera-region:active { cursor:grabbing; }
+.photo-camera-region:focus-visible { outline:3px solid #fa61a7; }
+.photo-camera-hint { position:absolute; left:50%; top:5px; transform:translateX(-50%); display:flex; align-items:center; gap:5px; padding:5px 9px; border-radius:99px; background:#49244070; color:#fff; font-size:9px; font-weight:700; white-space:nowrap; pointer-events:none; }
+.photo-zoom-controls { position:absolute; right:6px; bottom:8px; display:flex; gap:5px; }
+.photo-zoom-controls button { display:grid; width:40px; height:40px; place-items:center; border:1px solid #fff; border-radius:50%; color:#96385f; background:#fffaf4e8; cursor:pointer; }
+.photo-composition { display:flex; align-items:center; gap:7px; margin:0 0 6px; color:#9a5b78; font-size:9px; }
+.photo-composition > span { display:flex; align-items:center; gap:4px; padding:4px 7px; border:1px solid #ecc2d4; border-radius:99px; background:#ffe5f0; font-weight:900; color:#a92f68; }
+.photo-composition small { margin-left:auto; font-size:8px; color:#a6798f; }
+.photo-pose-strip { display:flex; overflow-x:auto; scrollbar-width:thin; padding-bottom:3px; }
+.photo-pose { flex:0 0 64px; min-height:40px; }
+.photo-group-poses { display:flex; gap:8px; margin:0 0 6px; }
+.photo-group-poses label { display:flex; flex:1; min-width:0; align-items:center; gap:5px; font-size:8px; font-weight:800; color:#94617a; }
+.photo-group-poses label > button { width:100%; min-width:0; min-height:32px; padding:3px 5px; border:1px solid #e6c8d8; border-radius:9px; background:white; color:#985676; font-size:10px; }
+.photo-follower-card { position:relative; display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:13px; margin:4px 0 10px; border:1px solid #f0b9d0; border-radius:15px; background:linear-gradient(110deg,#ffe0ed,#fff3da); color:#b33273; }
+.photo-follower-card strong { display:block; font-size:17px; letter-spacing:-.5px; }
+.photo-follower-card span { display:block; margin-top:3px; font-size:9px; font-weight:800; color:#9f5a7a; }
+.photo-follower-card small { margin-left:auto; font-size:8px; font-weight:800; }
+.photo-follower-card progress { appearance:none; width:100%; height:5px; overflow:hidden; border:0; border-radius:9px; background:#eac5d5; accent-color:#df4289; }
+.photo-follower-card progress::-webkit-progress-bar { background:#eac5d5; }
+.photo-follower-card progress::-webkit-progress-value { background:#df4289; border-radius:9px; }
+@media(max-height:560px) { .photo-camera-region { top:49px; height:37%; } .photo-composition { margin-bottom:4px; } .photo-pose { min-height:34px; } .photo-companions button { min-height:29px; } .photo-group-poses label > button { min-height:28px; } }
+/* The shutter stays reachable in Aippy's short embedded phone viewport. */
+.photo-studio .panel-content{display:flex;flex-direction:column;min-height:0;overflow-y:auto}
+.photo-studio .photo-pose-strip,.photo-studio .photo-companions,.photo-studio .photo-group-poses{flex-shrink:0}
+.photo-camera-actions{position:sticky;bottom:0;z-index:2;flex-shrink:0;background:#fff8f8;padding-top:3px}
+@media(max-height:600px){
+ .photo-studio .panel-heading{margin-bottom:3px;min-height:32px}
+ .photo-studio .panel-heading h2{font-size:16px}
+ .photo-studio .panel-heading p{font-size:8px;margin-top:2px}
+ .photo-studio .panel-close{width:32px;height:32px}
+ .photo-studio .photo-composition{display:none}
+ .photo-studio .photo-pose{min-height:30px;flex-basis:60px}
+ .photo-studio .photo-pose>span{font-size:18px}
+ .photo-studio .photo-pose small{font-size:8px}
+ .photo-studio .photo-companions{padding:3px 0;gap:4px}
+ .photo-studio .photo-companions button{min-height:27px;padding:3px 8px}
+ .photo-studio .photo-group-poses{margin-bottom:3px;gap:6px}
+ .photo-studio .photo-group-poses label > button{min-height:27px;font-size:9px}
+ .photo-studio .photo-library-button,.photo-studio .photo-shutter{min-height:39px}
+ .photo-studio .photo-status{margin-top:3px;font-size:7px;line-height:1.3}
+}
+
+.photo-pose-menu{position:absolute;z-index:38;bottom:45%;left:8px;right:8px;max-width:530px;margin-inline:auto;border:1px solid #fff;border-radius:18px;background:#fff9f6;box-shadow:0 8px 35px #61274240;color:#81455f;padding:10px;pointer-events:auto}
+.photo-pose-menu header{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;font-size:12px}
+.photo-pose-menu header button{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:#f6e1ec}
+.photo-pose-menu>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.photo-pose-menu>div button{min-height:42px;border:1px solid #ebcede;border-radius:10px;background:white;color:#925572;font-size:10px;font-weight:800}
+.photo-pose-menu>div button[aria-pressed=true]{background:#f9d7e7;border-color:#ce5c96;color:#a32f6b}

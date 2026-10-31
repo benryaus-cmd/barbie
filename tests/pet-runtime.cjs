@@ -1,0 +1,25 @@
+const fs=require('node:fs'),assert=require('node:assert/strict'),ts=require('typescript'),THREE=require('three');
+const mod={exports:{}};
+const code=ts.transpileModule(fs.readFileSync('src/game/pet-companion.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;
+new Function('require','module','exports',code)(require,mod,mod.exports);
+const {createPetCompanion}=mod.exports;
+const home=new THREE.Vector3(4.5,.42,-34.5),player=new THREE.Vector3(20,0,15);
+const pet=createPetCompanion(),dog=pet.root.children[0],body=dog.children[0];
+function step(seconds,photo=false){for(let i=0;i<seconds*60;i++)pet.update(1/60,player,0,photo,photo)}
+step(2);
+assert(dog.position.distanceTo(home)<.01,'puppy starts sleeping in the actual bed even when player is elsewhere');
+assert(body.position.y<-.1,'sleeping puppy lies down');
+const breathing=body.scale.y;step(.4);assert.notEqual(body.scale.y,breathing,'sleeping puppy breathes');
+pet.setAction('whistle');const before=dog.position.clone();step(1/60);
+assert(dog.position.distanceTo(before)<.3,'whistle wakes and runs without teleporting');
+step(12);assert(dog.position.distanceTo(player)<2,'whistle calls puppy from anywhere');assert(body.position.y>-.02,'called puppy wakes');
+pet.setAction('idle');player.x+=4;step(2);assert(dog.position.distanceTo(player)<2,'idle preserves follow mode');
+pet.setAction('ball');step(6);player.x+=3;step(2);assert(dog.position.distanceTo(player)<2,'fetch returns to follow mode');
+pet.setAction('bed');const returnStart=dog.position.clone();step(1/60);assert(dog.position.distanceTo(returnStart)<.3,'bed command starts a real walk home');
+step(15);assert(dog.position.distanceTo(home)<.01,'bed command returns puppy home');assert(body.position.y<-.1,'puppy sleeps after returning home');
+pet.setAction('frisbee');step(7);assert(dog.position.distanceTo(home)<.1,'fetch from bed returns home');
+step(12,true);assert(dog.position.distanceTo(player)<2,'pet joins a requested photo');
+step(15);assert(dog.position.distanceTo(home)<.01,'photo restores previous bed mode');
+pet.setAction('follow');step(12,true);step(2);assert(dog.position.distanceTo(player)<2,'photo preserves previous follow mode');
+pet.reset();step(1);assert(dog.position.distanceTo(home)<.01,'reset restores sleeping default');
+console.log('PASS sleeping bed default, breathing, whistle, following, real return home, fetch and temporary photos');

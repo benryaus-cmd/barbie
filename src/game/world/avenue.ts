@@ -2,10 +2,11 @@ import * as THREE from 'three';
 import type { Builder } from '@/game/builder';
 import { PALETTE, gloss, glassMaterial, neonMaterial } from '@/game/palette';
 import { lamp, neonPanel, palm } from '@/game/world/props';
+import { surface, signTexture } from '@/game/world/materials';
 
 export function buildAvenue(b: Builder) {
   const road = gloss(PALETTE.plum, { roughness: 0.42, metalness: 0.3 });
-  const shopWall = gloss(PALETTE.blush, { roughness: 0.24, metalness: 0.34 });
+  const shopWall = surface(PALETTE.blush, 'plaster', { roughness: 0.72, metalness: 0.04 });
   const trim = gloss(PALETTE.magenta, { roughness: 0.26, metalness: 0.35 });
   const gold = gloss(PALETTE.gold, { metalness: 0.92, roughness: 0.14 });
   const white = gloss(PALETTE.white, { roughness: 0.2, metalness: 0.4 });
@@ -26,6 +27,16 @@ export function buildAvenue(b: Builder) {
       b.box(1.7, 0.08, 0.56, white, -53.08, 4.49, z - 2.8 + stripe * 1.12);
     }
     neonPanel(b, -53.45, 5.6, z, 5.6, 0.9, i === 1 ? PALETTE.neonBlue : PALETTE.gold, Math.PI / 2);
+    if(typeof document!=='undefined') {
+      const sign=b.add(new THREE.PlaneGeometry(6.2,.88),new THREE.MeshStandardMaterial({map:signTexture(['DREAM COUTURE','THE GLAM EDIT','ROSE & GOLD'][i]),roughness:.6}),-53.28,5.6,z);
+      sign.rotation.y=Math.PI/2;
+    }
+    for(const edge of [-3.5,3.5]) {
+      b.box(.4,6.8,.3,gold,-53.42,3.5,z+edge);
+      b.box(.42,.25,.8,white,-53.4,6.1,z+edge);
+    }
+    // Raised pilasters and cornice give the street a recognisable boutique silhouette.
+    b.box(9.8,.2,9.1,white,-58,7.48,z);
     b.cyl(0.16, 0.16, 2.6, 8, gold, -53, 5.6, z + 3.2);
   }
 

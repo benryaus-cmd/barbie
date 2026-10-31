@@ -8,4 +8,5 @@ export const RESIDENTS: ResidentInfo[] = [
   { id: 'nikki', name: 'Nikki', role: 'Fashion designer', color: '#ffbd55', bio: 'A designer who loves bold outfit combinations and helping friends find their own style.' },
   { id: 'renee', name: 'Renee', role: 'Surf & sports coach', color: '#66c1ff', bio: 'An adventurous athlete who cheers on every attempt, from first waves to beach volleyball.' },
   { id: 'daisy', name: 'Daisy', role: 'Café creator', color: '#e68bda', bio: 'A joyful musician and baker who brings cupcake ideas and an extra sprinkle of imagination.' },
+  { id: 'ken', name: 'Ken', role: 'Beach & boardwalk friend', color: '#48b7d9', bio: 'A good-humoured beach regular who loves surfing, volleyball, and cheering on his friends from the boardwalk.' },
 ];
