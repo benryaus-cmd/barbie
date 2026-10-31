@@ -1,0 +1,10 @@
+{
+  "enabled": false,
+  "mode": "manifest",
+  "repository": "benryaus-cmd/barbie",
+  "branch": "main",
+  "manifestUrl": "",
+  "manifestSha256": "",
+  "sourceCommit": "",
+  "requestId": ""
+}

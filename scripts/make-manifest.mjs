@@ -1,0 +1,15 @@
+import {execFileSync} from 'node:child_process';
+import {writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+const sourceCommit=process.argv[2];
+if(!/^[a-f0-9]{40}$/.test(sourceCommit||'')) throw Error('Supply the exact published source commit SHA');
+const repository='benryaus-cmd/barbie';
+const files=execFileSync('git',['ls-tree','-rz','--name-only',sourceCommit,'--','src','public'],{encoding:'utf8'}).split('\0').filter(Boolean);
+const entry=async destination=>{const data=execFileSync('git',['show',`${sourceCommit}:${destination}`]);return {destination,url:`https://raw.githubusercontent.com/${repository}/${sourceCommit}/${destination}`,size:data.length,sha256:createHash('sha256').update(data).digest('hex')}};
+const selected=files.filter(p=>p!=='src/main.tsx'&&!p.startsWith('src/dev/')&&!p.startsWith('src/types/')&&!/^src\/components\/(ProjectFileViewer|ProjectFilePreview|DevUnlockOverlay)\./.test(p)&&!/^src\/config\/assets\./.test(p));
+const pkg=JSON.parse(execFileSync('git',['show',`${sourceCommit}:package.json`],{encoding:'utf8'}));
+const keys=Object.keys(JSON.parse(execFileSync('git',['show',`${sourceCommit}:src/config/assets.json`],{encoding:'utf8'})));
+const required=['@aippy/runtime','@dimforge/rapier3d','fflate','lucide-react','react','react-dom','three','tone'];
+const manifest={schemaVersion:1,repository,sourceCommit,files:await Promise.all(selected.map(entry)),assetConfigUpdate:{...await entry('src/config/assets.json'),strategy:'merge-json-object',keys},assetConfigWrapper:{...await entry('src/config/assets.ts'),strategy:'create-if-missing'},requiredDependencies:Object.fromEntries(required.map(n=>[n,pkg.dependencies[n]])),obsoleteGameFiles:[]};
+const data=JSON.stringify(manifest,null,2)+'\n';await writeFile('aippy-import-manifest.json',data);
+console.log(JSON.stringify({sourceCommit,files:manifest.files.length,assetKeys:keys.length,manifestSha256:createHash('sha256').update(data).digest('hex')}));

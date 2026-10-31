@@ -1,0 +1,82 @@
+import {createServer} from 'node:http';
+import {readFile, mkdir, writeFile} from 'node:fs/promises';
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+const html=await readFile('dist/index.html');
+const server=createServer((req,res)=>{res.setHeader('Content-Type','text/html');res.end(html)});
+await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+const port=server.address().port;
+const browser=await chromium.launch({headless:true,args:['--no-sandbox','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+const context=await browser.newContext({viewport:{width:390,height:844},deviceScaleFactor:1,hasTouch:true,isMobile:true});
+const page=await context.newPage();
+page.setDefaultTimeout(7000);
+const errors=[];page.on('pageerror',error=>errors.push(error.message));
+await mkdir('.test-output',{recursive:true});
+try {
+ await page.goto(`http://127.0.0.1:${port}`);
+ await page.getByRole('button',{name:/step into/i}).click();
+ await page.waitForTimeout(1500);
+ assert.equal(await page.getByText(/could not start|WebGL failed/i).count(),0,'World must start');
+ await page.screenshot({path:'.test-output/world.png'});
+ await page.getByRole('button',{name:'Open wardrobe'}).click();
+ await page.waitForTimeout(800);
+ await page.screenshot({path:'.test-output/wardrobe.png'});
+ const sheet=await page.locator('.panel-sheet').boundingBox();
+ assert(sheet.y>=844*.59,'Wardrobe must leave upper60% unobscured');
+ await page.getByRole('button',{name:/Beach Day/}).click();
+ await page.getByRole('button',{name:'Close panel'}).click();
+ await page.getByRole('button',{name:'Open settings'}).click();
+ await page.getByRole('button',{name:/^Low/}).click();
+ assert.equal(await page.getByRole('button',{name:/^Low/}).getAttribute('aria-pressed'),'true');
+ await page.getByRole('button',{name:'About',exact:true}).click();
+ assert(await page.getByText(/Cats and Cubes/).count()>0);
+ await page.screenshot({path:'.test-output/about.png'});
+ await page.getByRole('button',{name:'Close settings'}).click();
+ await page.reload();await page.getByRole('button',{name:/step into/i}).click();
+ await page.getByRole('button',{name:'Open settings'}).click();
+ assert.equal(await page.getByRole('button',{name:/^Low/}).getAttribute('aria-pressed'),'true','Quality persists');
+ await page.getByRole('button',{name:'Close settings'}).click();
+ await page.getByRole('button',{name:'Open wardrobe'}).click();
+ assert.equal(await page.getByRole('button',{name:/Beach Day/}).getAttribute('aria-pressed'),'true','Outfit persists');
+ await page.getByRole('button',{name:'Close panel'}).click();
+ await page.setViewportSize({width:360,height:640});
+ await page.waitForTimeout(300);await page.screenshot({path:'.test-output/phone-small.png'});
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No viewport horizontal overflow');
+ await page.getByRole('button',{name:'Open wardrobe'}).click();await page.waitForTimeout(500);await page.screenshot({path:'.test-output/wardrobe-small.png'});
+ assert((await page.locator('.panel-sheet').boundingBox()).y>=640*.59);
+ await page.getByRole('button',{name:'Close panel'}).click();
+ // Real keyboard traversal across the original open island to the dance floor.
+ await page.keyboard.down('d');await page.waitForTimeout(850);await page.keyboard.up('d');
+ for(let i=0;i<10;i++) {
+   if(await page.getByRole('button',{name:/Play Dance Floor|Play DJ Booth/}).count()) break;
+   await page.keyboard.down('w');await page.waitForTimeout(500);await page.keyboard.up('w');
+ }
+ await page.waitForTimeout(250);await page.screenshot({path:'.test-output/traversal.png'});
+ console.log('Nearby after traversal:',await page.locator('.nearby-callout').allTextContents());
+ const dance=page.getByRole('button',{name:/Play Dance Floor|Play DJ Booth/});
+ assert.equal(await dance.count(),1,'Real traversal must reach the dance activity');
+ await dance.click();await page.waitForTimeout(600);await page.screenshot({path:'.test-output/dance.png'});
+ assert((await page.locator('.panel-sheet').boundingBox()).y>=640*.59);
+ for(let i=0;i<12;i++) {
+   if(await page.getByRole('button',{name:/Collect points/}).count()) break;
+   const pad=page.locator('.rhythm-pad-active');
+   if(await pad.count()) await pad.click();
+   await page.waitForTimeout(100);
+ }
+ await page.getByRole('button',{name:/Collect points/}).waitFor({timeout:13000});
+ await page.getByRole('button',{name:/Collect points/}).click();
+ await page.getByRole('button',{name:'Open wardrobe'}).click();
+ await page.getByRole('button',{name:/Designer,.*points/}).click();
+ await page.waitForTimeout(2200);
+ assert.equal(await page.getByRole('button',{name:/Designer, owned/}).getAttribute('aria-pressed'),'true','Activity reward buys a new outfit');
+ await page.screenshot({path:'.test-output/designer-unlocked.png'});
+ await page.getByRole('button',{name:'Close panel'}).click();
+ await page.getByRole('button',{name:'Open settings'}).click();
+ for(let i=0;i<10;i++) await page.getByRole('heading',{name:'Settings',exact:true}).dispatchEvent('pointerdown',{pointerId:1});
+ await page.locator('input[type=password]').fill('gg');await page.getByRole('button',{name:'Unlock',exact:true}).click();
+ await page.getByRole('heading',{name:'Project Files',exact:true}).first().waitFor({timeout:10000});
+ await page.screenshot({path:'.test-output/hidden-viewer.png'});
+ assert.equal(errors.length,0,`No runtime errors: ${errors.slice(0,5)}`);
+ await writeFile('.test-output/browser-result.json',JSON.stringify({passed:true,errors,viewports:['390x844','360x640'],checks:['WebGL world','Wardrobe view','Outfit reload','Quality reload','About credit','No horizontal overflow','Hidden viewer unlock','Real traversal to dance','Dance reward buys outfit']},null,2));
+ console.log('PASS: production WebGL world, portrait layout, wardrobe, persistent quality/look, About and secret viewer.');
+} finally {await browser.close();await new Promise(resolve=>server.close(resolve));}

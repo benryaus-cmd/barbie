@@ -1,0 +1,533 @@
+{
+  "schemaVersion": 1,
+  "artStyle": "Stylized semi-realistic 3D, featuring polished, toy-like textures with high-gloss finishes. Palette: Bold Magenta, Pastel Pink, Shimmering Gold, Sky Blue, and Iridescent White. Lighting: Warm, sunny outdoor illumination with lens flares and sparkling particle effects.",
+  "assets": {
+    "activity_ui": {
+      "type": "file",
+      "source": "code",
+      "replaceable": false,
+      "description": "Touch interfaces for runway pose targets, DJ rhythm taps, pet care actions, boutique unlocks, style-score rewards, Dreamhouse room activities, beach activities, vehicle interactions, quick interactions with world props, and collector-card discovery and album access.",
+      "status": "planned",
+      "implementation": {
+        "method": "css",
+        "description": "Create responsive activity panels, contextual interaction prompts, short challenge instructions, progress and reward states, and clear exit or resume controls. Keep interfaces readable and touch-friendly without obscuring third-person gameplay; show concise feedback for card discoveries and provide access to the separate collector-card album.",
+        "status": "planned"
+      }
+    },
+    "avatar_movement_animation": {
+      "type": "animation",
+      "source": "code",
+      "replaceable": false,
+      "description": "Avatar locomotion, higher jumps, pose reactions, dance animation, and brief reactions for exploration, interactive objects, vehicles, pets, and activities.",
+      "status": "planned",
+      "implementation": {
+        "method": "animation",
+        "description": "Trace the effective jump impulse through the physics and movement update so it is not capped, reset, or overwritten; verify grounded-state gating and collision constraints, then implement a substantially higher jump impulse and longer airtime for high-arc traversal through the multi-story Dreamhouse while retaining smooth acceleration, deceleration, and bouncy response. Add brief reusable reach, celebrate, pet, and activity reaction animations where supported by the avatar rig.",
+        "status": "planned"
+      }
+    },
+    "barbie_avatar": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Customizable Barbie player avatar for third-person exploration, with modular hair, outfit, accessory, and shoe options used by the persistent wardrobe and interactive activities.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Build a mobile-efficient stylized 3D avatar from modular Three.js geometry and materials; expose swappable hair, clothing, accessories, and footwear, with polished toy-like surfaces and the specified pink, magenta, gold, and sky-blue palette. Keep attachment points available for vehicle riding and activity poses.",
+        "status": "planned"
+      }
+    },
+    "beach_buggies": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Beach buggies available for driving along Glam Beach and the boardwalk, with responsive controls and lightweight vehicle interaction feedback.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Build compact drivable buggies from reusable low-poly geometry with bright beach-ready colors and clear wheel and seat shapes. Provide a clear avatar riding attachment point and simple visual steering and wheel feedback.",
+        "status": "planned"
+      }
+    },
+    "beach_interactive_props": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Touch-interactable Glam Beach and boardwalk props, including surfboards and surf challenge markers, smoothie-bar ingredients and serving items, beach toys, lounge-area activities, and collectible shells or style tokens.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Create lightweight Three.js props with clear silhouettes and bright polished pink, gold, and sky-blue accents. Arrange surf activity markers, smoothie ingredients, lounge interactions, and collectibles in reachable spaces; use reusable geometry and avoid blocking traversal routes.",
+        "status": "planned"
+      }
+    },
+    "celebration_effects": {
+      "type": "animation",
+      "source": "code",
+      "replaceable": false,
+      "description": "Confetti bursts and screen-filling celebration effects for mini-game milestones, interactive discoveries, activity streaks, and style-score rewards.",
+      "status": "planned",
+      "implementation": {
+        "method": "animation",
+        "description": "Implement reusable celebratory particle bursts and UI-scale transitions with capped particle counts and short durations. Support small discovery sparkles as well as larger milestone celebrations.",
+        "status": "planned"
+      }
+    },
+    "collector_card_album": {
+      "type": "file",
+      "source": "code",
+      "replaceable": false,
+      "description": "Portrait-friendly digital album for the eight collectible Barbie cards, showing collection progress and opening collected card artwork in full-screen detail.",
+      "status": "planned",
+      "implementation": {
+        "method": "css",
+        "description": "Implement an optional touch-friendly album that displays all eight card slots, distinguishes collected and undiscovered cards, and opens collected artwork in a full-screen viewer at its original image aspect ratio. Provide clear close and return controls, retain collection progress, and avoid changing or interrupting normal exploration and gameplay when the album is closed.",
+        "status": "planned"
+      }
+    },
+    "collector_card_art_1": {
+      "type": "image",
+      "source": "user",
+      "replaceable": true,
+      "description": "User-provided first Barbie collector-card artwork, a blue-gowned fashion look on a Venetian balcony, displayed as card 1 in the full-screen digital album.",
+      "status": "ready",
+      "url": "https://cdn.aippy.ai/asset/4ed0b8c2df4948f6b5ebab8ca451a116.jpg?x-oss-process=style/p"
+    },
+    "collector_card_art_2": {
+      "type": "image",
+      "source": "user",
+      "replaceable": true,
+      "description": "User-provided second Barbie collector-card artwork, a black-and-white Paris fashion look with a red beret, displayed as card 2 in the full-screen digital album.",
+      "status": "ready",
+      "url": "https://cdn.aippy.ai/asset/3ae42665a8dc4f9e98465934ef48a215.jpg?x-oss-process=style/p"
+    },
+    "collector_card_art_3": {
+      "type": "image",
+      "source": "user",
+      "replaceable": true,
+      "description": "User-provided third Barbie collector-card artwork, an emerald-green London-inspired fashion look, displayed as card 3 in the full-screen digital album.",
+      "status": "ready",
+      "url": "https://cdn.aippy.ai/asset/9dd4535acec84257a2f92fc1e588bcf1.jpg?x-oss-process=style/p"
+    },
+    "collector_card_art_4": {
+      "type": "image",
+      "source": "user",
+      "replaceable": true,
+      "description": "User-provided fourth Barbie collector-card artwork, a navy-and-gold fashion look against a modern waterfront setting, displayed as card 4 in the full-screen digital album.",
+      "status": "ready",
+      "url": "https://cdn.aippy.ai/asset/37989eb6339b4541904b90060ed01c5e.jpg?x-oss-process=style/p"
+    },
+    "collector_card_art_5": {
+      "type": "image",
+      "source": "user",
+      "replaceable": true,
+      "description": "User-provided fifth Barbie collector-card artwork, a colorful embroidered fashion look in a boutique setting, displayed as card 5 in the full-screen digital album.",
+      "status": "ready",
+      "url": "https://cdn.aippy.ai/asset/ce2aa2da1fa24c038152acc01c7106d9.jpg?x-oss-process=style/p"
+    },
+    "collector_card_art_6": {
+      "type": "image",
+      "source": "user",
+      "replaceable": true,
+      "description": "User-provided sixth Barbie collector-card artwork, a navy-and-blue floral fashion look at a waterfront, displayed as card 6 in the full-screen digital album.",
+      "status": "ready",
+      "url": "https://cdn.aippy.ai/asset/576dd218c5d9470ea7b28b121023fd6e.jpg?x-oss-process=style/p"
+    },
+    "collector_card_art_7": {
+      "type": "image",
+      "source": "user",
+      "replaceable": true,
+      "description": "User-provided seventh Barbie collector-card artwork, a red-and-black fashion look against a nighttime city skyline, displayed as card 7 in the full-screen digital album.",
+      "status": "ready",
+      "url": "https://cdn.aippy.ai/asset/a31ce453b1f9475b9a9b5bac2315f171.jpg?x-oss-process=style/p"
+    },
+    "collector_card_art_8": {
+      "type": "image",
+      "source": "user",
+      "replaceable": true,
+      "description": "User-provided eighth Barbie collector-card artwork, a royal-blue classical fashion look in an ancient city setting, displayed as card 8 in the full-screen digital album.",
+      "status": "ready",
+      "url": "https://cdn.aippy.ai/asset/c16e5f55e6b24c3684f4a9b731c50e95.jpg?x-oss-process=style/p"
+    },
+    "collector_card_pickups": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Eight discoverable Barbie collector-card pickups scattered through existing Dreamhouse, Glam Beach, and Downtown Fashion Avenue spaces, with collected state linked to the digital album.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Create lightweight, clearly recognizable card pickup objects and place eight at reachable discovery points across the existing game zones. Add them without replacing or relocating gameplay objects, blocking paths, changing activity layouts, or forcing collection; use the existing interaction and discovery feedback, save each collected state, and connect each pickup to its corresponding full-size album artwork.",
+        "status": "planned"
+      }
+    },
+    "convertible_vehicle": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Sleek pink convertible for cruising around the island with responsive touch controls and opportunities for playful vehicle interactions.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Build a compact stylized vehicle from low-cost Three.js geometry with glossy pink bodywork, gold accents, wheels, and a driver attachment point. Include simple visual feedback for entering, driving, and exiting without adding costly geometry.",
+        "status": "planned"
+      }
+    },
+    "dj_party_props": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Dreamhouse DJ booth, interactive rhythm controls, and party stage props used for tap-to-the-beat play, dance reactions, and light-show rewards.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Create a compact DJ booth with recognizable touchable controls and magenta, gold, and sky-blue accents; keep lights and materials inexpensive for mobile rendering. Make the controls visually distinct and easy to approach.",
+        "status": "planned"
+      }
+    },
+    "dreamhouse_interior_furnishings": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Coordinated furniture and decorative set dressing that makes Dreamhouse interiors feel fully furnished, including living-room seating and decor, kitchen counters and accessories, closet storage and styling stations, rooftop poolside loungers, dance-floor tiles, and interactive pet beds.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Build reusable, low-cost Three.js furniture and decorative props with rounded polished forms and pastel pink, magenta, sky-blue, and gold accents. Include dance-floor tiles that visibly react to stepping and pet beds that invite pet-play interactions; keep walkways open and preserve clear access to every room fixture.",
+        "status": "planned"
+      }
+    },
+    "dreamhouse_room_fixtures": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Distinct interactive Dreamhouse fixtures: a wardrobe styling station and smart mirror for outfit previews, living-room mood-light and music controller, kitchen smoothie blender and ingredient display, DJ booth controls, rooftop pool slide and style-token markers, dance-floor tiles, and interactive pet beds.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Create recognizable, touch-interactable Three.js fixtures with clear visual affordances and simple mobile-efficient geometry. Provide distinct interaction points for changing room lighting and music, previewing outfits in a smart mirror, mixing smoothie ingredients, starting a DJ rhythm round, using the slide to collect tokens, triggering dance-floor responses, and starting pet-play sequences at pet beds. Coordinate placement with connected rooms and keep each station easy to approach.",
+        "status": "planned"
+      }
+    },
+    "dreamhouse_world": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Enterable, explorable multi-story Dreamhouse with furnished, connected interiors and interactive activities in the closet, living room, kitchen, DJ area, rooftop pool, dance floor, and pet beds.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Construct a traversable multi-story Dreamhouse with a clearly reachable entrance, connected interior rooms, stairs and readable routes, furnishings, and distinct interactive stations. Connect the closet smart mirror to outfit previews and saved combinations; living-room controls to mood and music choices; kitchen station to ingredient-based smoothie mixing; DJ booth to rhythm play; pool slide to collectible style tokens; dance tiles to animated feedback; and pet beds to pet-play sequences. Connect activities to touch-friendly UI and style rewards. Adjust third-person camera follow distance and framing dynamically indoors, using obstruction checks and collision avoidance so walls and furnishings do not block Barbie from view. Use bright glossy finishes, warm lighting, clear interaction points, and mobile-conscious geometry.",
+        "status": "planned"
+      }
+    },
+    "dreamland_pop_music": {
+      "type": "music",
+      "source": "user",
+      "replaceable": true,
+      "description": "User-provided background music audio replacing the previous soundtrack for exploring the tropical dreamland and its social hubs.",
+      "params": {
+        "loop": true
+      },
+      "status": "ready",
+      "url": "https://cdn.aippy.ai/asset/45e811febe6047a1b26ecbb32b8bd825.m4a"
+    },
+    "fashion_avenue_interactives": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Interactive Fashion Avenue shop and street props, including boutique display items, a fashion photo spot, runway challenge markers, and pet salon activity objects.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Build reusable, low-cost Three.js shop displays and street props with clear touch affordances and consistent glossy colors. Make boutique selections, photo poses, runway targets, and pet salon stations visually distinct and easy to approach.",
+        "status": "planned"
+      }
+    },
+    "fashion_avenue_world": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Explorable Downtown Fashion Avenue with neon-accented streets, interactive boutique shops, a red-carpet runway, pet salon, and playful discovery points.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Create connected street and shop geometry with magenta and pastel-pink accents, gold details, readable navigation landmarks, and performance-conscious lighting. Make boutique entrances, runway targets, and pet salon activity stations easy to identify and approach.",
+        "status": "planned"
+      }
+    },
+    "glam_beach_world": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Explorable Glam Beach and boardwalk with tropical shoreline, palm-tree lounge areas, smoothie bar, routes for beach vehicles and surfing, and collectible beach discoveries.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Build the beach, boardwalk, palms, bar, and ocean from efficient geometry and procedural materials; use reflective sky-blue water and shimmering surface highlights without expensive real-time effects. Leave clear interaction spaces at the smoothie bar, surf activity area, vehicle access points, and shoreline collectibles.",
+        "status": "planned"
+      }
+    },
+    "interactive_activity_system": {
+      "type": "animation",
+      "source": "code",
+      "replaceable": false,
+      "description": "Reusable interaction behavior for discoverable world objects and optional short 3D activities, including contextual activation, simple objectives, progress feedback, completion rewards, and return to sandbox exploration.",
+      "status": "planned",
+      "implementation": {
+        "method": "animation",
+        "description": "Implement a mobile-friendly interaction loop that identifies nearby usable objects, opens concise contextual prompts, starts the selected activity, tracks a small objective or score, provides visual and style-point feedback, then cleanly returns control to exploration. Reuse the loop for existing mini-games and new room, beach, boutique, pet, vehicle, and collectible interactions; keep activity duration and UI interruption brief.",
+        "status": "planned"
+      }
+    },
+    "jump_sound": {
+      "type": "synth",
+      "source": "code",
+      "replaceable": false,
+      "description": "Light, playful springy sound for the avatar jumping.",
+      "params": {
+        "durationSeconds": 0.28,
+        "loop": false
+      },
+      "status": "planned",
+      "implementation": {
+        "method": "synth",
+        "description": "Synthesize a quick buoyant upward pitch glide with a soft, rounded landing accent.",
+        "status": "planned"
+      }
+    },
+    "leaderboard_ui": {
+      "type": "file",
+      "source": "code",
+      "replaceable": false,
+      "description": "Leaderboard interface showing total style points in descending score order.",
+      "status": "planned",
+      "implementation": {
+        "method": "css",
+        "description": "Implement a portrait-friendly ranked score list and submission feedback presentation.",
+        "status": "planned"
+      }
+    },
+    "milestone_fanfare": {
+      "type": "synth",
+      "source": "code",
+      "replaceable": false,
+      "description": "Upbeat celebratory level-up chime for Fashion Runway and other mini-game milestones.",
+      "params": {
+        "durationSeconds": 1.1,
+        "loop": false
+      },
+      "status": "planned",
+      "implementation": {
+        "method": "synth",
+        "description": "Synthesize a cheerful rising fanfare with bright layered tones and a sparkling final note.",
+        "status": "planned"
+      }
+    },
+    "pet_care_sound": {
+      "type": "synth",
+      "source": "code",
+      "replaceable": false,
+      "description": "Gentle positive feedback sound for feeding, grooming, or dressing a pet.",
+      "params": {
+        "durationSeconds": 0.32,
+        "loop": false
+      },
+      "status": "planned",
+      "implementation": {
+        "method": "synth",
+        "description": "Synthesize a soft playful chime with a warm rounded tone and a delicate sparkle.",
+        "status": "planned"
+      }
+    },
+    "pet_companions": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Cute puppy and kitten companions for feeding, grooming, dressing up, and playful interactions around the pet spa and Dreamhouse pet beds.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Create friendly, lightweight puppy and kitten models with simple expressive features and attachment points for selectable accessories. Support compact idle and reaction poses suitable for grooming, feeding, dressing, and pet-play interactions.",
+        "status": "planned"
+      }
+    },
+    "pet_spa_props": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Interactive pet salon props for pet pampering, including grooming, feeding, washing, and dressing stations.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Build compact salon furniture and grooming props with rounded toy-like forms, bright pink surfaces, and clear interaction affordances. Make each station visually distinct and accessible for touch-based pet-care actions.",
+        "status": "planned"
+      }
+    },
+    "portrait_mobile_hud": {
+      "type": "file",
+      "source": "code",
+      "replaceable": false,
+      "description": "Portrait-oriented mobile game HUD with persistent style points and location, safely inset from screen edges and small-device cutoffs, with room for concise activity prompts and rewards.",
+      "status": "planned",
+      "implementation": {
+        "method": "css",
+        "description": "Implement responsive portrait HUD layout with safe-area spacing, readable status displays, contextual activity feedback, and no overlap with movement or action controls.",
+        "status": "planned"
+      }
+    },
+    "project_file_viewer": {
+      "type": "file",
+      "source": "code",
+      "replaceable": false,
+      "description": "Hidden, mobile-first project file viewer accessible only through the settings-title tap sequence and in-app password, supporting current-project file discovery, search, preview, selection, copying, and browser-side ZIP export of available source files without visible normal-app advertising.",
+      "status": "planned",
+      "implementation": {
+        "method": "css",
+        "description": "Implement a lazy-loaded full-screen file viewer backed by a sensitive-file-filtered Vite build-time manifest. Keep viewer and password overlays input-blocking and attach the secret trigger unobtrusively to the existing settings title; do not alter gameplay or expose a visible file-viewer control. Add a ZIP export button to the existing viewer screen that packages available embedded file contents in-browser, reports included and excluded files, and supports native file sharing when available with a browser-download fallback.",
+        "status": "planned"
+      }
+    },
+    "rhythm_hit_sound": {
+      "type": "synth",
+      "source": "code",
+      "replaceable": false,
+      "description": "Crisp pop cue when the player hits a DJ Party rhythm target.",
+      "params": {
+        "durationSeconds": 0.18,
+        "loop": false
+      },
+      "status": "planned",
+      "implementation": {
+        "method": "synth",
+        "description": "Synthesize a short, bright percussive pop with a subtle sparkling high note.",
+        "status": "planned"
+      }
+    },
+    "runway_props": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Fashion Runway Challenge red carpet, pose targets, and stage dressing used for pose-and-score play and style-reward moments.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Construct a clear runway route with a red carpet, stage, and visible pose-target markers that remain legible on mobile screens.",
+        "status": "planned"
+      }
+    },
+    "scooter_vehicle": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Pink scooter vehicle for traversing the island using responsive touch controls and playful ride interactions.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Create lightweight scooter geometry with polished pink panels, gold trim, wheels, and an avatar riding attachment point. Keep the silhouette clear and add simple visual feedback for mounting and riding.",
+        "status": "planned"
+      }
+    },
+    "style_points_chime": {
+      "type": "synth",
+      "source": "code",
+      "replaceable": false,
+      "description": "Warm ascending sparkle chime when earning style points, discovering an interactive item, or unlocking a fashion item.",
+      "params": {
+        "durationSeconds": 0.45,
+        "loop": false
+      },
+      "status": "planned",
+      "implementation": {
+        "method": "synth",
+        "description": "Synthesize a short ascending sequence of bright bell tones with a glossy, glittering finish.",
+        "status": "planned"
+      }
+    },
+    "title_page": {
+      "type": "file",
+      "source": "code",
+      "replaceable": false,
+      "description": "High-energy title screen with stylized typography, animated sparkle effects, and thematic character art displayed slightly smaller while preserving its proportions and overall splash-page composition.",
+      "status": "planned",
+      "implementation": {
+        "method": "css",
+        "description": "Implement a vibrant, portrait-oriented splash page featuring the Barbie brand aesthetic, dynamic CSS sparkle animations, and high-gloss typography. Slightly reduce the title-screen character image size while preserving its aspect ratio and ensuring it remains visually prominent within the existing composition.",
+        "status": "planned"
+      }
+    },
+    "title_screen_barbie_art": {
+      "type": "image",
+      "source": "user",
+      "replaceable": true,
+      "description": "User-provided Barbie character image to replace the existing Barbie picture on the title screen; use the exact attached fashion portrait featuring a pink embellished gown and tailored pink coat.",
+      "status": "ready",
+      "url": "https://cdn.aippy.ai/asset/4d72c2b334a8411b891be769a556a2b5.jpg?x-oss-process=style/p"
+    },
+    "touch_controls": {
+      "type": "file",
+      "source": "code",
+      "replaceable": false,
+      "description": "Virtual joystick, touch-drag camera area, and bottom-right Jump, Interact, and Wardrobe controls for mobile play, with contextual prompts for nearby activities and objects.",
+      "status": "planned",
+      "implementation": {
+        "method": "css",
+        "description": "Build responsive touch controls sized for portrait mobile screens with clear separation, safe-area handling, and touch-drag camera input. Make the Interact control communicate when a nearby object or activity can be used without covering the play space.",
+        "status": "planned"
+      }
+    },
+    "ui_tap_chime": {
+      "type": "synth",
+      "source": "code",
+      "replaceable": false,
+      "description": "Short bright, playful high-gloss chime for button taps and menu selections.",
+      "params": {
+        "durationSeconds": 0.16,
+        "loop": false
+      },
+      "status": "planned",
+      "implementation": {
+        "method": "synth",
+        "description": "Synthesize a quick high-pitched bell-like pop with a soft shimmering tail for touch feedback.",
+        "status": "planned"
+      }
+    },
+    "wardrobe_menu": {
+      "type": "file",
+      "source": "code",
+      "replaceable": false,
+      "description": "Persistent wardrobe menu for instantly changing avatar hair, outfits, accessories, and shoes, also used for Dreamhouse Style Studio previews and saving outfit combinations.",
+      "status": "planned",
+      "implementation": {
+        "method": "css",
+        "description": "Implement a compact, touch-friendly portrait wardrobe interface with clear outfit selection, preview, and save states.",
+        "status": "planned"
+      }
+    },
+    "wardrobe_outfits": {
+      "type": "model",
+      "source": "code",
+      "replaceable": false,
+      "description": "Four swappable avatar outfit sets: Glam Party Dress, Beach Day Bikini, Popstar Outfit, and Designer Casual, used in the persistent wardrobe menu and Style Studio previews.",
+      "status": "planned",
+      "implementation": {
+        "method": "three",
+        "description": "Create lightweight modular clothing and accessory geometry that can be attached to the avatar and switched instantly from the wardrobe UI.",
+        "status": "planned"
+      }
+    },
+    "world_interaction_effects": {
+      "type": "animation",
+      "source": "code",
+      "replaceable": false,
+      "description": "Contact-point sparkle feedback, water and glass glints, hover-glow highlights, and brief lens-flare accents for world interactions and discoveries.",
+      "status": "planned",
+      "implementation": {
+        "method": "animation",
+        "description": "Implement brief, low-cost particle and sprite-like effects with restrained lifetimes and counts for mobile performance. Provide reusable feedback for approaching, activating, completing, and collecting from interactive objects.",
+        "status": "planned"
+      }
+    }
+  }
+}
