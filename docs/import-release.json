@@ -1,10 +1,10 @@
 {
-  "sourceCommit": "757aa774741029018896a312aecf293ed7eaaf75",
-  "manifestCommit": "faee76416581ec58d2a83b78f9d5496fdddf8f5b",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/faee76416581ec58d2a83b78f9d5496fdddf8f5b/aippy-import-manifest.json",
-  "manifestSha256": "5f003ca2fd167a358830d44055627066fb18bc46318fcde956da79296938a13b",
-  "requestId": "barbie-atelier-757aa77-v5",
-  "gameFiles": 92,
+  "sourceCommit": "b99dde6a7060fa6824f49dd7313d4bb867f366f3",
+  "manifestCommit": "831730fa382dc895109def6850a6334025a77ac0",
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/831730fa382dc895109def6850a6334025a77ac0/aippy-import-manifest.json",
+  "manifestSha256": "7dad77f3a3e497738dadd1de675690015a83cf3d0dc46a29947049936feae6ea",
+  "requestId": "barbie-fit-b99dde6-v5-1",
+  "gameFiles": 94,
   "assetKeys": [
     "dreamland_pop_music",
     "collector_card_art_1",
