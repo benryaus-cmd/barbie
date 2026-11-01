@@ -1,15 +1,15 @@
-UPDATE THIS CURRENT AIPPY PROJECT IN PLACE — BARBIE: ULTIMATE DREAMLAND / RESORT LIFE
+UPDATE THIS CURRENT AIPPY PROJECT IN PLACE — BARBIE: ULTIMATE DREAMLAND / CHARACTER ATELIER 5
 
 Use Node at Vite BUILD TIME to apply the exact files in this verified manifest directly to their matching project paths. This is a specification for local source/config changes and the normal Vite build. The Node plugin performs the HTTP/filesystem work during that build. Do not ask the conversational model to browse, clone or manually transcribe remote game files.
 
 Manifest URL:
-https://raw.githubusercontent.com/benryaus-cmd/barbie/e1e2ef09b29ceeb884771b2aaea123cfcfc70d52/aippy-import-manifest.json
+https://raw.githubusercontent.com/benryaus-cmd/barbie/faee76416581ec58d2a83b78f9d5496fdddf8f5b/aippy-import-manifest.json
 
 Expected manifest SHA-256:
-170be2adaa096b4a4d8ef8884c2948a659e15561907d7a09a95be8f2bb691b82
+5f003ca2fd167a358830d44055627066fb18bc46318fcde956da79296938a13b
 
 Expected game source commit:
-6fb0d198189237801c8b499fd67efff50b490a2d
+757aa774741029018896a312aecf293ed7eaaf75
 
 1. INSPECT AND REUSE THE HOST
 
@@ -27,16 +27,16 @@ Set github-import.config.json to this (keep unrelated existing fields only if ne
   "mode": "manifest",
   "repository": "benryaus-cmd/barbie",
   "branch": "main",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/e1e2ef09b29ceeb884771b2aaea123cfcfc70d52/aippy-import-manifest.json",
-  "manifestSha256": "170be2adaa096b4a4d8ef8884c2948a659e15561907d7a09a95be8f2bb691b82",
-  "sourceCommit": "6fb0d198189237801c8b499fd67efff50b490a2d",
-  "requestId": "barbie-hotfix-6fb0d19-v4-1"
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/faee76416581ec58d2a83b78f9d5496fdddf8f5b/aippy-import-manifest.json",
+  "manifestSha256": "5f003ca2fd167a358830d44055627066fb18bc46318fcde956da79296938a13b",
+  "sourceCommit": "757aa774741029018896a312aecf293ed7eaaf75",
+  "requestId": "barbie-atelier-757aa77-v5"
 }
 ```
 
 Manifest mode MUST NOT resolve current main, use a recursive Git-tree selector, insist on importing src/main.tsx, or protect every file in src/components/. This manifest deliberately updates src/components/GameView.tsx, src/components/SettingsModal.tsx and src/components/settings.css. The updated SettingsModal preserves the original secret Settings-title tap/password flow while adding real quality, audio, accessibility and About controls. The viewer components, src/dev/**, src/types/** and src/main.tsx remain protected.
 
-The manifest contains 86 game files. Its explicit assetConfigUpdate merges EXACTLY the ten supplied original asset keys into the real src/config/assets.json, preserving every unrelated existing key (including radio streams). Its verified assets.ts wrapper is create-if-missing: preserve an existing host wrapper. Keep a working default assets export for imported modules. No downloaded third-party character models are required: the substantially upgraded articulated doll is genuine source in src/game/avatar.ts.
+The manifest contains 92 game files. Its explicit assetConfigUpdate merges EXACTLY the ten supplied original asset keys into the real src/config/assets.json, preserving every unrelated existing key (including radio streams). Its verified assets.ts wrapper is create-if-missing: preserve an existing host wrapper. Keep a working default assets export for imported modules. No downloaded third-party character models are required: the substantially upgraded articulated doll is genuine source in src/game/avatar.ts.
 
 3. USE THE VERIFIED MANIFEST TRANSACTION
 
@@ -58,7 +58,7 @@ A completed requestId skips the update on subsequent builds, preserving later Ai
 Run the normal project build (and available lint/type checks). The Node importer must finish verification, asset merge and promotion before Vite compiles the updated game. Report the actual build result, not merely configuration success.
 
 Check the receipt under .github-import-state/receipt.json records this exact manifest URL/hash, source commit and requestId. Check these promoted source hashes:
-- src/game/avatar.ts: 51924e9b1722a5997f3b2068780980fc1de9a0d19781057ffeee12324967cd7c
+- src/game/avatar.ts: 76b9bac32415ea5e89b0ff57f665f49b960413b96d245c5d80a4d76a9de0ea14
 - src/ui/Joystick.tsx: 11d0fa944d737741b72e4dfd64efe398ec0e8946f2aa4783f1152b27aab38ed7
 - src/ui/DanceTilesGame.tsx: 89b6affb2dfea8ee33a30064e7be36b005610e6d32ec79f12d1cf6e73c199a6b
 - src/components/SettingsModal.tsx: 2f38e5d0993078ae2fc46843e2a534184d3ecf007a462d6683ae3669b06d0589

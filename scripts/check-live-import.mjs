@@ -31,6 +31,9 @@ try {
  assert.equal(await readFile(path.join(root,'src/App.tsx'),'utf8'),'later host edit');
  const receipt=JSON.parse(await readFile(path.join(root,'.github-import-state/receipt.json')));
  assert.equal(receipt.sourceCommit,release.sourceCommit);
- await writeFile('.test-output/live-import-result.json',JSON.stringify({passed:true,sourceCommit:release.sourceCommit,manifestSha256:release.manifestSha256,verifiedGameFiles:manifest.files.length,verifiedAssetKeys:manifest.assetConfigUpdate.keys.length,unrelatedAssetPreserved:true,entryPreserved:true,repeatPreservedLocalEdit:true},null,2));
+ assert.equal(receipt.requestId,release.requestId);assert.equal(receipt.manifestUrl,release.manifestUrl);assert.equal(receipt.manifestSha256,release.manifestSha256);
+ for(const entry of manifest.files)assert.equal(receipt.files.find(file=>file.destination===entry.destination)?.sha256,entry.sha256);
+ await writeFile('.test-output/live-import-receipt.json',JSON.stringify(receipt,null,2)+'\n');
+ await writeFile('.test-output/live-import-result.json',JSON.stringify({passed:true,sourceCommit:release.sourceCommit,manifestSha256:release.manifestSha256,manifestUrl:receipt.manifestUrl,requestId:receipt.requestId,receiptFileCount:receipt.files.length,verifiedGameFiles:manifest.files.length,verifiedAssetKeys:manifest.assetConfigUpdate.keys.length,unrelatedAssetPreserved:true,entryPreserved:true,repeatPreservedLocalEdit:true},null,2));
  console.log(`PASS: live commit-pinned GitHub import, all${manifest.files.length} files verified, ten asset keys, unrelated asset and host entry preserved, repeated request preserves later edits.`);
 } finally {await rm(root,{recursive:true,force:true})}

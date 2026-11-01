@@ -1,12 +1,18 @@
 {
-  "status": "manifest-generated-for-quick-patch",
-  "sourceCommit": "6fb0d198189237801c8b499fd67efff50b490a2d",
-  "manifestSha256": "170be2adaa096b4a4d8ef8884c2948a659e15561907d7a09a95be8f2bb691b82",
-  "gameFiles": 86,
-  "checks": [
-    "targeted movement/activity checks",
-    "TypeScript",
-    "exact Git tree match"
-  ],
-  "liveImport": "Not repeated for this quick patch at user request; previous unchanged importer proof in release8548d1ec213ee5a677ffd1abb25d55f667244923."
+  "status": "verified-live-import",
+  "release": "Character Atelier 5",
+  "passed": true,
+  "sourceCommit": "757aa774741029018896a312aecf293ed7eaaf75",
+  "manifestSha256": "5f003ca2fd167a358830d44055627066fb18bc46318fcde956da79296938a13b",
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/faee76416581ec58d2a83b78f9d5496fdddf8f5b/aippy-import-manifest.json",
+  "requestId": "barbie-atelier-757aa77-v5",
+  "receiptFileCount": 94,
+  "verifiedGameFiles": 92,
+  "verifiedAssetKeys": 10,
+  "unrelatedAssetPreserved": true,
+  "entryPreserved": true,
+  "repeatPreservedLocalEdit": true,
+  "receiptCompletedAt": "2026-11-01T04:38:58.521Z",
+  "localProductionBuild": "pass",
+  "hostAippyBuild": "The supplied prompt must still be applied in Aippy; no host deployment claimed."
 }

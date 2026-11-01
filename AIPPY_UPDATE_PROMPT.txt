@@ -1,4 +1,4 @@
-APPLY THE BARBIE QUICK FIX — RESORT LIFE 4.1
+APPLY BARBIE CHARACTER ATELIER 5 — SOURCE 757aa77 — 92 GAME FILES
 
 Use the EXISTING Node/Vite manifest importer from the previous successful Barbie update. This is a local config edit followed by the normal Vite build. The Node code performs the HTTP requests, verification, staging and direct source writes DURING THAT BUILD. Do not ask the conversational model to retrieve or transcribe the remote files, and do not recreate the already-finished gameplay.
 
@@ -12,21 +12,21 @@ Set the EXISTING github-import.config.json to the following active request (keep
   "mode": "manifest",
   "repository": "benryaus-cmd/barbie",
   "branch": "main",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/e1e2ef09b29ceeb884771b2aaea123cfcfc70d52/aippy-import-manifest.json",
-  "manifestSha256": "170be2adaa096b4a4d8ef8884c2948a659e15561907d7a09a95be8f2bb691b82",
-  "sourceCommit": "6fb0d198189237801c8b499fd67efff50b490a2d",
-  "requestId": "barbie-hotfix-6fb0d19-v4-1"
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/faee76416581ec58d2a83b78f9d5496fdddf8f5b/aippy-import-manifest.json",
+  "manifestSha256": "5f003ca2fd167a358830d44055627066fb18bc46318fcde956da79296938a13b",
+  "sourceCommit": "757aa774741029018896a312aecf293ed7eaaf75",
+  "requestId": "barbie-atelier-757aa77-v5"
 }
 ```
 
 Manifest URL:
-https://raw.githubusercontent.com/benryaus-cmd/barbie/e1e2ef09b29ceeb884771b2aaea123cfcfc70d52/aippy-import-manifest.json
+https://raw.githubusercontent.com/benryaus-cmd/barbie/faee76416581ec58d2a83b78f9d5496fdddf8f5b/aippy-import-manifest.json
 Expected manifest SHA-256:
-170be2adaa096b4a4d8ef8884c2948a659e15561907d7a09a95be8f2bb691b82
+5f003ca2fd167a358830d44055627066fb18bc46318fcde956da79296938a13b
 Exact game source commit:
-6fb0d198189237801c8b499fd67efff50b490a2d
+757aa774741029018896a312aecf293ed7eaaf75
 
-Run the normal project build now. The existing importer must use ONLY the pinned manifest, never current main or a recursive tree selector. Its awaited config hook must finish downloading and verifying all86 game files before later plugins scan sources and before Vite compiles. Preserve binary bytes and the full staging/backup/rollback transaction. Await all in-flight workers before cleanup on error. A failed request must not compile partial source.
+Run the normal project build now. The existing importer must use ONLY the pinned manifest, never current main or a recursive tree selector. Its awaited config hook must finish downloading and verifying all 92 game files before later plugins scan sources and before Vite compiles. Preserve binary bytes and the full staging/backup/rollback transaction. Await all in-flight workers before cleanup on error. A failed request must not compile partial source.
 
 Keep the existing manifest-mode assets behavior: merge exactly the ten supplied keys into the real src/config/assets.json, retaining unrelated host assets; verify assets.ts and only create its wrapper if absent. No new runtime dependencies are required beyond this game's existing original set. Do not replace package.json, install packages inside a Vite hook, downgrade toolchains, or impose Node22. Keep modern compatible Node20/22 support.
 
@@ -34,18 +34,23 @@ Preserve Vite/Aippy plugins, main.tsx, hidden project viewer, secret Settings-ti
 
 A second ordinary build with this SAME completed requestId must skip all imports and preserve later Aippy edits. Do not mutate the active config from inside the build. Use a fresh requestId only for another explicitly requested update.
 
-This quick patch fixes hip-hand clipping in Peace/Kiss/paired poses; allows delayed camera follow for backward and rear-diagonal walking; makes Coco slower and fallible with a wider player receive window; makes volleyball best of three rallies (first to two), with Collect & replay paying each completed match once and creating a fresh match; moves Daisy to the clear east-side stage path and applies the actual raised-deck height when residents occupy it. Preserve these fixes exactly.
+This update upgrades the existing fixed-size doll: real weighted elbow/knee skin; six weighted skirt silhouettes and shared decorative seams with vehicle-specific and crouched drapes, stable waist and bounded walking gown clearance; weighted spring-bone hair for all nine hairstyles; softer skin/fabric/hair micro surfaces; curved eye shapes, continuous nose, sculpted lips, blinking and expressions; three eye shapes, three mouth shapes and six iris colors in the makeup studio. Facial choices survive presets, saved sets and photos. Shared vehicle contact IK places hands/feet at supports. Garment authoring is content-cached and cloned per avatar; Low keeps one detailed resident. These are authored mobile rigs, not a general cloth or strand solver. Preserve all Resort Life 4.1 gameplay fixes: all-direction delayed camera follow, fallible Coco, best-of-three volleyball and paid replay, hip-hand poses and Daisy stage clearance.
 
 The finished source also includes: corrected embedded Aippy viewport sizing and six-pixel HUD/control insets; follower progress in the HUD instead of over the movement pad; shared transparent orbit/pinch/zoom controls in photos and all styling panels; no visible photo hint or border; preserved character facing and rotated co-star/pet staging; reversible indoor wall/decor cutaway with cached local queries; activity markers and collectibles hidden during photos/style and restored afterward; real3D volleyball against Coco alongside a separate netball venue; walking Ken/Brooklyn/Nikki/Daisy with greeting/chat/photo pauses; a flower-heart portrait garden, lifeguard lookout and sunset viewing pier; preserved saves, fashion, makeup, followers and pet controls. Apply this already-built source exactly. Keep Sheets forwarding onPose/onCapture to PhotoGame and reuse the single game renderer. The offline feed remains game simulation.
 
 After the build, report the ACTUAL result and receipt (.github-import-state/receipt.json): exact manifest URL/hash, source commit, requestId and verified file count. Confirm these source hashes:
-- src/App.tsx: b4790a85bc4cb00e79db04f5351f0efac99414652612e0a2600be76514df57ea
-- src/game/avatar.ts: 51924e9b1722a5997f3b2068780980fc1de9a0d19781057ffeee12324967cd7c
-- src/game/activity-stage.ts: 44cd7185650206e4e3c590164354d80857a2ee33e660ec16cc478aa5ec111422
+- src/App.tsx: 067fabdae3eec530308f700deba435c24cebebafee6604d56491283519b38605
+- src/game/avatar.ts: 76b9bac32415ea5e89b0ff57f665f49b960413b96d245c5d80a4d76a9de0ea14
+- src/game/character/garment-rig.ts: b07e5b74bd5414b985d154e386d8fb530ae4748ed0e86fe4e7d7ca97d3129f18
+- src/game/character/hair-rig.ts: 0494acfe01729f7d14b8823435e9611e88f5b767d7c6598c72048f64aca07529
+- src/game/character/face.ts: 572cc3e1115acac47b72f3ae105999e2ebd8f9224d427cf5da63a937292b2a45
+- src/game/character/limb-rig.ts: 595fbddd76750fa63ef14cb106f9a9b05824f43244808f44e5adff58bb14a9f4
+- src/game/activity-stage.ts: 8662c27d1f66111d55e4c92435053b681e6a2d195280dcf7d4b67a5fb97150b8
 - src/ui/Sheets.tsx: a01d5cb1c2106fb47033103f21b0bcaf10690193dce0b2bcc98a75a939c20656
-
-- src/game/sandbox.ts: 227829eedb134e5eb7e273da0018033a875c4e838e732d0d50197ca4e317f2fa
+- src/game/sandbox.ts: 2565715a4fccd3caa5f451f3c1e85746f65c5f6b503f1e4a2a05fd46533dc821
 - src/game/camera.ts: 930c2bd57c65dc06fd06bce20e6929a000b6c739a8949e01874377774a89e1ab
 - src/ui/CameraControls.tsx: 77a8a2213c1b09aff318dae48555d6965105fa6f73291b1ac5dfb63898788162
 
 Check all ten manifest asset values reached the working registry and an unrelated pre-existing key survived if one existed. At360×520 and360×800 within a containing game frame check HUD/control edge placement, no progress box over joystick, visible full-body wardrobe/salon/makeup even indoors, style drag/pinch/zoom, no photo hint/border, retained world-facing direction in photos, correctly rotated co-stars, marker/collectible hide and restoration, strolling/resident chat, distinct volleyball and netball courts, best-of-three volleyball against easier Coco, Collect & replay with fresh rewards, all-direction camera follow, clear hip poses and Daisy above any stage surface. Existing fashion, photos, follower multipliers, pet bed/follow/whistle and hidden ZIP utility must remain. Report actual failures instead of generating replacement gameplay or clearing saves.
+
+Also check the new Character Atelier features: all nine hairstyles remain selectable; a gown covers the thighs during scooter riding and both walk phases; pet/surf skirts cover their crouched thighs; bob/curls do not cross the face; moving arms stay outside the gown; makeup eye/lip/color choices survive changing a complete outfit and save/reload; reselecting a skirt after dismount shows the standing shape immediately. Run the actual build and report failures, not just importer configuration. Do not use an older Social Summer or 4.1 recovery manifest for this update.
