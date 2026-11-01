@@ -48,13 +48,13 @@ export const COLORS:{label:string;value:string;price?:number}[] = [
   {label:'Espresso',value:'#674639',price:30}, {label:'Peach sorbet',value:'#ffc28b',price:30},
 ];
 export const DEFAULT_LOOK:Look = {top:'glam',bottom:'gown',accessories:[],topColor:'#ec4899',bottomColor:'#ec4899'};
-export function presetLook(outfit:OutfitId):Look {
+export function presetLook(outfit:OutfitId,beauty?:Look):Look {
   const combinations:Record<OutfitId,[TopId,BottomId,string,string]> = {
     glam:['glam','gown','#ec4899','#ec4899'], beach:['beach','wrap','#ffb3d6','#fffaf3'],
     popstar:['popstar','pleated','#fffaf3','#b898f0'],casual:['casual','shorts','#fffaf3','#658fda'],
   };
   const [top,bottom,topColor,bottomColor] = combinations[outfit];
-  return {top,bottom,topColor,bottomColor,accessories:[]};
+  return {top,bottom,topColor,bottomColor,accessories:[],...(beauty?{hairColor:beauty.hairColor,makeup:beauty.makeup,eyeStyle:beauty.eyeStyle,mouthStyle:beauty.mouthStyle,eyeColor:beauty.eyeColor}:{})};
 }
 
 export const HAIRSTYLES:{id:HairId;label:string;emoji:string}[] = [
@@ -77,3 +77,7 @@ export const MAKEUP_LOOKS:{id:MakeupId;label:string;lip:string;blush:string;shad
  {id:'sunset',label:'Golden hour',lip:'#db7255',blush:'#f0a278',shadow:'#d9a35f',description:'Warm gold eyes · coral lip'},
  {id:'bold',label:'Red carpet',lip:'#ae254f',blush:'#df8f9b',shadow:'#79638f',description:'Smoky plum eyes · cherry lip'},
 ];
+
+export const EYE_STYLES = [{id:'soft',label:'Soft sparkle'},{id:'almond',label:'Almond flick'},{id:'wide',label:'Bright eyes'}] as const;
+export const MOUTH_STYLES = [{id:'smile',label:'Easy smile'},{id:'soft',label:'Petal lips'},{id:'full',label:'Cupid gloss'}] as const;
+export const EYE_COLORS = [{label:'Lagoon',value:'#278eae'},{label:'Hazel',value:'#827246'},{label:'Cocoa',value:'#765438'},{label:'Jade',value:'#4b896c'},{label:'Violet',value:'#8671af'},{label:'Slate',value:'#617c92'}];

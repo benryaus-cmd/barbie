@@ -5,3 +5,5 @@
 .beauty-studio .beauty-intro{flex:0 0 auto}
 .beauty-studio .beauty-options{flex:1 1 auto;min-height:0;max-height:none;overflow-y:auto;padding-bottom:8px}
 @media(max-height:680px){.beauty-studio .beauty-intro{display:none}.beauty-studio .beauty-tabs button{min-height:35px;padding:6px}.beauty-studio .beauty-tabs{margin-bottom:5px}}
+
+.beauty-features{padding:0 0 12px;margin-bottom:10px;border-bottom:1px solid #eed8e6}.beauty-features h3{font-size:11px;color:#75425e;margin:0 0 8px}.beauty-feature-row{display:flex;gap:5px;margin-bottom:7px}.beauty-feature-row button{flex:1;padding:8px 4px;border:1px solid #eed8e6;border-radius:9px;background:#fffdfa;color:#80546d;font-size:10px;min-height:34px}.beauty-feature-row button[aria-pressed=true]{border-color:#c75c96;background:#fff0f7;color:#a52f73}.beauty-iris-row{display:flex;gap:12px;padding:3px}.beauty-iris-row button{display:grid;place-items:center;width:28px;height:28px;border:3px solid #fff;outline:1px solid #e5cbdc;border-radius:50%;color:#fff}.beauty-iris-row button[aria-pressed=true]{outline:2px solid #bd3b80}

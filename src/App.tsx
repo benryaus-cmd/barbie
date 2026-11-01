@@ -106,7 +106,7 @@ const App=()=>{
   const panels:Partial<Record<SpotId,PanelId>>={dj:'dj',dancefloor:'dancefloor',runway:'runway',wardrobe:'wardrobe',moodlight:'moodlight',kitchen:'kitchen',slide:'slide',surf:'surf',volley:'volley',netball:'netball',photo:'photo',boutique:'boutique'};
   const target=panels[event.id];if(target){if(target==='surf'||target==='netball'||target==='volley')setActivity(null);setPanel(target);}
  },[awardPoints,sfx]);
- const chooseOutfit=(id:OutfitId)=>{if(!unlocked.includes(id)){if(!spend(OUTFIT_PRICE[id])){setNotice('Earn a few more style points for this look.');return;}setUnlocked([...unlocked,id]);}const current=lifestyleRef.current;const look={...presetLook(id),hairColor:current.look.hairColor,makeup:current.look.makeup};commitLifestyle({...current,look,ownedFashion:[...new Set([...current.ownedFashion,'top:'+look.top,'bottom:'+look.bottom])]});setOutfit(id);sfx.tap();};
+ const chooseOutfit=(id:OutfitId)=>{if(!unlocked.includes(id)){if(!spend(OUTFIT_PRICE[id])){setNotice('Earn a few more style points for this look.');return;}setUnlocked([...unlocked,id]);}const current=lifestyleRef.current;const look=presetLook(id,current.look);commitLifestyle({...current,look,ownedFashion:[...new Set([...current.ownedFashion,'top:'+look.top,'bottom:'+look.bottom])]});setOutfit(id);sfx.tap();};
  const chooseFashion=(slot:'top'|'bottom'|'accessory',id:string)=>{
   const catalog=slot==='top'?TOPS:slot==='bottom'?BOTTOMS:EXTRAS;const item=catalog.find(item=>item.id===id);if(!item)return;
   const current=lifestyleRef.current,key=`${slot}:${id}`,owned=current.ownedFashion.includes(key);

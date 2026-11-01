@@ -27,6 +27,9 @@ export function migrateLifestyle(profile:Profile,value?:unknown):LifestyleSave {
   const look:Look={top:tops.includes(input.top)&&owned.includes('top:'+input.top)?input.top:pair[0],bottom:bottoms.includes(input.bottom)&&owned.includes('bottom:'+input.bottom)?input.bottom:pair[1],accessories:Array.isArray(input.accessories)?[...new Set(input.accessories.filter(x=>extras.includes(x)&&owned.includes('accessory:'+x)))]:profile.accessory==='none'?[]:[profile.accessory],topColor:color(input.topColor,presetColors[profile.outfit][0]),bottomColor:color(input.bottomColor,presetColors[profile.outfit][1])};
   if(typeof input.hairColor==='string'&&colors.test(input.hairColor))look.hairColor=input.hairColor;
   if(makeup.includes(input.makeup))look.makeup=input.makeup;
+  if(['soft','almond','wide'].includes(input.eyeStyle))look.eyeStyle=input.eyeStyle;
+  if(['smile','soft','full'].includes(input.mouthStyle))look.mouthStyle=input.mouthStyle;
+  if(typeof input.eyeColor==='string'&&colors.test(input.eyeColor))look.eyeColor=input.eyeColor;
   return look;
  };
  const look=sanitizeLook(p.look);

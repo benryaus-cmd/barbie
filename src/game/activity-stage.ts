@@ -320,9 +320,9 @@ export function createActivityStage(camera:THREE.PerspectiveCamera,avatar:Avatar
   },
   active(){return kind!==null;},
   dispose(){
-   stop();const geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>();
-   root.traverse(object=>{const item=object as THREE.Mesh;if(item.geometry)geometries.add(item.geometry);if(item.material){for(const mat of Array.isArray(item.material)?item.material:[item.material])materials.add(mat);}});
-   geometries.forEach(geometry=>geometry.dispose());materials.forEach(mat=>mat.dispose());root.removeFromParent();
+   stop();const geometries=new Set<THREE.BufferGeometry>(),materials=new Set<THREE.Material>(),skeletons=new Set<THREE.Skeleton>();
+   root.traverse(object=>{const item=object as THREE.Mesh;if(object instanceof THREE.SkinnedMesh)skeletons.add(object.skeleton);if(item.geometry)geometries.add(item.geometry);if(item.material){for(const mat of Array.isArray(item.material)?item.material:[item.material])materials.add(mat);}});
+   skeletons.forEach(skeleton=>skeleton.dispose());geometries.forEach(geometry=>geometry.dispose());materials.forEach(mat=>mat.dispose());root.removeFromParent();
   },
  };
 }

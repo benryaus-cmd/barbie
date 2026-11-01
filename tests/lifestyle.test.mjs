@@ -21,3 +21,17 @@ test('existing ten colors migrate free while premium palette ownership persists 
  assert.equal(unlocked.ownedColors.length,12);assert.equal(unlocked.look.topColor,'#e8c77b');assert.equal(unlocked.look.bottomColor,'#4058ef');
  const memory=new Map();globalThis.localStorage={setItem:(k,v)=>memory.set(k,v),getItem:k=>memory.get(k)};assert(saveLifestyle(unlocked));assert.deepEqual(loadLifestyle(legacy),unlocked);
 });
+test('face features survive active and saved looks, with unknown options discarded',()=>{
+ const face={eyeStyle:'almond',mouthStyle:'full',eyeColor:'#765438'};
+ const look={top:'glam',bottom:'gown',topColor:'#ec4899',bottomColor:'#ec4899',accessories:[],...face};
+ const state=migrateLifestyle(legacy,{look,savedLooks:[{id:'face',name:'My face',look,hair:'straight',shoes:'heels'}]});
+ for(const [key,value] of Object.entries(face)){assert.equal(state.look[key],value);assert.equal(state.savedLooks[0].look[key],value);}
+ const bad=migrateLifestyle(legacy,{look:{...look,eyeStyle:'fake',mouthStyle:'fake',eyeColor:'url(x)'}});
+ assert.equal(bad.look.eyeStyle,undefined);assert.equal(bad.look.mouthStyle,undefined);assert.equal(bad.look.eyeColor,undefined);
+});
+test('complete outfit presets preserve personal facial features and beauty choices',async()=>{
+ const {presetLook}=await import('../src/game/fashion.ts');
+ const current={top:'glam',bottom:'gown',topColor:'#ec4899',bottomColor:'#ec4899',accessories:[],eyeStyle:'wide',mouthStyle:'full',eyeColor:'#765438',hairColor:'#388c94',makeup:'bold'};
+ const next=presetLook('beach',current);assert.equal(next.top,'beach');assert.equal(next.bottom,'wrap');
+ for(const key of ['eyeStyle','mouthStyle','eyeColor','hairColor','makeup'])assert.equal(next[key],current[key]);
+});

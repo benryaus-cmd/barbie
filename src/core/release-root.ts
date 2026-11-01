@@ -2,6 +2,7 @@ type Disposable = { dispose(): void };
 
 type ReleasedObject = {
   geometry?: Disposable | null;
+  skeleton?: Disposable | null;
   material?: Disposable | Disposable[] | null;
 };
 
@@ -18,7 +19,9 @@ export function releaseRunRoot(
   root.removeFromParent();
   const geometries = new Set<Disposable>();
   const materials = new Set<Disposable>();
+  const skeletons = new Set<Disposable>();
   root.traverse((object: ReleasedObject) => {
+    if(object.skeleton&&!appOwned.has(object.skeleton))skeletons.add(object.skeleton);
     if (object.geometry && !appOwned.has(object.geometry)) {
       geometries.add(object.geometry);
     }
@@ -29,6 +32,7 @@ export function releaseRunRoot(
       if (material && !appOwned.has(material)) materials.add(material);
     }
   });
+  skeletons.forEach(skeleton=>skeleton.dispose());
   geometries.forEach(geometry => geometry.dispose());
   materials.forEach(material => material.dispose());
   root.clear();

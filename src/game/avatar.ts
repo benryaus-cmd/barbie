@@ -1,11 +1,17 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import type { AccessoryId, HairId, OutfitId, ShoesId } from '@/game/types';
+import type { AccessoryId, HairId, OutfitId, ShoesId, VehicleId } from '@/game/types';
 import { PALETTE } from '@/game/palette';
 import type { BottomId, Look, PoseId, TopId } from '@/game/lifestyle-types';
 import { DEFAULT_LOOK, presetLook, MAKEUP_LOOKS } from '@/game/fashion';
+import { createGarmentRig } from '@/game/character/garment-rig';
+import { createHairRig } from '@/game/character/hair-rig';
+import { createFace } from '@/game/character/face';
+import { applyCharacterSurface } from '@/game/character/surfaces';
+import { createLimbSkin } from '@/game/character/limb-rig';
+import { RIDING, solveLimb } from '@/game/character/riding';
 
-export type AvatarMotion = { moving: boolean; speed: number; grounded: boolean; dancing: boolean; sitting: boolean };
+export type AvatarMotion = { moving: boolean; speed: number; grounded: boolean; dancing: boolean; sitting: boolean; vehicle?:VehicleId|null };
 export type Avatar = {
   group: THREE.Group;
   setOutfit(id: OutfitId): void;
@@ -33,7 +39,7 @@ function oval(parent: THREE.Object3D, material: Mat, pos: Point, scale: Point, s
 function profile(parent: THREE.Object3D, material: Mat, points: Profile, depth = .7, pleats = 0, pleatTop = 0) {
   // Lathe winding travels upwards, including when the author lists a neckline first.
   const ordered = points[0][1] > points[points.length - 1][1] ? [...points].reverse() : points;
-  const geo = new THREE.LatheGeometry(ordered.map(([r, y]) => new THREE.Vector2(r, y)), 28);
+  const geo = new THREE.LatheGeometry(ordered.map(([r, y]) => new THREE.Vector2(r, y)), pleats ? 64 : 28);
   if (pleats) {
     const v = geo.getAttribute('position');
     const low = Math.min(...points.map(p => p[1])), high = Math.max(...points.map(p => p[1]));
@@ -60,7 +66,7 @@ function ring(parent: THREE.Object3D, material: Mat, radius: number, width: numb
 function batch(node: THREE.Object3D) {
   for (const child of [...node.children]) if (!(child instanceof THREE.Mesh)) batch(child);
   const buckets = new Map<Mat, THREE.Mesh[]>();
-  for (const child of node.children) if (child instanceof THREE.Mesh && !Array.isArray(child.material)) {
+  for (const child of node.children) if (child instanceof THREE.Mesh && !(child instanceof THREE.SkinnedMesh) && !Array.isArray(child.material)) {
     const material = child.material as Mat, list = buckets.get(material) ?? [];
     list.push(child); buckets.set(material, list);
   }
@@ -77,11 +83,11 @@ function batch(node: THREE.Object3D) {
   }
 }
 
-/** Original segmented doll rig. No downloaded model, skinning shader, animation file or runtime fetch. */
+/** Stylised doll with articulated limbs, weighted garments/hair and an expressive facial rig. */
 export function createAvatar(): Avatar {
   const group = new THREE.Group(); group.name = 'Dreamland fashion doll';
   const skin = mat(0xffd4b9, .67), shade = mat(0xeaa88f, .75), ivory = mat(0xfffaf3, .45);
-  const ink = mat(0x302435, .6), iris = mat(0x1a9bb9, .35), lips = mat(0xe84a82, .4), blush = mat(0xf4a395, .8);
+  const ink = mat(0x302435, .6), lips = mat(0xe84a82, .4), blush = mat(0xf4a395, .8);
   const gold = mat(0xf6c35e, .28, .65), pink = mat(PALETTE.magenta, .4, .12), pale = mat(0xffb3d6, .65);
   const denim = mat(0x658fda, .83), aqua = mat(0x53dbe4, .46, .1), lilac = mat(0xb898f0, .48, .16);
   const pelvis = joint(group, 'pelvis', 0, 1.015), spine = joint(pelvis, 'waist');
@@ -90,37 +96,18 @@ export function createAvatar(): Avatar {
   profile(spine, skin, [[0, .415], [.067, .415], [.055, .5], [.065, .54], [0, .54]], .88);
   const head = joint(spine, 'head', 0, .665);
   head.scale.setScalar(.92);
-  const face = new THREE.SphereGeometry(1, 24, 16), fv = face.getAttribute('position');
+  const face = new THREE.SphereGeometry(1, 40, 28), fv = face.getAttribute('position');
   for (let i = 0; i < fv.count; i++) { const y = fv.getY(i); if (y < -.12) fv.setX(i, fv.getX(i) * (1 + (y + .12) * .23)); }
   face.computeVertexNormals(); add(head, face, skin, [0, 0, 0], [.186, .232, .161]);
-  const earrings: THREE.Group[] = [], eyeGroups:THREE.Group[]=[];
+  const earrings: THREE.Group[] = [];
   const eyeshadow=mat(0xc98cab,.64,.08);
-  for (const side of [-1, 1]) {
-    oval(head, skin, [side * .181, -.015, -.005], [.035, .052, .025], 12);
-    oval(head, shade, [side * .194, -.018, .012], [.014, .03, .009], 10);
-    const eye = joint(head, side < 0 ? 'eye.L' : 'eye.R', side * .074, .031, .14); eye.rotation.y = side * .18; eyeGroups.push(eye);
-    oval(eye,eyeshadow,[0,.026,-.001],[.052,.014,.012],18);
-    oval(eye, ink, [0, .002, 0], [.057, .034, .017], 16);
-    oval(eye, ivory, [0, -.002, .008], [.05, .026, .015], 16);
-    oval(eye, iris, [-side * .003, -.001, .022], [.021, .024, .007], 12);
-    oval(eye, ink, [-side * .003, -.001, .028], [.0105, .016, .004], 12);
-    oval(eye, ivory, [-.008, .009, .032], [.006, .007, .003], 8);
-    oval(eye, ivory, [.007, -.009, .032], [.0025, .003, .002], 6);
-    line(head, ink, [[side * .027, .091, .14], [side * .07, .103, .148], [side * .12, .083, .123]], .007, 8);
-    for (let lash = 0; lash < 2; lash++) line(eye, ink,
-      [[side * .043, .013 + lash * .005, .005], [side * (.06 + lash * .009), .025 + lash * .009, .006]], .003, 3);
-    oval(head, blush, [side * .115, -.048, .123], [.029, .013, .003], 12);
-    const earring = joint(head, 'earring', side * .193, -.055, .012); earrings.push(earring);
-    const hoop = add(earring, new THREE.TorusGeometry(.026, .005, 5, 12), gold, [0, -.025, 0]); hoop.scale.y = 1.25;
-    oval(earring, ivory, [0, 0, 0], [.009, .009, .009], 8);
+  for(const side of [-1,1]) {
+    oval(head, skin, [side*.181,-.015,-.005],[.035,.052,.025],16);
+    oval(head, shade, [side*.194,-.018,.012],[.014,.03,.009],12);
+    const earring=joint(head,'earring',side*.193,-.055,.012);earrings.push(earring);
+    const hoop=add(earring,new THREE.TorusGeometry(.026,.005,5,12),gold,[0,-.025,0]);hoop.scale.y=1.25;
+    oval(earring,ivory,[0,0,0],[.009,.009,.009],8);
   }
-  oval(head, skin, [0, -.021, .162], [.019, .029, .023], 12);
-  oval(head, shade, [0, -.038, .179], [.013, .005, .004], 10);
-  line(head, ink, [[-.039, -.094, .143], [0, -.102, .153], [.039, -.094, .143]], .003, 8);
-  oval(head, lips, [-.016, -.087, .149], [.025, .010, .009], 12);
-  oval(head, lips, [.016, -.087, .149], [.025, .010, .009], 12);
-  oval(head, lips, [0, -.105, .147], [.033, .009, .009], 12);
-  oval(head, pale, [-.008, -.104, .156], [.016, .002, .002], 8);
 
   const legs: Array<{ hip: THREE.Group; knee: THREE.Group; ankle: THREE.Group }> = [];
   const arms: Array<{ shoulder: THREE.Group; elbow: THREE.Group; wrist: THREE.Group }> = [];
@@ -194,6 +181,7 @@ export function createAvatar(): Avatar {
 
   const hairSways: THREE.Group[] = [];
   function hairLock(parent: THREE.Object3D, material: Mat, points: Point[], width: number) {
+    if(material.name==='hair fine highlights')width*=.52;
     const path = new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
     const geo = new THREE.TubeGeometry(path, 12, width, 6, false), v = geo.getAttribute('position');
     for (let i = 0; i <= 12; i++) {
@@ -209,10 +197,16 @@ export function createAvatar(): Avatar {
   const hairMaterials={} as Record<HairId,{base:Mat;highlight:Mat;natural:number}>;
   function makeHair(color: number, style: HairId) {
     const holder = joint(head, `hair ${style}`), base = mat(color, .48, .04);
-    const highlight = mat(new THREE.Color(color).lerp(new THREE.Color(0xfff2d8), .26).getHex(), .44, .06);
+    const highlight = mat(new THREE.Color(color).lerp(new THREE.Color(0xfff2d8), .09).getHex(), .44, .06);
+    highlight.name='hair fine highlights';
     hairMaterials[style]={base,highlight,natural:color};
     oval(holder, base, [0, .015, -.086], [.2, .22, .099], 20);
-    add(holder, new THREE.SphereGeometry(1, 24, 10, 0, Math.PI * 2, 0, Math.PI * .46), base, [0, .026, -.007], [.203, .231, .179]);
+    const cap=new THREE.SphereGeometry(1,32,16,0,Math.PI*2,0,Math.PI*.46),capVertices=cap.attributes.position;
+    for(let i=0;i<capVertices.count;i++) {
+      const y=capVertices.getY(i),front=THREE.MathUtils.smoothstep(capVertices.getZ(i),.1,.9);
+      if(y<.52)capVertices.setY(i,y+front*.28*THREE.MathUtils.clamp((.52-y)/.395,0,1));
+    }
+    cap.computeVertexNormals();add(holder,cap,base,[0,.026,-.007],[.203,.231,.179]);
     for (let i = 0; i < 4; i++) {
       const offset = i * .021;
       hairLock(holder, i % 2 ? highlight : base,
@@ -405,8 +399,8 @@ export function createAvatar(): Avatar {
       oval(skirt,gold,[.15,.025,.11],[.029,.025,.013],10);
     } else if(id==='pleated'||id==='tennis') {
       const hem=id==='tennis'?-.255:-.315;
-      profile(skirt,fabric,[[.168,.045],[.20,-.10],[.28,hem]],.82,id==='tennis'?.11:.085);
-      profile(skirt,id==='tennis'?aqua:ivory,[[.274,hem+.018],[.285,hem],[.281,hem-.009]],.82,.085,1);
+      profile(skirt,fabric,[[.168,.045],[.20,-.10],[.28,hem]],.82,id==='tennis'?.065:.055);
+      profile(skirt,id==='tennis'?aqua:ivory,[[.274,hem+.018],[.285,hem],[.281,hem-.009]],.82,.055,1);
     } else if(id==='denim-skirt') {
       profile(skirt,fabric,[[.17,.04],[.20,-.1],[.204,-.39]],.8);
       for(const side of [-1,1]) {
@@ -420,7 +414,15 @@ export function createAvatar(): Avatar {
       for(let i=0;i<3;i++) oval(skirt,ivory,[.14,-.03-i*.055,.132],[.008,.008,.005],8);
     }
   }
+  applyCharacterSurface(skin,'skin');applyCharacterSurface(shade,'skin');
+  for(const [id,material] of Object.entries(topMaterials))applyCharacterSurface(material,id==='denim'?'denim':id==='casual'||id==='sport'?'cotton':'satin');
+  for(const [id,material] of Object.entries(bottomMaterials))applyCharacterSurface(material,id==='denim-skirt'||id==='shorts'?'denim':id==='tennis'?'cotton':'satin');
+  for(const material of Object.values(hairMaterials)){applyCharacterSurface(material.base,'hair');applyCharacterSurface(material.highlight,'hair');}
   batch(group);
+  const limbRigs=[...arms.map(arm=>createLimbSkin(arm.shoulder,arm.elbow,skin,'arm')),...legs.map(leg=>createLimbSkin(leg.hip,leg.knee,skin,'leg'))];
+  const facialRig=createFace(head,{skin,shade,ivory,ink,lips,blush,eyeshadow});
+  const garmentRigs=skirtPivots.map(skirt=>({skirt,rig:createGarmentRig(skirt)}));
+  const hairRigs=hairSways.map(sway=>({sway,rig:createHairRig(sway)}));
   const state = { look: { ...DEFAULT_LOOK, accessories:[...DEFAULT_LOOK.accessories] }, pose:'idle' as PoseId, hair:'blonde' as HairId, shoes:'heels' as ShoesId, phase:0,cheer:0,clock:0 };
   function sync() {
     for(const id of Object.keys(tops) as TopId[]) tops[id].visible=id===state.look.top;
@@ -438,26 +440,28 @@ export function createAvatar(): Avatar {
     sunhat.visible=state.look.accessories.includes('sunhat');beret.visible=state.look.accessories.includes('beret');headband.visible=state.look.accessories.includes('headband');choker.visible=state.look.accessories.includes('choker');
     for(const [id,materials] of Object.entries(hairMaterials)) {
       const color=new THREE.Color(state.look.hairColor||materials.natural);
-      materials.base.color.copy(color);materials.highlight.color.copy(color).lerp(new THREE.Color(0xfff2d8),.26);
+      materials.base.color.copy(color);materials.highlight.color.copy(color).lerp(new THREE.Color(0xfff2d8),.09);
       hairs[id as HairId].userData.color=color.getStyle();
     }
     const makeup=MAKEUP_LOOKS.find(item=>item.id===(state.look.makeup||'rose'))||MAKEUP_LOOKS[1];
     lips.color.set(makeup.lip);blush.color.set(makeup.blush);eyeshadow.color.set(makeup.shadow);
+    facialRig.setLook(state.look);
   }
   function setLook(look:Look) {
     if(!tops[look.top]||!bottoms[look.bottom]) return;
     state.look={...look,accessories:[...look.accessories]};sync();
   }
   sync();
+  let activeBottom:BottomId|null=null;
   return {
     group, setLook,
     setPose(pose) {state.pose=pose;},
-    setOutfit(id) {setLook(presetLook(id));}, setHair(id) {if(hairs[id]){state.hair=id;sync();}},
+    setOutfit(id) {setLook(presetLook(id,state.look));}, setHair(id) {if(hairs[id]){for(const item of hairRigs)item.rig.reset();state.hair=id;sync();}},
     setAccessory(id) {state.look.accessories=state.look.accessories.filter(a=>a!=='tiara'&&a!=='sunglasses');if(id!=='none')state.look.accessories.push(id);sync();},
     setShoes(id) {state.shoes=id;sync();},
     celebrate() { state.cheer = 1.5; },
     update(dt, motion) {
-      const step = Math.min(Math.max(dt, 0), .05); state.clock += step;
+      const step = Number.isFinite(dt)?Math.min(Math.max(dt, 0), .05):0; state.clock += step;
       state.phase += step * (motion.dancing ? 6.8 : motion.moving ? 7 + motion.speed * .6 : 2.1);
       state.cheer = Math.max(0, state.cheer - step);
       const t = state.phase, dance = motion.dancing || state.cheer > 0;
@@ -472,15 +476,14 @@ export function createAvatar(): Avatar {
       for (let i = 0; i < 2; i++) {
         const side = i ? 1 : -1, wave = Math.sin(t + i * Math.PI), leg = legs[i], arm = arms[i];
         let hx = wave * stride, kx = Math.max(0, -wave) * stride * 1.15;
-        let ax = -wave * stride * .75, az = -side * .115, ex = -.12 - Math.max(0, wave) * stride * .5;
+        let ax = -wave * stride * .75, az = side * .18, ex = -.12 - Math.max(0, wave) * stride * .5;
         if (motion.sitting) { hx = -1.4; kx = 1.38; ax = -.72; ex = -.6; }
         else if (dance) { hx = wave * .19; kx = .13 + Math.max(0, -wave) * .35; ax = -1.1 + Math.sin(t + i * 1.9) * .7; az = -side * (.6 + Math.sin(t * .5 + i) * .3); ex = -.8 + Math.sin(t + i) * .5; }
         else if (!motion.grounded) { hx = i ? .26 : -.5; kx = i ? .55 : .18; ax = -.65; ex = -.45; }
         pose(leg.hip, hx, 0, motion.sitting ? side * .035 : side * .012); pose(leg.knee, kx); pose(leg.ankle, motion.sitting ? -.12 : -kx * .2);
         pose(arm.shoulder, ax, 0, az); pose(arm.elbow, ex, 0, -side * (dance ? .23 : .07)); pose(arm.wrist, 0, dance ? Math.sin(t + i) * .3 : 0, side * .045);
       }
-      const blink=Math.pow(Math.max(0,Math.cos(state.clock*1.05)),52);
-      for(const eye of eyeGroups)eye.scale.y=1-blink*.86;
+      facialRig.update(step,state.pose,motion.moving);
       for(const fingers of peaceFingers) fingers.visible=false;
       const selected=state.pose;
       if(selected!=='idle' && !motion.moving && !motion.sitting) {
@@ -563,12 +566,21 @@ export function createAvatar(): Avatar {
           arm(0,-.14,-.3,-1.25,-.24);arm(1,-.3,.3,1.2,-.37);
         }
       }
-      for (const sway of hairSways) pose(sway, Math.sin(t - .45) * (dance ? .095 : stride * .09 + .015), 0, -Math.sin(t) * (dance ? .07 : .018));
-      for (const skirt of skirtPivots) {
-        const crouched=selected==='surf'||selected==='pet';
-        pose(skirt,motion.sitting?-.8:crouched?-.12:Math.sin(t)*stride*.09,0,dance?-Math.sin(t-.5)*.07:Math.sin(t)*.014);
-        skirt.scale.x=THREE.MathUtils.lerp(skirt.scale.x,crouched?1.16:1,blend);
-        skirt.scale.z=THREE.MathUtils.lerp(skirt.scale.z,motion.sitting?.7:crouched?1.3:1,blend);
+      if(motion.sitting && motion.vehicle) {
+        const ride=RIDING[motion.vehicle||'scooter'];
+        pelvis.position.y=1.015;pose(pelvis);pose(spine,ride.lean);pose(head,-ride.lean*.6,0,0);
+        const inverseSpine=new THREE.Matrix4().makeRotationX(-ride.lean);
+        for(let i=0;i<2;i++) {
+          const side=i?1:-1;
+          const hand=new THREE.Vector3(...ride.hands[i]).sub(new THREE.Vector3(0,ride.rootY+1.015,ride.rootZ)).applyMatrix4(inverseSpine);
+          const handDirection=new THREE.Vector3(0,0,1).applyMatrix4(inverseSpine);
+          const handQs=solveLimb(arms[i].shoulder.position,hand,new THREE.Vector3(side*.7,-.3,0),.27,.245,handDirection);
+          const foot=new THREE.Vector3(...ride.feet[i]).sub(new THREE.Vector3(0,ride.rootY+1.015,ride.rootZ));
+          const legQs=solveLimb(legs[i].hip.position,foot,new THREE.Vector3(side*.08,0,1),.425,.397,new THREE.Vector3(0,-1,0));
+          for(const [nodes,rotations] of [[[arms[i].shoulder,arms[i].elbow,arms[i].wrist],handQs],[[legs[i].hip,legs[i].knee,legs[i].ankle],legQs]] as const) {
+            nodes.forEach((node,j)=>{const e=new THREE.Euler().setFromQuaternion(rotations[j]);pose(node,e.x,e.y,e.z);});
+          }
+        }
       }
       for (const earring of earrings) pose(earring, Math.sin(t + .3) * .09, 0, Math.sin(t - .4) * (dance ? .15 : .04));
       for(const [node,[x,y,z]] of targets) {
@@ -576,6 +588,10 @@ export function createAvatar(): Avatar {
         node.rotation.y=THREE.MathUtils.lerp(node.rotation.y,y,blend);
         node.rotation.z=THREE.MathUtils.lerp(node.rotation.z,z,blend);
       }
+      for(const limb of limbRigs)limb.update();
+      for(const item of garmentRigs)if(item.skirt.parent?.visible)item.rig.update(step,{...motion,pose:!motion.moving&&!motion.sitting?state.pose:'idle',phase:state.phase},activeBottom!==state.look.bottom);
+      activeBottom=state.look.bottom;
+      for(const item of hairRigs)if(item.sway.parent?.visible)item.rig.update(step,{...motion,phase:state.phase});
     },
   };
 }

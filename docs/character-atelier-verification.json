@@ -1,0 +1,31 @@
+{
+  "release": "Character Atelier 5",
+  "checks": {
+    "typecheck": "pass",
+    "eslint": "pass",
+    "viteProductionBuild": "pass",
+    "domainTests": 33,
+    "runtimeScripts": 17,
+    "fashionCombinations": 64,
+    "distinctPoseTargets": 9,
+    "fullCharacterScreenshots": 56,
+    "intermediatePoseChecks": 45,
+    "finalGaitScreenshots": 8,
+    "browserErrors": [],
+    "browserWarnings": [],
+    "embeddedViewport": "360x520",
+    "embeddedChecks": [
+      "indoor-style",
+      "photo-heading",
+      "beauty-features",
+      "preset-face-preservation",
+      "nine-hairstyles"
+    ]
+  },
+  "review": "Original preset, hidden-garment and construction-hitch findings resolved; cache/disposal isolation verified. Gait render review added outward arms and a bounded gown panel flare.",
+  "limits": [
+    "Chromium SwiftShader, not physical Android performance measurements",
+    "Authored garment deformation and spring bones, not general cloth/strand simulation",
+    "Inspected views do not prove every future animation/clothing combination"
+  ]
+}

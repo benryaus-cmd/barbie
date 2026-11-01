@@ -1,3 +1,4 @@
+import { RIDING } from '@/game/character/riding';
 import * as THREE from 'three';
 import type { VehicleId } from '@/game/types';
 import { PALETTE, gloss, glassMaterial, neonMaterial } from '@/game/palette';
@@ -78,6 +79,7 @@ function buildConvertible(): VehicleRig {
     0.36,
     0.26
   );
+  addDrivingControls(group,'convertible');
   return { id: 'convertible', group, wheels, seatY: 0.34, home: new THREE.Vector3() };
 }
 
@@ -104,6 +106,8 @@ function buildScooter(): VehicleRig {
   light.position.set(0, 1.2, 0.62);
   group.add(light);
   addWheels(group, wheels, [[0, 0.3, 0.62], [0, 0.3, -0.6]], 0.3, 0.16);
+  for(const point of RIDING.scooter.hands){const grip=new THREE.Mesh(new THREE.CylinderGeometry(.036,.036,.14,10),gloss(0x493355,{roughness:.8}));grip.rotation.z=Math.PI/2;grip.position.set(...point);group.add(grip);}
+  for(const point of RIDING.scooter.feet){const rest=new THREE.Mesh(new THREE.BoxGeometry(.13,.035,.25),gold);rest.position.set(point[0],point[1]-.075,point[2]+.04);group.add(rest);}
   return { id: 'scooter', group, wheels, seatY: 0.06, home: new THREE.Vector3() };
 }
 
@@ -148,7 +152,16 @@ function buildBuggy(): VehicleRig {
     0.44,
     0.3
   );
+  addDrivingControls(group,'buggy');
   return { id: 'buggy', group, wheels, seatY: 0.36, home: new THREE.Vector3() };
+}
+
+
+function addDrivingControls(group:THREE.Group,id:'convertible'|'buggy') {
+ const rig=RIDING[id],center=new THREE.Vector3().fromArray(rig.hands[0]).add(new THREE.Vector3().fromArray(rig.hands[1])).multiplyScalar(.5);
+ const rim=new THREE.Mesh(new THREE.TorusGeometry(.22,.025,7,24),gloss(0x493355,{roughness:.65}));rim.position.copy(center);group.add(rim);
+ const hub=new THREE.Mesh(new THREE.SphereGeometry(.06,10,8),gloss(PALETTE.gold,{metalness:.7}));hub.position.copy(center);group.add(hub);
+ for(const side of [-1,1]){const spoke=new THREE.Mesh(new THREE.BoxGeometry(.21,.025,.025),gloss(PALETTE.gold,{metalness:.7}));spoke.position.copy(center).add(new THREE.Vector3(side*.10,0,0));group.add(spoke);}
 }
 
 export function buildVehicles(): Record<VehicleId, VehicleRig> {

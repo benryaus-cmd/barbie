@@ -1,5 +1,5 @@
 const fs=require('node:fs'), assert=require('node:assert/strict'), ts=require('typescript'),THREE=require('three');
-function compile(file,mocks={}){const mod={exports:{}};const code=ts.transpileModule(fs.readFileSync('src/game/'+file+'.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;new Function('require','module','exports',code)(id=>mocks[id]??require(id),mod,mod.exports);return mod.exports;}
+function compile(file,mocks={}){const mod={exports:{}};const code=ts.transpileModule(fs.readFileSync('src/game/'+file+'.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;new Function('require','module','exports',code)(id=>mocks[id]??(id.startsWith('@/game/')?compile(id.slice(7),mocks):require(id)),mod,mod.exports);return mod.exports;}
 const {createCameraRig}=compile('camera');
 const camera=new THREE.PerspectiveCamera(58,.6,.1,900), rig=createCameraRig(camera),target=new THREE.Vector3();
 rig.update(1/60,target,false,false);

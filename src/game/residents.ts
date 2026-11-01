@@ -24,7 +24,7 @@ const WALK_ROUTES: Record<string, readonly (readonly [number, number])[]> = {
 const SKINS = [0xffd4b9, 0x8f4f32, 0xdba17d, 0x754731, 0xcc997b, 0xf1c3ac, 0xe9b38d];
 const HAIR = [0xf0ce73, 0x302026, 0x493024, 0x271d28, 0x262329, 0xe381ac, 0xb68646];
 
-export function createResidents() {
+export function createResidents(initialBudget=1) {
   const root = new THREE.Group(); root.name = 'Dreamland residents';
   const sphere = new THREE.SphereGeometry(1, 10, 7);
   const cylinder = new THREE.CylinderGeometry(1, 1, 1, 8);
@@ -186,7 +186,8 @@ export function createResidents() {
     });
     return {avatar, skinMaterials, shadeMaterials, id: ''};
   }
-  const slots = [createDetailSlot()];
+  // Build the configured pool before the frame loop. Low quality keeps one rig.
+  const slots = Array.from({length:initialBudget===1?1:3},()=>createDetailSlot());
   let clock=0;
   let photoIds: string[]=[];
   let photoPose: PoseId = 'wave';
@@ -238,11 +239,11 @@ export function createResidents() {
         slot.id = person.info.id;
         person.group.add(slot.avatar.group);
         slot.avatar.setOutfit((person.home.pool || index === 4 ? 'beach' : index === 3 ? 'casual' : 'popstar') as OutfitId);
-        slot.avatar.setHair((['blonde', 'updo', 'blonde', 'updo', 'updo', 'pink'][index]) as HairId);
+        slot.avatar.setHair((['blonde', 'braids', 'curls', 'twin-buns', 'updo', 'pink'][index]) as HairId);
         slot.avatar.setAccessory(index === 3 ? 'sunglasses' : 'none');
         slot.avatar.setShoes('sneakers');
         const extended = slot.avatar as typeof slot.avatar & {setLook?(look: Look):void};
-        extended.setLook?.({top:person.home.pool || index === 4 ? 'beach' : index === 3 ? 'casual':'popstar',bottom:person.home.pool || index === 4?'wrap':index===3?'shorts':'pleated',accessories:index===3?['sunglasses']:[],topColor:person.info.color,bottomColor:index===4?'#effaff':person.info.color});
+        extended.setLook?.({top:person.home.pool || index === 4 ? 'beach' : index === 3 ? 'casual':'popstar',bottom:person.home.pool || index === 4?'wrap':index===3?'shorts':'pleated',accessories:index===3?['sunglasses']:[],topColor:person.info.color,bottomColor:index===4?'#effaff':person.info.color,eyeStyle:(['soft','almond','wide'] as const)[index%3],mouthStyle:(['smile','full','soft'] as const)[index%3],eyeColor:['#278eae','#765438','#827246','#765438','#4b896c','#617c92'][index]});
         slot.skinMaterials.forEach(material => material.color.setHex(SKINS[index]));
         slot.shadeMaterials.forEach(material => material.color.setHex(SKINS[index]).multiplyScalar(.83));
       }

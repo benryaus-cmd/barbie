@@ -37,3 +37,11 @@ Every visual promise must have gameplay support: ground under every rendered dis
 The world is a photo playground as well as a minigame collection. Keep photography framing clean and share its gestures with styling; the doll retains its world heading. Indoor dressing uses a reversible wall cutaway. The HUD follows the actual Aippy game frame, with progress above the scene and controls at the bottom edge.
 
 Both sports remain: beach volleyball against Coco, plus netball at a separate venue. Ken and friends walk short safe routes, stop to chat and return to their stroll after photos. Flower-heart garden, lifeguard lookout and a lit seaside viewing pier give distinct backdrops with real walkable approaches. Continue to use bounded geometry, instanced flowers and optional ambient effects for phone quality settings.
+
+## Character Atelier / fifth pass
+
+Keep one body size while replacing rigid elbow/knee skin with continuous weighted limb surfaces. Skirts and their decorative seams use real bones/weights and authored sitting/crouching shapes; long hems hang beyond the knees. Secondary hair uses weighted chains with damped inertia and conservative head/body clearance. These are compact mobile rigs, not a general cloth or strand solver.
+
+Faces use curved eye openings, soft blush, a continuous nose, sculpted lip shapes, blinking and pose expressions. The makeup station adds eye shape, iris color and lip shape; active looks, saved sets and photo metadata retain those choices without changing legacy follower reward identities. All nine hair silhouettes and existing wardrobe ownership remain. Fine shared skin/fabric/hair micro surfaces add texture without a photorealistic style shift. Shared vehicle contact points drive the rider's hands/feet and physical steering details.
+
+Judge the result from actual close-up and riding renders. Numerical finiteness alone does not establish coverage: inspect all skirt silhouettes, bob/curls facial clearance and crouched poses, then fix the defects before publishing a unique pinned Aippy handoff.

@@ -1,3 +1,4 @@
+import { RIDING } from '@/game/character/riding';
 import * as THREE from 'three';
 import {createSteering} from '@/game/movement';
 import { createActivityStage } from '@/game/activity-stage';
@@ -134,7 +135,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
   const cards = createCardPickups(options.camera);
   root.add(cards.group);
 
-  const residents = createResidents();
+  const residents = createResidents(options.tuning.effects && options.tuning.quality !== 'low' ? 3 : 1);
   const pet = createPetCompanion();
   root.add(residents.root, pet.root);
   const activity = createActivityStage(options.camera, avatar, options.emit);
@@ -309,8 +310,8 @@ export function createSandbox(options: SandboxOptions): Sandbox {
       facing = lerpAngle(facing, Math.atan2(dirX, dirZ), Math.min(1, step * 10));
     }
 
-    const seatHeight = mounted ? vehicles[mounted].seatY : 0;
-    avatar.group.position.set(position.x, feetY + seatHeight + 0.02, position.z);
+    const ride=mounted?RIDING[mounted]:null;
+    avatar.group.position.set(position.x + (ride?Math.sin(facing)*ride.rootZ:0), feetY + (ride?ride.rootY:.02), position.z + (ride?Math.cos(facing)*ride.rootZ:0));
     avatar.group.rotation.y = presentation === 'world' ? facing : presentationFacing + (presentation==='photo'&&photoPair==='hug' ? -Math.PI/2 : 0);
     avatar.update(step, {
       moving,
@@ -318,6 +319,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
       grounded: physics.grounded,
       dancing,
       sitting: mounted !== null,
+      vehicle: mounted,
     });
 
     blob.visible = mounted === null;

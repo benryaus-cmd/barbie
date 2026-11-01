@@ -10,7 +10,7 @@ Touch: left stick moves; drag the world with a second finger to look; use Style,
 
 ## Upgrade
 
-The old capsule figure is replaced with an original articulated fashion doll, shaped clothes, three hairstyles, footwear, accessories and secondary animation. It is a rigid joint hierarchy, not an imported weighted/skinned mesh. See [asset references](docs/asset-references.md) for the actual implementation and researched Quaternius/GitHub alternatives. No external character models or motion clips are bundled.
+The original fashion doll now combines articulated pose joints with continuous weighted limb skin, weighted skirts and spring-bone hair. Nine hairstyles, mixed clothing, footwear, layered accessories and expressive face choices remain editable. See [asset references](docs/asset-references.md) for the actual implementation and researched Quaternius/GitHub alternatives. No external character models or motion clips are bundled.
 
 Progress uses the original collector-card key plus new isolated profile/preferences keys. No saves are cleared. Low graphics reduces rendering resolution to0.8×, disables shadow rendering and sparkle particles. Balanced/High increase resolution and enable soft doll shadows; the actual device pixel ratio still caps the result.
 
@@ -33,3 +33,7 @@ Personal outfit sets, nine salon hairstyles and hair dye, five makeup looks, twe
 ### Resort Life
 
 Shared photo/style orbit and pinch zoom; clean camera view; preserved character heading; reversible indoor cutaway; embedded viewport HUD fixes. Ken/Brooklyn/Nikki/Daisy walk and pause to greet. Beach volleyball rallies against Coco return alongside a separate netball court. New flower-heart portrait garden, coastal lifeguard lookout and sunset pier create distinct photo destinations.
+
+### Character Atelier
+
+Continuous elbow/knee skin, six weighted skirt silhouettes with authored riding/crouch fit, spring-bone hair, softer micro surfaces, improved faces and configurable eyes/lips. Vehicle contact points drive hands and feet. Geometry authoring is cached for reuse; Low keeps one detailed resident. See [release notes and verification](docs/character-atelier-release.md); `npm run test:characters` renders the character regression gallery.

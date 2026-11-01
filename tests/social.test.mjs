@@ -99,3 +99,12 @@ test('extended accessories, hair colour and makeup survive photo saves and affec
   assert.notEqual(photoSignature(styled),photoSignature({...styled,look:{...styled.look,makeup:'bold'}}));
   assert.equal(photoSignature(input),photoSignature({...input,look:{...look,makeup:'fresh'}}));
 });
+test('album retains face features without changing legacy photo reward identities',()=>{
+ const image='data:image/jpeg;base64,/9j/AA==';
+ const look={top:'glam',bottom:'gown',accessories:[],topColor:'#ec4899',bottomColor:'#ec4899',eyeStyle:'wide',mouthStyle:'full',eyeColor:'#765438'};
+ const photo={id:'face',image,pose:'wave',zone:'Beach',look,createdAt:1};
+ const state=sanitizeSocial({photos:[photo]});
+ assert.equal(state.photos[0].look.eyeStyle,'wide');assert.equal(state.photos[0].look.mouthStyle,'full');assert.equal(state.photos[0].look.eyeColor,'#765438');
+ const legacyLook={...look};delete legacyLook.eyeStyle;delete legacyLook.mouthStyle;delete legacyLook.eyeColor;
+ assert.equal(photoSignature({...photo,look:legacyLook}),photoSignature(photo),'changing only facial features cannot farm followers');
+});
