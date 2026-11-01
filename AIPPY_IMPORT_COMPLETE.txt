@@ -1,15 +1,17 @@
-UPDATE THIS CURRENT AIPPY PROJECT IN PLACE — BARBIE: ULTIMATE DREAMLAND / CHARACTER ATELIER 5.1
+UPDATE THIS CURRENT AIPPY PROJECT IN PLACE — BARBIE: ULTIMATE DREAMLAND / CHARACTER MOTION FOUNDATION 6
 
 Use Node at Vite BUILD TIME to apply the exact files in this verified manifest directly to their matching project paths. This is a specification for local source/config changes and the normal Vite build. The Node plugin performs the HTTP/filesystem work during that build. Do not ask the conversational model to browse, clone or manually transcribe remote game files.
 
 Manifest URL:
-https://raw.githubusercontent.com/benryaus-cmd/barbie/831730fa382dc895109def6850a6334025a77ac0/aippy-import-manifest.json
+https://raw.githubusercontent.com/benryaus-cmd/barbie/c5aed7e2cfafdc42d6ae12edcd2c7a2e0d928fe7/aippy-import-manifest.json
 
 Expected manifest SHA-256:
-7dad77f3a3e497738dadd1de675690015a83cf3d0dc46a29947049936feae6ea
+013101f143c47c90e3e4da4079ab61fdc5d2bbfcedbae8f62a0e9e53ac194c9b
 
 Expected game source commit:
-b99dde6a7060fa6824f49dd7313d4bb867f366f3
+0f982a3ce42f3c722a1da807bad8d4fbcb556e2c
+
+Character Motion Foundation 6 adds fitted shirt/lip/necklace surfaces, weighted knee/ankle boots, a native mapped body skeleton, articulated fingers, living walk/idle and six new poses. It preserves every existing hairstyle, outfit and save. See the uniquely named current update prompt for detailed acceptance checks.
 
 1. INSPECT AND REUSE THE HOST
 
@@ -27,16 +29,16 @@ Set github-import.config.json to this (keep unrelated existing fields only if ne
   "mode": "manifest",
   "repository": "benryaus-cmd/barbie",
   "branch": "main",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/831730fa382dc895109def6850a6334025a77ac0/aippy-import-manifest.json",
-  "manifestSha256": "7dad77f3a3e497738dadd1de675690015a83cf3d0dc46a29947049936feae6ea",
-  "sourceCommit": "b99dde6a7060fa6824f49dd7313d4bb867f366f3",
-  "requestId": "barbie-fit-b99dde6-v5-1"
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/c5aed7e2cfafdc42d6ae12edcd2c7a2e0d928fe7/aippy-import-manifest.json",
+  "manifestSha256": "013101f143c47c90e3e4da4079ab61fdc5d2bbfcedbae8f62a0e9e53ac194c9b",
+  "sourceCommit": "0f982a3ce42f3c722a1da807bad8d4fbcb556e2c",
+  "requestId": "barbie-motion-0f982a3-v6"
 }
 ```
 
 Manifest mode MUST NOT resolve current main, use a recursive Git-tree selector, insist on importing src/main.tsx, or protect every file in src/components/. This manifest deliberately updates src/components/GameView.tsx, src/components/SettingsModal.tsx and src/components/settings.css. The updated SettingsModal preserves the original secret Settings-title tap/password flow while adding real quality, audio, accessibility and About controls. The viewer components, src/dev/**, src/types/** and src/main.tsx remain protected.
 
-The manifest contains 94 game files. Its explicit assetConfigUpdate merges EXACTLY the ten supplied original asset keys into the real src/config/assets.json, preserving every unrelated existing key (including radio streams). Its verified assets.ts wrapper is create-if-missing: preserve an existing host wrapper. Keep a working default assets export for imported modules. No downloaded third-party character models are required: the substantially upgraded articulated doll is genuine source in src/game/avatar.ts.
+The manifest contains 100 game files. Its explicit assetConfigUpdate merges EXACTLY the ten supplied original asset keys into the real src/config/assets.json, preserving every unrelated existing key (including radio streams). Its verified assets.ts wrapper is create-if-missing: preserve an existing host wrapper. Keep a working default assets export for imported modules. No downloaded third-party character models are required: the substantially upgraded articulated doll is genuine source in src/game/avatar.ts.
 
 3. USE THE VERIFIED MANIFEST TRANSACTION
 
@@ -58,7 +60,7 @@ A completed requestId skips the update on subsequent builds, preserving later Ai
 Run the normal project build (and available lint/type checks). The Node importer must finish verification, asset merge and promotion before Vite compiles the updated game. Report the actual build result, not merely configuration success.
 
 Check the receipt under .github-import-state/receipt.json records this exact manifest URL/hash, source commit and requestId. Check these promoted source hashes:
-- src/game/avatar.ts: 3a50a0f40a9ce504e80e1caed1db6bef1524cc7dc31c7730f820eaa0efa68e3d
+- src/game/avatar.ts: 843fba50442c6a0ac727c7b83dfaac6a30957659abd68519322a4ff2d796e925
 - src/ui/Joystick.tsx: 11d0fa944d737741b72e4dfd64efe398ec0e8946f2aa4783f1152b27aab38ed7
 - src/ui/DanceTilesGame.tsx: 89b6affb2dfea8ee33a30064e7be36b005610e6d32ec79f12d1cf6e73c199a6b
 - src/components/SettingsModal.tsx: 2f38e5d0993078ae2fc46843e2a534184d3ecf007a462d6683ae3669b06d0589

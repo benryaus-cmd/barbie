@@ -30,7 +30,9 @@
 - [x] Motion: reusable natural gait/idle and expressive pose/tool layers; contact/transition tests.
 - [x] Root integration: canonical bone map, compatibility wrappers, pose catalogue/UI/save validation, equipment API and documentation.
 - [x] Verify: focused rendering/animation checks, relevant/full regression suite, type/lint/build, independent review and fixes.
-- [ ] Release: push source, generate immutable manifest, verify live importer, publish uniquely named Aippy prompt.
+- [x] Release: push source, generate immutable manifest, verify live importer, publish uniquely named Aippy prompt.
 
 
 Review identified a 42-degree first/last-frame arm snap for empty-hand swings. Held-mode transitions now use a .32s smooth quaternion blend, with anticipation/recovery windows and regressions for none/one/two-hand changes. Settled two-hand grips retain exact shared-shaft IK. Fast island traversal intentionally retains a normalised stylised gait; no world-space foot-lock claim is made.
+
+Release source: `0f982a3ce42f3c722a1da807bad8d4fbcb556e2c`. Manifest: `c5aed7e2cfafdc42d6ae12edcd2c7a2e0d928fe7`. Live transaction verified 100 game files, ten merged asset keys, preserved unrelated host entry/assets, and skipped a repeated completed request without overwriting later local edits. Actual Aippy host build remains the user-applied handoff.
