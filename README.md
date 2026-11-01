@@ -14,7 +14,7 @@ The original fashion doll now combines articulated pose joints with continuous w
 
 Progress uses the original collector-card key plus new isolated profile/preferences keys. No saves are cleared. Low graphics reduces rendering resolution to0.8×, disables shadow rendering and sparkle particles. Balanced/High increase resolution and enable soft doll shadows; the actual device pixel ratio still caps the result.
 
-See [finalgoal.md](finalgoal.md), [verification](docs/verification.md) and [GITHUB_IMPORTER.md](GITHUB_IMPORTER.md). The importer is inactive by default. The current release is [Natural Walk & Hip Poses 6.1](AIPPY_WALK_FIX_V6_1_754e670.txt). Use [AIPPY_IMPORT_COMPLETE.txt](AIPPY_IMPORT_COMPLETE.txt) (or the shorter [AIPPY_UPDATE_PROMPT.txt](AIPPY_UPDATE_PROMPT.txt) when the importer is already installed) for a specific commit-pinned update; normal subsequent builds preserve later Aippy edits.
+See [finalgoal.md](finalgoal.md), [verification](docs/verification.md) and [GITHUB_IMPORTER.md](GITHUB_IMPORTER.md). The importer is inactive by default. The current release is [Fashion Studio 7](AIPPY_FASHION_STUDIO_V7_16a90ea.txt). Use [AIPPY_IMPORT_COMPLETE.txt](AIPPY_IMPORT_COMPLETE.txt) (or the shorter [AIPPY_UPDATE_PROMPT.txt](AIPPY_UPDATE_PROMPT.txt) when the importer is already installed) for a specific commit-pinned update; normal subsequent builds preserve later Aippy edits.
 
 Original project collector portraits and music still use their original Aippy CDN URLs. This is an unofficial fan-game remix; retained artwork and brand ownership are unchanged.
 

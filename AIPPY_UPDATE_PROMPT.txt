@@ -1,12 +1,10 @@
-APPLY BARBIE NATURAL WALK & HIP POSE FIX 6.1 — SOURCE 754e670 — 100 GAME FILES
+APPLY BARBIE FASHION STUDIO 7 — SOURCE 16a90ea — 103 GAME FILES
 
-This correction fixes the crouched/forward-knee walk, backward-looking elbow bend and overly wide gym-bro arms. Supporting legs now extend naturally through mid-stance, arm swing opposes the same-side leg, and relaxed arms hang close to the body with a small allowance only for wide skirts. Thigh/knee depth is slightly fuller. Peace/kiss/confident/over-shoulder and other hip-hand poses now plant their palms at the hip instead of hovering in space. Preserve all previous v6 rig, pose, clothing and save improvements.
+Use Node at Vite BUILD TIME to apply this verified, pinned source update directly to the EXISTING project paths. This is a local importer config edit followed by the normal Vite build. Node performs the HTTP requests, verification, staging and direct source writes DURING THAT BUILD. Do not ask the conversational model to retrieve or transcribe remote files, and do not recreate the already-finished gameplay.
 
-Use Node at Vite BUILD TIME to apply this exact manifest to the EXISTING project paths. This is a local importer config edit followed by the normal Vite build. Node performs the HTTP requests, verification, staging and direct source writes DURING THAT BUILD. Do not ask the conversational model to retrieve/transcribe the remote files or rebuild the already-finished game.
+REUSE the EXISTING vite-plugin-github-import.ts registered FIRST in Vite and github-import.config.json from the previous successful Barbie update. ONE importer, ONE live source tree, ONE React root and renderer. No upstream/importedGame directory, adapter, iframe or second game tree.
 
-REUSE the EXISTING vite-plugin-github-import.ts registered FIRST in Vite and github-import.config.json from the previous successful update. ONE importer, ONE live src tree, ONE React root. No upstream/importedGame directory, adapter, iframe or second renderer.
-
-Set the EXISTING github-import.config.json to this active request, keeping unrelated legacy fields only if needed:
+Set the EXISTING github-import.config.json to this active request (keep unrelated legacy fields only if needed):
 
 ```json
 {
@@ -14,56 +12,58 @@ Set the EXISTING github-import.config.json to this active request, keeping unrel
   "mode": "manifest",
   "repository": "benryaus-cmd/barbie",
   "branch": "main",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/546c04caa72e2e319c56bd7e1eea6235a3e27f1e/aippy-import-manifest.json",
-  "manifestSha256": "d907938413d5dc4256e357ab94ddc6fef7aa8044752a4e199445dc80b44dd483",
-  "sourceCommit": "754e670a752c5f11e3cbda1b455c4b4c445ec247",
-  "requestId": "barbie-walk-754e670-v6-1"
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/95f8a722906c722aa525a11c924d7a9fa4b1da5d/aippy-import-manifest.json",
+  "manifestSha256": "3cbb8aaa5c0414fcc793fe5f381be8f06c1869e71fc177634f8a7c20539bf0d6",
+  "sourceCommit": "16a90ea658836bbb08886635f9f61a99da080a09",
+  "requestId": "barbie-studio-16a90ea-v7"
 }
 ```
 
 Manifest URL:
-https://raw.githubusercontent.com/benryaus-cmd/barbie/546c04caa72e2e319c56bd7e1eea6235a3e27f1e/aippy-import-manifest.json
+https://raw.githubusercontent.com/benryaus-cmd/barbie/95f8a722906c722aa525a11c924d7a9fa4b1da5d/aippy-import-manifest.json
 Expected manifest SHA-256:
-d907938413d5dc4256e357ab94ddc6fef7aa8044752a4e199445dc80b44dd483
+3cbb8aaa5c0414fcc793fe5f381be8f06c1869e71fc177634f8a7c20539bf0d6
 Exact game source commit:
-754e670a752c5f11e3cbda1b455c4b4c445ec247
+16a90ea658836bbb08886635f9f61a99da080a09
 Request ID:
-barbie-walk-754e670-v6-1
+barbie-studio-16a90ea-v7
 
-Run the normal project build now. Use ONLY the pinned manifest, never current main or a recursive tree selector. Verify manifest bytes before parsing, schemaVersion:1, repository and exact sourceCommit. The awaited config hook must finish all 100 verified game downloads before later plugins scan sources or Vite compiles. Validate every safe src/public destination, exact commit URL, byte size and SHA-256. Preserve binary bytes, bounded concurrency/retry, staging, backup, promotion and rollback. Await all in-flight workers before cleaning up on error. Never compile a partially fetched source update.
+Run the normal project build now. Use ONLY this pinned manifest, never current main, a recursive tree selector or an older Barbie manifest. Verify manifest bytes before parsing, schemaVersion:1, repository and exact sourceCommit. The awaited config hook must finish downloading and verifying all103 game files BEFORE later plugins scan sources and Vite compiles. Validate every safe src/public destination, exact pinned raw URL, byte size and SHA-256. Preserve binary bytes, bounded concurrency/retry, staging, backup, promotion and rollback. Await all in-flight workers before cleanup on error. A failed request must never compile a partially updated game.
 
-Keep manifest assets behavior: merge EXACTLY its ten supplied keys into the real src/config/assets.json, replacing these ten values and preserving unrelated host assets/radio streams. Verify assets.ts and create its wrapper only if absent; preserve a compatible existing wrapper. No new runtime dependencies. Do not replace package.json, install from the Vite hook, downgrade toolchains or impose Node22. Keep importer compatibility with modern Node20/22.
+Keep the existing manifest asset behavior: merge EXACTLY its ten supplied original keys into the real src/config/assets.json, replacing those ten values while retaining unrelated host assets/radio streams. Verify assets.ts and create its wrapper ONLY if absent; preserve a compatible existing wrapper/default export. No new runtime dependencies are required. Do not replace package.json wholesale, install from a Vite hook, downgrade tools or impose Node22. The importer remains compatible with modern Node20/22.
 
-Preserve existing Vite/Aippy plugins, the Rapier optimizeDeps exclusion, main.tsx, hidden file viewer, secret Settings-title unlock/password, ZIP export, src/dev, src/types and unrelated files. Manifest-listed GameView.tsx and SettingsModal.tsx update directly at their matching live paths. Delete nothing: obsoleteGameFiles is empty. Never clear localStorage or reset wallet, purchased looks/colors, hairstyle choices, collector cards, friendships, pet toys, saved sets, photos or followers.
+Preserve existing Vite/Aippy plugins, the Rapier optimizeDeps exclusion, main.tsx, hidden project viewer, secret Settings-title unlock/password, ZIP exporter, src/dev, src/types and unrelated files. Manifest-listed GameView.tsx and SettingsModal.tsx update directly at their matching live paths. Delete nothing: obsoleteGameFiles is empty. Never clear localStorage or reset wallets, owned clothing/colors, hairstyles, collector cards, friends, toys, saved sets, photos or followers.
 
-A second ordinary build with this SAME completed requestId MUST skip the update and preserve later Aippy edits. Do not mutate active config from inside the hook. Record verified manifest URL/hash, sourceCommit, requestId and file hashes in .github-import-state/receipt.json.
+A second ordinary build with the SAME completed requestId MUST skip the update and preserve later Aippy edits. Do not mutate active config inside the hook. Record manifest URL/hash, sourceCommit, requestId, destinations and verified hashes in .github-import-state/receipt.json.
 
-THE ALREADY-FINISHED UPDATE:
-- Shirt heart/star appliques sample actual bodice triangles, including patch interiors, so they sit on the shirt instead of floating.
-- Animated lips conform to the actual shaped head. The necklace fits ONLY the currently worn top/body, with fixed neck anchors and restrained movement.
-- New fitted weighted boots enclose the actual calf; shaft and foot follow knee/ankle separately, including seated and dance poses.
-- Native mapped torso/head/limb bones share real continuous limb skin. Articulated palm/fingers supply relaxed, open, peace, pointing, heart and gripping gestures.
-- Natural local walk contacts, foot lift/roll, softened start/stop, torso counter-motion, breathing, weight shift and smoother living poses replace the old joint loop. Keep existing island travel speed and controls.
-- Six additional poses (Confident, Over shoulder, Cheer, Sweet, Over there, Stretch) appear in emotes and player/friend photo choices and survive photo saves.
-- Additive canonical rig and stable hand sockets support one/two-hand carrying and a timed, smoothly entering/recovering swing. These are future-equipment API hooks; do not invent a jungle combat UI on this island.
+THE FINISHED FASHION STUDIO UPDATE — APPLY EXACTLY:
+- Independent colours for all12extras, including earrings, choker and Starlet frames. Dedicated accessory materials prevent changes leaking into skin, clothes, shoes or lenses.
+-26 clothing colours (18free plus collectible premium colours). Existing ownership migrates; a bought colour applies throughout the wardrobe.
+- Original/soft matte/satin/gloss/metallic/sparkle fabric finishes and solid/stripe/polka-dot/gingham/star/petal prints, with separate accent colours for top and bottom. Real procedural shader/material changes, not UI-only swatches. Existing clothes, microdetail, rigging and fit remain.
+-16 hair colours with primary/secondary dye and Highlights, Ombré and Split dye layouts across all9hairstyles. Existing spring-bone hair stays intact.
+- New optional style values persist in the current look, personal outfit sets and photos. Legacy photos/reward identities stay valid; new visible outfit combinations extend DreamFeed variety.
+-6 new solo poses: Chin frame, Hair touch, Folded arms, Leg pop, Kneel and Side sit. Five new duo compositions: Back to back, Linked arms, High five, Shoulder lean and Editorial, alongside the earlier3pairs. Actual player/friend poses, spacing, facing and mirroring change together. New standing/floor skirt correctives prevent thigh holes and floor penetration.
+- Photo camera has bounded screen-plane PAN in addition to orbit/pinch/zoom and a framing reset. One-finger mode toggles between orbit/pan; two fingers can pan/pinch. No instruction box covers the image.
+- The photo panel can MINIMISE into a small shutter/restore/exit bar; Clean screenshot view removes pose/shutter/zoom UI, leaving a small restore control. Selecting poses/people, minimise/restore and photo saves retain the composition. The MINIMISED SHUTTER captures the FULL portrait canvas; do not retain the old62%crop for minimised shots. Expanded photo/challenge framing keeps its existing crop behavior.
+- IMPORTANT DANCE FIX: actual venue dancing uses the EARLIER6.8phase dance-floor choreography again, separately from the photo Dance emote. Do NOT route dancing:true through the photo dance routine or substitute a generic pose.
 
-Apply the supplied source exactly. Retain all previous fashion, nine hairstyles, beauty choices, cloth/hair rigs, photo framing/group poses, camera follow fixes, separate volleyball/netball, fallible Coco/best-of-three/replay, residents, activities, pet controls and settings. Keep Sheets forwarding onPose/onCapture to PhotoGame. The offline DreamFeed remains fictional local simulation. Do not substitute old Social Summer/4.1/5.1 manifests or generic poses.
+Keep every previous6.1fix: natural supporting-leg walk, correct elbow direction/narrow relaxed arms, hip-pose palm contact, fuller thigh depth, fitted weighted boots, mesh-fitted shirt/lips/necklace, native bone map/fingers and reusable carry/swing hooks. Preserve all9hairstyles, fashion/beauty, photo orbit/grouping, separate volleyball/netball, fallible Coco/best-of-three/replay, residents, activities, pets and settings. Sheets must retain BOTH onPose/onCapture forwarding to PhotoGame. DreamFeed stays fictional offline simulation. Apply the supplied game files exactly; do not reinterpret them or revert to old Social Summer/4.1/5.1/6.x source.
 
 AFTER THE ACTUAL BUILD:
-Report build result and receipt manifest URL/hash, exact sourceCommit, requestId, and verified file count. All 100 game entries must match; the receipt may additionally list the asset merge/wrapper. Confirm these hashes:
-- src/App.tsx: 067fabdae3eec530308f700deba435c24cebebafee6604d56491283519b38605
-- src/game/avatar.ts: bc1fb8d66b0067495a1e2bacd3ad92bb2b392e75c99685c92317c94bd15429b8
-- src/game/character/body-rig.ts: 7869b175e388e52e528f0be57a5c73769414ccdaeb567a773735950c07d9e035
-- src/game/character/motion-controller.ts: a2bb79c83679bd926fa9c2c816990901876e9e3b20f7e976e9cffc713ff9a777
-- src/game/character/hand-rig.ts: ee04cfab46ef54ebea330293221f5289bd7ff9b9c67f2ee6a6215761a95a08a9
-- src/game/character/boot-rig.ts: c05035ef2b1b79c19efc875ad1293b714f89c978ec47facab889cb9a49797298
-- src/game/character/surface-map.ts: 25f1b1ebad8ae847561de258bb1155979018f23586d63d3767d8e082f3f5564e
-- src/game/character/face.ts: ebf9d45e21fb50e150d682aadaaf782a63828ad0f6e657fd71a18fd922818880
-- src/game/character/necklace-rig.ts: 6ad0e5a613a6cf35df1ea216476d0ab928acc89ddc13f76bee3ff10e4c2c83d1
-- src/game/poses.ts: 2e6786dc22f8a93341dbc0d94fb903c27808ed3dd017a4f5adf4e268d8ecb0dc
-- src/ui/PhotoStudio.tsx: 9768e700eccf8ddbc72c3d7d557d6ff9faecf74cd19fa652ee3c0c0bc33624bf
-- src/ui/Sheets.tsx: a01d5cb1c2106fb47033103f21b0bcaf10690193dce0b2bcc98a75a939c20656
+Report build result and receipt manifest URL/hash, exact sourceCommit, requestId and verified file count. All103 game entries must match; the receipt can additionally list the asset merge/wrapper (the verified fixture has105 total entries). Confirm these source hashes:
+- src/App.tsx: 1e2171a469f32a1163498f78a704625ffb9c40bc71f157300d5b5fc38cca247d
+- src/game/avatar.ts: c9b3c2ad50b554608270d03d3ea305cca01a6e0cf2e27fe3382435b605ae91a2
+- src/game/character/style-materials.ts: 1a04b2973e82508f03c9b09deda1537aaace9eeafe1bc14accab138671670765
+- src/game/character/motion-controller.ts: 23f330c0a7af3c03f752bfcd90b322453c70b548ff1326eb9b452e72331777b4
+- src/game/character/garment-rig.ts: 63b5d927d74ad5c5e9d1dcbc31898279fbcdf1ab4fe349a41817dc135df1962f
+- src/game/look-style.ts: 516a1a9c679c173931a81be1a9454866c0517870781cd18d6323116a2c67310a
+- src/game/lifestyle-save.ts: 5d704ecb0e1119b6a2a80c324209a8dc82c09a10f38b89f7da1c5555ee9c0a50
+- src/game/social.ts: 20f4d46a8defe2cc07aac719b12ca56eab3fef84c6be87420a0072388c3575bc
+- src/game/poses.ts: 604f02c71b6815bd732661a9daeecd263371970766fa260c4b44f00fbcf0ba53
+- src/game/camera.ts: 332831385e0b0fed946fb92be36ada4e8e898e0e1c0a9c5ce03bfe8ce4ec4a59
+- src/game/create-game.ts: 94346baf2ebe7510eace57682c852e27a2b6cf9b26e814b3e9c95851ace9f3dd
+- src/ui/PhotoStudio.tsx: 36dd5536caab8a587229bdf24ae3ecc19ccc93794b55f459d92bb68750d95369
+- src/ui/StyleOptions.tsx: 0b65d51042f1df75740ae248641bf74507c38d925e1d031675f9fdcb14093414
+- src/ui/Sheets.tsx: bfea48f227109d6f11ca0742da37adc42805e36e4696002c8caa86a7f885f10b
 
-Watch a complete walking cycle from front, side and rear, including starts/stops. Inspect idle knees under the hips, normal forward elbow flexion and relaxed arm width. Check hip-hand contact in Peace, Kiss, Confident and Over shoulder.
-
-Check all ten manifest asset values reached the real registry and an unrelated existing key survived if one existed. In a short portrait game frame, check shirt/necklace/lips from front AND side, boots standing/walking/dancing/seated, both gait directions in all skirts, new emote callbacks and saved photo poses, and that all nine hairstyles and previous controls remain. Confirm settings/secret ZIP utility still works. Holding/swinging is an API foundation demonstrated by local QA, not a new visible combat mode. Report any actual failure; do not generate replacement game files or claim success merely because the config was edited.
+Check all ten manifest asset values reached the real working registry and an unrelated existing key survived if one existed. At360x520 in the containing Aippy game frame: change fabric finish/print/accent and separate earring/choker/Starlet colours; verify actual doll materials change independently; combine primary/secondary hair and layouts; save/reload a set. Test new solo/duo selection, true pair placement, pan/reset, minimise/restore, clean view and full-frame minimised JPEG capture. Inspect poses from side angles for garment holes. Compare venue dancing with the separate photo dance. Confirm settings/hidden ZIP still works and existing saves survive. Report actual failures rather than creating replacement gameplay or claiming success from config alone.
