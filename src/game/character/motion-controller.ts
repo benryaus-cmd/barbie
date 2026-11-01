@@ -5,7 +5,7 @@ import type { HandGesture } from './hand-rig';
 type Rotation = [number, number, number];
 export type MotionInput = {
   moving:boolean; speed:number; grounded:boolean; dancing:boolean; sitting:boolean; pose:string;
-  heading?:number; soleHeight?:number; carry?:'none'|'one-hand'|'two-hand'; swing?:number|null;
+  heading?:number; soleHeight?:number; armSpace?:number; carry?:'none'|'one-hand'|'two-hand'; swing?:number|null;
 };
 export type MotionFrame = {
   pelvisY:number; phase:number; rotations:Record<string,Rotation>;
@@ -30,7 +30,7 @@ export function createMotionController() {
   const pelvisInverse=new THREE.Quaternion(),origin=new THREE.Vector3(),target=new THREE.Vector3(),hint=new THREE.Vector3(),direction=new THREE.Vector3();
   const toolQ=new THREE.Quaternion(),wristQ=new THREE.Quaternion(),chainQ=new THREE.Quaternion(),gripOffset=new THREE.Vector3(),gripPoint=new THREE.Vector3();
   let clock=0,phase=0,pace=0,photoWeight=0,turn=0,lastHeading:number|undefined;
-  let heldMode='none',heldTransition=1,hasPrevious=false;
+  let heldMode='none',heldTransition=1,hasPrevious=false,inputArmSpace=0;
   const set=(f:MotionFrame,key:string,x=0,y=0,z=0)=>{const r=f.rotations[key];r[0]=x;r[1]=y;r[2]=z;};
   const blendRotation=(to:Rotation,a:Rotation,b:Rotation,w:number)=>{
     qa.setFromEuler(euler.set(...a));qb.setFromEuler(euler.set(...b));euler.setFromQuaternion(qa.slerp(qb,w));to[0]=euler.x;to[1]=euler.y;to[2]=euler.z;
@@ -44,13 +44,27 @@ export function createMotionController() {
     const qs=solveLimb(origin,target,hint,.27,.245,direction);
     for(let j=0;j<3;j++){euler.setFromQuaternion(qs[j]);set(f,p+['UpperArm','LowerArm','Hand'][j],euler.x,euler.y,euler.z);}
   };
-  const handOnHip=(f:MotionFrame,i:number)=>{const s=i?1:-1;reach(f,i,[s*.275,.015,.135],[s*.5,-.08,.04],[0,-1,0]);};
+  const relaxedArm=(f:MotionFrame,i:number,progress=0,space=0)=>{
+    const side=i?1:-1;
+    // Upper arm travels behind the advancing same-side leg; elbow flexes forward.
+    // Keep the elbow near the ribs, with only the space the current skirt needs.
+    arm(f,i,.045+progress*.25,0,side*(.060+space),-.12-.08*Math.max(0,-progress),0,-.025,-side*.6,side*.015);
+  };
+  const handOnHip=(f:MotionFrame,i:number)=>{
+    const side=i?1:-1,p=i?'right':'left';
+    const palmQ=new THREE.Quaternion().setFromEuler(new THREE.Euler(.02,-side*Math.PI/2,side*.10));
+    const down=new THREE.Vector3(0,-1,0).applyQuaternion(palmQ);
+    reach(f,i,[side*.196,.04,.015],[side*.5,-.02,-.12],[down.x,down.y,down.z]);
+    const chain=new THREE.Quaternion().setFromEuler(new THREE.Euler(...f.rotations[p+'UpperArm'])).multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(...f.rotations[p+'LowerArm'])));
+    const rotation=new THREE.Euler().setFromQuaternion(chain.invert().multiply(palmQ));
+    set(f,p+'Hand',rotation.x,rotation.y,rotation.z);
+  };
   function photoPose(selected:string,base:MotionFrame) {
     photo.pelvisY=base.pelvisY;for(const k of keys)photo.rotations[k].splice(0,3,...base.rotations[k]);
     photo.hands.left='relaxed';photo.hands.right='relaxed';
     const pulse=Math.sin(clock*2.4),breath=Math.sin(clock*1.35)*.012;
     set(photo,'pelvis',0,0,-.025);set(photo,'waist',breath,0,.025);set(photo,'head',breath,.06,-.045);
-    for(let i=0;i<2;i++){const s=i?1:-1;reach(photo,i,[s*.29,-.12,.025],[s*.6,0,.25],[0,-1,.05]);}
+    for(let i=0;i<2;i++)relaxedArm(photo,i,0,clamp(inputArmSpace,0,.065));
     if(selected==='wave') {
       reach(photo,1,[.38,.71,.06],[.25,-.05,.04],[pulse*.2,1,0]);set(photo,'head',0,-.12,-.11);photo.hands.right='open';
     } else if(selected==='peace') {
@@ -116,26 +130,40 @@ export function createMotionController() {
     if(Number.isFinite(input.heading)){if(lastHeading!==undefined&&step>0){const delta=Math.atan2(Math.sin(input.heading!-lastHeading),Math.cos(input.heading!-lastHeading));turnGoal=clamp(delta/step,-2,2)*.025*pace;}lastHeading=input.heading;}
     turn+=(turnGoal-turn)*(1-Math.exp(-step*5));
     const sole=Number.isFinite(input.soleHeight)?clamp(input.soleHeight!,.04,.16):.09;
+    inputArmSpace=Number.isFinite(input.armSpace)?clamp(input.armSpace!,0,.065):0;
     const breath=Math.sin(clock*1.35),sway=Math.sin(clock*.54+.4);
-    out.pelvisY=.928+(sole-.09)-pace*.009+breath*.0012*(1-pace)+Math.cos(phase*2)*.0015*pace;
+    out.pelvisY=.936+(sole-.09);
     for(const k of keys)set(out,k);
     out.hands.left=out.hands.right='relaxed';
     set(out,'pelvis',pace*.025,Math.sin(phase)*.025*pace,Math.sin(phase)*.013*pace+sway*.006*(1-pace)-turn);
     set(out,'waist',breath*.006-pace*.018,-Math.sin(phase)*.045*pace,-out.rotations.pelvis[2]*.8);
     set(out,'head',breath*.009,Math.sin(clock*.38)*.019,-.018-sway*.007);
     pelvisInverse.setFromEuler(euler.set(...out.rotations.pelvis)).invert();
-    for(let i=0;i<2;i++) {
-      const side=i?1:-1,p=i?'right':'left',cycle=(phase/TAU+i*.5)%1,stance=.62;
+    const contacts=[0,1].map(i=>{
+      const cycle=(phase/TAU+i*.5)%1,stance=.62;
       const swing=cycle>stance?(cycle-stance)/(1-stance):0;
-      const z=pace*.145*(cycle<=stance?1-2*cycle/stance:-1+2*smooth(swing));
-      const lift=pace*.036*Math.pow(Math.sin(swing*Math.PI),1.5);
-      const roll=pace*(cycle<.10?-.10*(1-cycle/.10):cycle>.49&&cycle<stance?.16*smooth((cycle-.49)/(stance-.49)):cycle>stance?.12*Math.cos(swing*Math.PI):0);
+      const z=pace*.18*(cycle<=stance?1-2*cycle/stance:-1+2*smooth(swing));
+      const lift=pace*.038*Math.pow(Math.sin(swing*Math.PI),1.5);
+      const roll=pace*(cycle<.10?-.10*(1-cycle/.10):cycle>.49&&cycle<stance?.13*smooth((cycle-.49)/(stance-.49)):cycle>stance?.10*Math.cos(swing*Math.PI):0);
+      return {z,lift,roll};
+    });
+    // Let the supporting leg extend through mid-stance. A fixed low pelvis made
+    // both knees hunch forward throughout the cycle and at rest.
+    out.pelvisY=Infinity;
+    for(let i=0;i<2;i++){
+      const side=i?1:-1,contact=contacts[i];
+      origin.set(side*.108,-.025,0).applyQuaternion(pelvisInverse.clone().invert());
+      const horizontal=(side*.108-origin.x)**2+(contact.z-origin.z)**2;
+      out.pelvisY=Math.min(out.pelvisY,sole+contact.lift-origin.y+Math.sqrt(Math.max(.0001,.821**2-horizontal)));
+    }
+    out.pelvisY-=.0005+breath*.0003*(1-pace);
+    for(let i=0;i<2;i++) {
+      const side=i?1:-1,p=i?'right':'left',{z,lift,roll}=contacts[i];
       target.set(side*.108,sole+lift-out.pelvisY,z).applyQuaternion(pelvisInverse);
-      origin.set(side*.108,-.025,0);hint.set(side*.025,0,1).applyQuaternion(pelvisInverse);direction.set(0,-Math.cos(roll),-Math.sin(roll)).applyQuaternion(pelvisInverse);
+      origin.set(side*.108,-.025,0);hint.set(side*.015,0,1).applyQuaternion(pelvisInverse);direction.set(0,-Math.cos(roll),-Math.sin(roll)).applyQuaternion(pelvisInverse);
       const qs=solveLimb(origin,target,hint,.425,.397,direction);
       for(let j=0;j<3;j++){euler.setFromQuaternion(qs[j]);set(out,p+['UpperLeg','LowerLeg','Foot'][j],euler.x,euler.y,euler.z);}
-      // A low wrist target beyond the hip keeps relaxed palms out of full skirts.
-      reach(out,i,[side*(.291+pace*.012),-.117+Math.sin(phase+i*Math.PI)*pace*.004,.025-Math.sin(phase+i*Math.PI)*pace*.078],[side*.65,0,.2],[0,-1,.04]);
+      relaxedArm(out,i,z/.18,inputArmSpace);
     }
     if(!input.grounded&&!input.sitting) {
       set(out,'leftUpperLeg',-.48,0,-.035);set(out,'leftLowerLeg',.35);set(out,'rightUpperLeg',.24,0,.035);set(out,'rightLowerLeg',.60);

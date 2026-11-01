@@ -21,7 +21,7 @@ for(const vehicle of ['scooter','convertible','buggy']){
 }
 avatar.group.position.set(0,0,0);avatar.setPose('peace');for(let i=0;i<180;i++)avatar.update(1/60,motion);avatar.group.updateMatrixWorld(true);
 const left=joint('shoulder.L'),elbow=left.children.find(n=>n.name==='elbow'),wrist=elbow.children.find(n=>n.name==='wrist');
-assert(Math.abs(pos(elbow).x)>.26,'free elbow stays outside torso');assert(Math.abs(pos(wrist).x)>.20,'hip hand stays outside waist');
+assert(Math.abs(pos(elbow).x)>.26,'free elbow stays outside torso');assert(Math.abs(pos(wrist).x)>.18,'hip hand stays outside waist');
 for(const pose of ['idle','peace','heart','kiss','pet','surf','dance']){avatar.setPose(pose);for(let i=0;i<90;i++)avatar.update(1/60,motion);avatar.group.updateMatrixWorld(true);avatar.group.traverse(n=>assert(n.matrixWorld.elements.every(Number.isFinite),pose+' matrices finite'));}
 avatar.setPose('pet');for(let i=0;i<120;i++)avatar.update(1/60,motion);for(let i=0;i<180;i++)avatar.update(1/60,{...motion,moving:true,speed:4});
 for(const mesh of all.filter(n=>n.name.includes('gown')))assert(mesh.morphTargetInfluences.every(v=>v<1e-5),'walking clears the inactive pet/crouch drape');

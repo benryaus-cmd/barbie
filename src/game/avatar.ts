@@ -470,7 +470,7 @@ export function createAvatar(): Avatar {
       if(motion.sitting){state.actionActive=false;state.actionElapsed=0;}
       else if(state.actionActive){state.actionElapsed=Math.min(1.05,state.actionElapsed+step);if(state.actionElapsed>=1.05)state.actionActive=false;}
       const soleHeight={heels:.099,sneakers:.09,sandals:.075,platforms:.106,boots:.094}[state.shoes];
-      const frame=controller.update(step,{...motion,pose:state.pose,dancing:motion.dancing||state.cheer>0,heading:group.rotation.y,soleHeight,carry:state.actionActive&&state.carry==='none'?'one-hand':state.carry,swing:state.actionActive?state.actionElapsed/1.05:null});
+      const frame=controller.update(step,{...motion,pose:state.pose,dancing:motion.dancing||state.cheer>0,heading:group.rotation.y,soleHeight,armSpace:['gown','pleated','tennis','wrap'].includes(state.look.bottom)?.045:0,carry:state.actionActive&&state.carry==='none'?'one-hand':state.carry,swing:state.actionActive?state.actionElapsed/1.05:null});
       state.phase=frame.phase;pelvis.position.y=frame.pelvisY;neck.rotation.set(0,0,0);
       // The controller already blends actions. A second joint filter would drag solved feet.
       for(const [key,rotation] of Object.entries(frame.rotations)) {

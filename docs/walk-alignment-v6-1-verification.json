@@ -1,0 +1,31 @@
+{
+  "release": "Natural Walk & Hip Poses 6.1",
+  "unitTests": 34,
+  "runtimeSuites": 26,
+  "typecheck": "pass",
+  "lint": "pass",
+  "productionBuild": "pass",
+  "characterRenders": 46,
+  "characterErrors": [],
+  "worldKeyboardMovement": {
+    "passed": true,
+    "checks": [
+      "walk-natural"
+    ],
+    "errors": []
+  },
+  "geometryChecks": [
+    "resting knees below hips rather than permanently hunched forward",
+    "relaxed elbow side width and correct forward flexion",
+    "narrower default arms with selected-skirt allowance",
+    "actual hip-surface palm distance in confident pose",
+    "rounded thigh depth",
+    "boots enclose calf across five bend poses",
+    "shorts and palazzo fit",
+    "front/rear leg coverage across all six skirts: 2820 samples"
+  ],
+  "limitations": [
+    "Normalised gait retains existing fast traversal; no world-space foot locking.",
+    "Desktop Chromium SwiftShader checks, not physical Android performance measurements."
+  ]
+}
