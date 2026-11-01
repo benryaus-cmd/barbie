@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 /** Continuous skin across an articulated elbow/knee; hands, shoes and clothing retain their own joints. */
-export function createLimbSkin(upper:THREE.Group,lower:THREE.Group,material:THREE.MeshStandardMaterial,kind:'arm'|'leg') {
+export function createLimbSkin(upper:THREE.Object3D,lower:THREE.Object3D,material:THREE.MeshStandardMaterial,kind:'arm'|'leg',bodySkeleton?:THREE.Skeleton) {
  for(const joint of [upper,lower])for(const child of [...joint.children])if(child instanceof THREE.Mesh&&child.material===material){child.removeFromParent();child.geometry.dispose();}
  const length=kind==='arm'?.27:.425;
  const profile:Array<[number,number]>=kind==='arm'?
@@ -10,10 +10,13 @@ export function createLimbSkin(upper:THREE.Group,lower:THREE.Group,material:THRE
  const points:THREE.Vector2[]=[];const top=profile[0][1],bottom=profile[profile.length-1][1];
  for(let i=0;i<=40;i++){const y=THREE.MathUtils.lerp(bottom,top,i/40);points.push(new THREE.Vector2(sample(y),y));}
  const geometry=new THREE.LatheGeometry(points,24),position=geometry.attributes.position;
+ const upperIndex=bodySkeleton?bodySkeleton.bones.indexOf(upper as THREE.Bone):0,lowerIndex=bodySkeleton?bodySkeleton.bones.indexOf(lower as THREE.Bone):1;
+ if(upperIndex<0||lowerIndex<0)throw new Error('Mapped limb joints must belong to the shared body skeleton.');
  const indices:number[]=[],weights:number[]=[];
- for(let i=0;i<position.count;i++){position.setZ(i,position.getZ(i)*(kind==='arm'?.94:.87));const blend=THREE.MathUtils.smoothstep(-position.getY(i),length-.055,length+.055);indices.push(0,1,0,0);weights.push(1-blend,blend,0,0);}
+ for(let i=0;i<position.count;i++){position.setZ(i,position.getZ(i)*(kind==='arm'?.94:.87));const blend=THREE.MathUtils.smoothstep(-position.getY(i),length-.055,length+.055);indices.push(upperIndex,lowerIndex,0,0);weights.push(1-blend,blend,0,0);}
  geometry.computeVertexNormals();geometry.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(indices,4));geometry.setAttribute('skinWeight',new THREE.Float32BufferAttribute(weights,4));
- const root=new THREE.Bone(),bend=new THREE.Bone();root.name=kind+'.skin.root';bend.name=kind+'.skin.bend';bend.position.copy(lower.position);root.add(bend);upper.add(root);
- const mesh=new THREE.SkinnedMesh(geometry,material);mesh.name=kind+' continuous skin';mesh.castShadow=mesh.receiveShadow=true;upper.add(mesh);upper.updateWorldMatrix(true,true);const skeleton=new THREE.Skeleton([root,bend]);mesh.bind(skeleton);mesh.frustumCulled=false;
- return {update(){bend.quaternion.copy(lower.quaternion);bend.updateWorldMatrix(true,true);}};
+ let bend:THREE.Bone|undefined,skeleton=bodySkeleton;
+ if(!skeleton){const root=new THREE.Bone();bend=new THREE.Bone();root.name=kind+'.skin.root';bend.name=kind+'.skin.bend';bend.position.copy(lower.position);root.add(bend);upper.add(root);upper.updateWorldMatrix(true,true);skeleton=new THREE.Skeleton([root,bend]);}
+ const mesh=new THREE.SkinnedMesh(geometry,material);mesh.name=kind+' continuous skin';mesh.castShadow=mesh.receiveShadow=true;upper.add(mesh);upper.updateWorldMatrix(true,true);mesh.bind(skeleton);mesh.frustumCulled=false;
+ return {update(){if(bend){bend.quaternion.copy(lower.quaternion);bend.updateWorldMatrix(true,true);}}};
 }

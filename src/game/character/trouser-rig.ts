@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-type Leg = { hip: THREE.Group; knee: THREE.Group; ankle: THREE.Group };
+type Leg = { hip: THREE.Object3D; knee: THREE.Object3D; ankle: THREE.Object3D };
 type Influence = Array<[number, number]>;
 const SEGMENTS = 64;
 const smooth = (a: number, b: number, value: number) => THREE.MathUtils.smoothstep(value, a, b);
@@ -9,7 +9,7 @@ const smooth = (a: number, b: number, value: number) => THREE.MathUtils.smoothst
  * saddle seam into two legs. Only the waist and the two hems are open boundaries.
  * The pelvis stays fitted while the thigh and calf follow the avatar's real joints. */
 export function createTrouserRig(
-  pelvis: THREE.Group, legs: Leg[], fabric: THREE.MeshStandardMaterial,
+  pelvis: THREE.Object3D, legs: Leg[], fabric: THREE.MeshStandardMaterial,
   trim: THREE.MeshStandardMaterial, kind: 'shorts' | 'palazzo',
 ): { root: THREE.Group; update(): void } {
   const root = new THREE.Group(); root.name = `${kind} fitted trouser rig`; pelvis.add(root);

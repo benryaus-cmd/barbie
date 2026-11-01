@@ -45,3 +45,8 @@ Keep one body size while replacing rigid elbow/knee skin with continuous weighte
 Faces use curved eye openings, soft blush, a continuous nose, sculpted lip shapes, blinking and pose expressions. The makeup station adds eye shape, iris color and lip shape; active looks, saved sets and photo metadata retain those choices without changing legacy follower reward identities. All nine hair silhouettes and existing wardrobe ownership remain. Fine shared skin/fabric/hair micro surfaces add texture without a photorealistic style shift. Shared vehicle contact points drive the rider's hands/feet and physical steering details.
 
 Judge the result from actual close-up and riding renders. Numerical finiteness alone does not establish coverage: inspect all skirt silhouettes, bob/curls facial clearance and crouched poses, then fix the defects before publishing a unique pinned Aippy handoff.
+
+
+## Character motion foundation 6
+
+Polish the existing body rather than introducing different sizes: sew shirt appliques onto actual bodices, reproject moving lips to the head, fit jewellery to the selected top and enclose calves in ankle-weighted boots. Use a canonical native-bone map shared by limb skin, articulated fingers, gentle breathing/weight shift, grounded local walk contacts and softened pose/action transitions. Keep fast island traversal; do not claim world-space foot locking. Add confident, over-shoulder, cheer, sweet, pointing and stretch poses to player/friend photo choices. Expose consistent hand sockets, one/two-hand carries and a one-shot swing for future island equipment, with equipment/gameplay authored separately. Preserve the wardrobe, all nine hairstyles, saves and mobile UI. Render side profiles and actual moving cloth before release.

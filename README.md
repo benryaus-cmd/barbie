@@ -20,7 +20,7 @@ Original project collector portraits and music still use their original Aippy CD
 
 ## Social summer update
 
-Mix eight tops and eight bottoms, recolor them independently, and layer five extras together. Five hair/shoe styles and nine explicit poses let you build a signature look. Meet six named residents, build friendships, stroke Mochi and buy fetch toys. The pool now has moving water and floating friends; sunset and a bounded patio light show set the mood.
+Mix eight tops and eight bottoms, recolor them independently, and layer five extras together. Nine hairstyles, five shoe styles and an expanded living pose library let you build a signature look. Meet six named residents, build friendships, stroke Mochi and buy fetch toys. The pool now has moving water and floating friends; sunset and a bounded patio light show set the mood.
 
 The surf shack launches a real3D board ride. Sunset Sips uses an actual glass fill/target game with graded pours. The camera gently follows walking direction while preserving stationary manual views.
 
@@ -39,3 +39,8 @@ Shared photo/style orbit and pinch zoom; clean camera view; preserved character 
 Continuous elbow/knee skin, six weighted skirt silhouettes with authored riding/crouch fit, spring-bone hair, softer micro surfaces, improved faces and configurable eyes/lips. Vehicle contact points drive hands and feet. Geometry authoring is cached for reuse; Low keeps one detailed resident. See [release notes and verification](docs/character-atelier-release.md); `npm run test:characters` renders the character regression gallery.
 
 Character Atelier 5.1 repairs the sewn shorts/trouser hips and crotch, places a gently moving necklace outside all eight tops, and adds front/rear/side walking clearance to all six skirt silhouettes. `npm run test:fit` renders low-angle pants and rear/front gait views.
+
+
+## Character motion foundation 6
+
+Native mapped body bones, articulated fingers, fitted knee/ankle boots and a layered walk/idle/pose controller now support the current doll. Shirt appliques and animated lips follow the actual underlying mesh; necklaces fit the selected top. Six additional emotes reach both player and friend photo choices. Additive grip/carry/swing hooks prepare the same avatar for future equipment. See [rig API and limits](docs/avatar-rig-v6.md). No jungle gameplay is added to this island.

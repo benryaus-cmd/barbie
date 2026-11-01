@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createSurfaceMap } from './surface-map';
 
 type Mat = THREE.MeshStandardMaterial;
 export type FaceMaterials = { skin: Mat; shade: Mat; ivory: Mat; ink: Mat; lips: Mat; blush: Mat; eyeshadow: Mat };
@@ -6,8 +7,8 @@ export type FaceLook = { eyeStyle?: 'soft' | 'almond' | 'wide'; mouthStyle?: 'sm
 export type FaceController = { setLook(look: FaceLook): void; update(dt: number, pose: string, moving: boolean): void };
 type Point = [number, number, number];
 
-// Match the doll's head ellipsoid. Features follow its curvature rather than floating on a flat mask.
-const faceZ = (x: number, y: number) => .161 * Math.sqrt(Math.max(.02, 1 - (x / .186) ** 2 - (y / .232) ** 2));
+// Used only for a standalone face without a supplied skin mesh. Real avatars bake their authored head.
+const fallbackFaceZ = (x: number, y: number) => .161 * Math.sqrt(Math.max(.02, 1 - (x / .186) ** 2 - (y / .232) ** 2));
 function mesh(parent: THREE.Object3D, name: string, geometry: THREE.BufferGeometry, material: Mat) {
   const result = new THREE.Mesh(geometry, material); result.name = name;
   result.castShadow = false; result.receiveShadow = false; parent.add(result); return result;
@@ -19,15 +20,38 @@ function oval(parent: THREE.Object3D, name: string, material: Mat, position: Poi
 function curve(parent: THREE.Object3D, name: string, material: Mat, points: Point[], width: number) {
   return mesh(parent, name, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p))), 16, width, 5, false), material);
 }
-function curvedShape(shape: THREE.Shape, cx: number, cy: number, lift: number, bulge = 0) {
-  const geometry = new THREE.ShapeGeometry(shape, 18), positions = geometry.getAttribute('position');
+function tessellateShape(shape: THREE.Shape) {
+  const geometry = new THREE.ShapeGeometry(shape, 18), attribute = geometry.getAttribute('position');
+  const points = Array.from({ length: attribute.count }, (_, i) => new THREE.Vector3().fromBufferAttribute(attribute, i));
+  let triangles = Array.from(geometry.index!.array);
+  // ShapeGeometry triangulates the outline only. Interior vertices are necessary for a
+  // narrow patch to follow real curved skin between its opposite edges as well.
+  for (let pass = 0; pass < 5; pass++) {
+    const next: number[] = [], midpoints = new Map<string, number>(); let divided = false;
+    const midpoint = (a: number, b: number) => {
+      const key = a < b ? `${a}:${b}` : `${b}:${a}`, existing = midpoints.get(key);
+      if (existing !== undefined) return existing;
+      const index = points.length; points.push(points[a].clone().add(points[b]).multiplyScalar(.5)); midpoints.set(key, index); return index;
+    };
+    for (let i = 0; i < triangles.length; i += 3) {
+      const [a, b, c] = triangles.slice(i, i + 3);
+      if (Math.max(points[a].distanceToSquared(points[b]), points[b].distanceToSquared(points[c]), points[c].distanceToSquared(points[a])) <= .01 ** 2) next.push(a, b, c);
+      else { const ab = midpoint(a, b), bc = midpoint(b, c), ca = midpoint(c, a); next.push(a, ab, ca, ab, b, bc, ca, bc, c, ab, bc, ca); divided = true; }
+    }
+    triangles = next; if (!divided) break;
+  }
+  geometry.deleteAttribute('uv'); geometry.setAttribute('position', new THREE.Float32BufferAttribute(points.flatMap(point => point.toArray()), 3)); geometry.setIndex(triangles);
+  return geometry;
+}
+function curvedShape(shape: THREE.Shape, cx: number, cy: number, lift: number, bulge = 0, faceZ = fallbackFaceZ) {
+  const geometry = tessellateShape(shape), positions = geometry.getAttribute('position');
   for (let i = 0; i < positions.count; i++) {
     const x = positions.getX(i), y = positions.getY(i);
     positions.setZ(i, faceZ(cx + x, cy + y) + lift + bulge * Math.max(0, 1 - Math.abs(x) / .05));
   }
   geometry.computeVertexNormals(); return geometry;
 }
-function noseGeometry() {
+function noseGeometry(faceZ = fallbackFaceZ) {
   const columns = 24, rows = 36, positions: number[] = [], indices: number[] = [];
   for (let row = 0; row <= rows; row++) for (let column = 0; column <= columns; column++) {
     const x = -.032 + column / columns * .064, y = -.062 + row / rows * .099;
@@ -49,7 +73,7 @@ function noseGeometry() {
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
   geometry.setIndex(indices); geometry.computeVertexNormals(); return geometry;
 }
-function feather(parent: THREE.Object3D, name: string, material: Mat, cx: number, cy: number, rx: number, ry: number, opacity: number) {
+function feather(parent: THREE.Object3D, name: string, material: Mat, cx: number, cy: number, rx: number, ry: number, opacity: number, faceZ = fallbackFaceZ) {
   const positions: number[] = [], colors: number[] = [], indices: number[] = [], sectors = 24, rings = 4;
   for (let ring = 0; ring <= rings; ring++) for (let i = 0; i <= sectors; i++) {
     const radius = ring / rings, angle = i / sectors * Math.PI * 2;
@@ -69,7 +93,12 @@ function feather(parent: THREE.Object3D, name: string, material: Mat, cx: number
 }
 
 /** Add AFTER rigid geometry batching; the animated eyelids, iris rigs and lips must remain separate. */
-export function createFace(head: THREE.Group, materials: FaceMaterials): FaceController {
+export function createFace(head: THREE.Object3D, materials: FaceMaterials): FaceController {
+  // Batching merges the head and ears into a direct child with the shared skin material.
+  // Bake before adding the nose/features so decoration cannot become its own support.
+  const skinMeshes = head.children.filter((node): node is THREE.Mesh => node instanceof THREE.Mesh && node.material === materials.skin);
+  const surface = createSurfaceMap(skinMeshes, head);
+  const faceZ = (x: number, y: number) => surface.sample(x, y)?.z ?? fallbackFaceZ(x, y);
   const root = new THREE.Group(); root.name = 'face features'; head.add(root);
   const features = new THREE.Group(); root.add(features);
   const irisMaterial = new THREE.MeshStandardMaterial({ color: 0x278eae, roughness: .34 });
@@ -85,21 +114,28 @@ export function createFace(head: THREE.Group, materials: FaceMaterials): FaceCon
   }
   const eyes: Array<{ opening: THREE.Group; gaze: THREE.Group; brow: THREE.Object3D; side: number }> = [];
   let mouth = new THREE.Group(), time = 0, expression = 0;
+  const animatedLips: Array<{ mesh: THREE.Mesh; rest: Float32Array; lift: Float32Array }> = [];
+  const projected = new THREE.Vector3(), localInverse = new THREE.Matrix4(), relative = new THREE.Matrix4();
+  function attachLip(part: THREE.Mesh) {
+    const positions = part.geometry.getAttribute('position'), rest = new Float32Array(positions.array), lift = new Float32Array(positions.count);
+    for (let i = 0; i < positions.count; i++) lift[i] = positions.getZ(i) - faceZ(positions.getX(i), -.095 + positions.getY(i));
+    animatedLips.push({ mesh: part, rest, lift });
+  }
   let look: Required<FaceLook> = { eyeStyle: 'soft', mouthStyle: 'smile', eyeColor: '#278eae' };
   function build() {
     features.traverse(node => { if (node instanceof THREE.Mesh) node.geometry.dispose(); });
-    features.clear(); eyes.length = 0;
+    features.clear(); eyes.length = 0; animatedLips.length = 0;
     const eyeShape = { soft: { width: .048, height: .024, tilt: .003 }, almond: { width: .051, height: .0195, tilt: .006 }, wide: { width: .045, height: .029, tilt: .0015 } }[look.eyeStyle];
     for (const side of [-1, 1]) {
       const suffix = side < 0 ? 'L' : 'R', cx = side * .074, cy = .032;
       const eye = new THREE.Group(); eye.name = `eye.${suffix}`; eye.position.set(cx, cy, 0); features.add(eye);
-      feather(features, `eyeshadow.${suffix}`, shadowMaterial, cx, cy + eyeShape.height + .008, eyeShape.width * 1.08, .013, .32);
+      feather(features, `eyeshadow.${suffix}`, shadowMaterial, cx, cy + eyeShape.height + .008, eyeShape.width * 1.08, .013, .32, faceZ);
       const opening = new THREE.Group(); opening.name = `eye opening.${suffix}`; eye.add(opening);
       const { width: w, height: h, tilt } = eyeShape;
       const shape = new THREE.Shape(); shape.moveTo(-w, -side * tilt);
       shape.bezierCurveTo(-w * .5, h * .98 - side * tilt, w * .43, h * 1.08 + side * tilt, w, side * tilt);
       shape.bezierCurveTo(w * .5, -h * .9 + side * tilt, -w * .5, -h * .85 - side * tilt, -w, -side * tilt);
-      mesh(opening, `eye white.${suffix}`, curvedShape(shape, cx, cy, .0055, .005), materials.ivory);
+      mesh(opening, `eye white.${suffix}`, curvedShape(shape, cx, cy, .0055, .005, faceZ), materials.ivory);
       const gaze = new THREE.Group(); gaze.name = `gaze.${suffix}`; gaze.position.set(-side * .002, -.001, faceZ(cx, cy) + .012); opening.add(gaze);
       oval(gaze, `iris rim.${suffix}`, irisRim, [0, 0, 0], [.0205, h * .75, .004]);
       oval(gaze, `iris.${suffix}`, irisMaterial, [0, 0, .002], [.0176, h * .69, .0035]);
@@ -128,10 +164,10 @@ export function createFace(head: THREE.Group, materials: FaceMaterials): FaceCon
         browPoints.push([x, y, faceZ(x, y) + .004]);
       }
       curve(brow, `brow arch.${suffix}`, browMaterial, browPoints, .0032);
-      feather(features, `blush.${suffix}`, blushMaterial, side * .111, -.047, .037, .019, .32);
+      feather(features, `blush.${suffix}`, blushMaterial, side * .111, -.047, .037, .019, .32, faceZ);
       eyes.push({ opening, gaze, brow, side });
     }
-    mesh(features, 'nose continuous surface', noseGeometry(), materials.skin);
+    mesh(features, 'nose continuous surface', noseGeometry(faceZ), materials.skin);
     mouth = new THREE.Group(); mouth.name = 'mouth'; mouth.position.y = -.095; features.add(mouth);
     const mouthShape = { smile: { w: .038, upper: .009, lower: .012, corner: .005 }, soft: { w: .031, upper: .008, lower: .010, corner: .001 }, full: { w: .037, upper: .013, lower: .017, corner: .002 } }[look.mouthStyle];
     const { w, upper, lower, corner } = mouthShape;
@@ -140,14 +176,14 @@ export function createFace(head: THREE.Group, materials: FaceMaterials): FaceCon
     top.quadraticCurveTo(0, upper * .32, w * .19, upper * .83);
     top.bezierCurveTo(w * .39, upper * 1.38, w * .66, corner + upper * .5, w, corner);
     top.quadraticCurveTo(0, -.0035, -w, corner);
-    mesh(mouth, 'cupid bow upper lip', curvedShape(top, 0, -.095, .004, .003), materials.lips);
+    attachLip(mesh(mouth, 'cupid bow upper lip', curvedShape(top, 0, -.095, .0008, .0013, faceZ), materials.lips));
     const bottom = new THREE.Shape(); bottom.moveTo(-w, corner);
     bottom.quadraticCurveTo(0, -.004, w, corner);
     bottom.bezierCurveTo(w * .7, -lower * .7, w * .35, -lower, 0, -lower);
     bottom.bezierCurveTo(-w * .35, -lower, -w * .7, -lower * .7, -w, corner);
-    mesh(mouth, 'lower lip', curvedShape(bottom, 0, -.095, .005, .004), materials.lips);
-    curve(mouth, 'lip seam', seamMaterial, [[-w, corner, faceZ(-w, -.095 + corner) + .008], [0, -.0015, faceZ(0, -.0965) + .009], [w, corner, faceZ(w, -.095 + corner) + .008]], .0009);
-    curve(mouth, 'lip gloss', glowMaterial, [[-.013, -lower * .6, faceZ(-.013, -.095 - lower * .6) + .010], [0, -lower * .7, faceZ(0, -.095 - lower * .7) + .0105], [.009, -lower * .6, faceZ(.009, -.095 - lower * .6) + .010]], .0009);
+    attachLip(mesh(mouth, 'lower lip', curvedShape(bottom, 0, -.095, .0008, .0018, faceZ), materials.lips));
+    attachLip(curve(mouth, 'lip seam', seamMaterial, [[-w, corner, faceZ(-w, -.095 + corner) + .0014], [0, -.0015, faceZ(0, -.0965) + .0025], [w, corner, faceZ(w, -.095 + corner) + .0014]], .00045));
+    attachLip(curve(mouth, 'lip gloss', glowMaterial, [[-.013, -lower * .6, faceZ(-.013, -.095 - lower * .6) + .003], [0, -lower * .7, faceZ(0, -.095 - lower * .7) + .0032], [.009, -lower * .6, faceZ(.009, -.095 - lower * .6) + .003]], .00045));
   }
   function setLook(next: FaceLook) {
     const eyeStyle = next.eyeStyle && ['soft', 'almond', 'wide'].includes(next.eyeStyle) ? next.eyeStyle : 'soft';
@@ -172,9 +208,23 @@ export function createFace(head: THREE.Group, materials: FaceMaterials): FaceCon
       eye.brow.position.y = (pose === 'wave' || pose === 'jump' ? .002 : 0) + Math.sin(time * .83 + eye.side * .22) * .00045;
     }
     mouth.scale.set(1 - expression * .42, 1 + expression * .22, 1);
-    mouth.position.z = expression * .006;
+    mouth.position.z = 0;
     mouth.rotation.z = Math.sin(time * .72) * .006 + (pose === 'wave' ? .025 : 0);
     root.position.y = Math.sin(time * (moving ? 2 : 1.35)) * .00035;
+    // Reproject animated XY after pursing/rolling. Scaling a pre-curved patch changes its
+    // footprint without changing its depth, which visibly detaches it from a tapered jaw.
+    root.updateMatrix(); features.updateMatrix(); mouth.updateMatrix();
+    relative.copy(root.matrix).multiply(features.matrix).multiply(mouth.matrix);
+    localInverse.copy(relative).invert();
+    for (const lip of animatedLips) {
+      const positions = lip.mesh.geometry.getAttribute('position');
+      for (let i = 0; i < positions.count; i++) {
+        projected.fromArray(lip.rest, i * 3).applyMatrix4(relative);
+        projected.z = faceZ(projected.x, projected.y) + Math.max(.00055, lip.lift[i]) + expression * .0005;
+        projected.applyMatrix4(localInverse); positions.setXYZ(i, projected.x, projected.y, projected.z);
+      }
+      positions.needsUpdate = true; lip.mesh.geometry.computeVertexNormals();
+    }
     blushMaterial.color.copy(materials.blush.color); shadowMaterial.color.copy(materials.eyeshadow.color);
     seamMaterial.color.copy(materials.lips.color).lerp(materials.ink.color, .42);
   }

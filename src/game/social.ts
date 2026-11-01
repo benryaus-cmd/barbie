@@ -5,8 +5,8 @@ export const MAX_PHOTOS = 12;
 export const MAX_SIGNATURES = 512;
 const MAX_IMAGE_LENGTH = 300_000;
 const MAX_FOLLOWERS = 20_000;
-const POSES: readonly string[] = ['idle', 'wave', 'peace', 'heart', 'kiss', 'spin', 'dance', 'pet', 'surf', 'salute', 'curtsy', 'jump', 'hug', 'arm-around', 'half-heart'];
-const PAIRS = ['hug', 'arm-around', 'half-heart'];
+const POSES: readonly string[] = ['idle', 'wave', 'peace', 'heart', 'kiss', 'spin', 'dance', 'pet', 'surf', 'salute', 'curtsy', 'jump', 'hug', 'arm-around', 'half-heart', 'confident', 'look-back', 'cheer', 'shy', 'point', 'stretch'];
+const PAIRS = ['hug', 'arm-around', 'half-heart', 'confident', 'look-back', 'cheer', 'shy', 'point', 'stretch'];
 export const FOLLOWER_TIERS = [
   { minimum: 0, label: 'New face', multiplier: 1 }, { minimum: 40, label: 'Rising creator', multiplier: 1.1 },
   { minimum: 100, label: 'Local favourite', multiplier: 1.2 }, { minimum: 250, label: 'DreamFeed star', multiplier: 1.35 },

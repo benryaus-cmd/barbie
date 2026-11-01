@@ -108,3 +108,10 @@ test('album retains face features without changing legacy photo reward identitie
  const legacyLook={...look};delete legacyLook.eyeStyle;delete legacyLook.mouthStyle;delete legacyLook.eyeColor;
  assert.equal(photoSignature({...photo,look:legacyLook}),photoSignature(photo),'changing only facial features cannot farm followers');
 });
+test('expanded player and friend poses survive album reloads',()=>{
+ for(const pose of ['confident','look-back','cheer','shy','point','stretch']){
+  const state=addPhoto(empty(),{...input,pose,companionPose:pose,groupIds:['barbie']},1);
+  const saved=sanitizeSocial(JSON.parse(JSON.stringify(state)));
+  assert.equal(saved.photos[0].pose,pose);assert.equal(saved.photos[0].companionPose,pose);
+ }
+});

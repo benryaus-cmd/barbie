@@ -3,7 +3,8 @@ import {Camera,Heart,Hand,Smile,Disc,Cherry,MessageCircle,Check,Footprints,House
 import {Panel} from './Panel';
 import type {PetAction,PoseId,ResidentInfo} from '@/game/lifestyle-types';
 import './lifestyle.css';
-const EMOTES:{id:PoseId;label:string;symbol:string}[]=[{id:'wave',label:'Wave',symbol:'↗'},{id:'peace',label:'Peace',symbol:'✌'},{id:'heart',label:'Heart',symbol:'♡'},{id:'kiss',label:'Blow kiss',symbol:'✧'},{id:'spin',label:'Twirl',symbol:'⟳'},{id:'dance',label:'Dance',symbol:'♫'},{id:'hug',label:'Hug',symbol:'♡'},{id:'arm-around',label:'Arm around',symbol:'⌒'},{id:'half-heart',label:'Half heart',symbol:'♥'},{id:'salute',label:'Salute',symbol:'✧'},{id:'curtsy',label:'Curtsy',symbol:'♛'},{id:'jump',label:'Jump',symbol:'↑'},{id:'idle',label:'Relax',symbol:'○'}];
+import { PHOTO_POSES } from '@/game/poses';
+const EMOTES = [...PHOTO_POSES,{id:'spin' as const,label:'Twirl',symbol:'⟳'},{id:'hug' as const,label:'Hug',symbol:'♡'},{id:'arm-around' as const,label:'Arm around',symbol:'⌒'},{id:'half-heart' as const,label:'Half heart',symbol:'♥'},{id:'idle' as const,label:'Relax',symbol:'○'}];
 export function EmotePanel({onClose,onPose}:{onClose:()=>void;onPose:(pose:PoseId)=>void}){
  const [pose,setPose]=useState<PoseId>('idle');
  return <Panel title="A little main-character energy" subtitle="Choose a pose. Make the moment yours." variant="stage" onClose={onClose}><div className="emote-row">{EMOTES.map(e=><button key={e.id} aria-pressed={e.id===pose} onClick={()=>{setPose(e.id);onPose(e.id)}}><b>{e.symbol}</b><span>{e.label}</span></button>)}</div></Panel>;

@@ -1,0 +1,72 @@
+{
+  "release": "Character Motion Foundation 6",
+  "unitTests": 34,
+  "runtimeSuites": 25,
+  "typecheck": "pass",
+  "lint": "pass",
+  "productionBuild": "pass",
+  "characterWebGL": {
+    "screenshots": 32,
+    "errors": [],
+    "avatarDrawCalls": {
+      "min": 28,
+      "max": 73
+    },
+    "visuallyInspected": [
+      "side shirt heart/star contact",
+      "profile lips in kiss expression",
+      "standing/dancing/seated boots",
+      "old and six new poses",
+      "gait front/rear",
+      "one/two-hand attached test tool and swing"
+    ]
+  },
+  "portraitGame": {
+    "passed": true,
+    "checks": [
+      "embedded-layout",
+      "beauty-features",
+      "photo-heading"
+    ],
+    "failures": [],
+    "errors": [],
+    "beautyFeatures": {
+      "before": {
+        "top": "beach",
+        "bottom": "wrap",
+        "accessories": [],
+        "topColor": "#ffb3d6",
+        "bottomColor": "#fffaf3",
+        "eyeStyle": "almond",
+        "mouthStyle": "full",
+        "eyeColor": "#765438"
+      },
+      "after": {
+        "top": "glam",
+        "bottom": "gown",
+        "topColor": "#ec4899",
+        "bottomColor": "#ec4899",
+        "accessories": [],
+        "eyeStyle": "almond",
+        "mouthStyle": "full",
+        "eyeColor": "#765438"
+      },
+      "hairstyles": 9
+    }
+  },
+  "regressions": [
+    "all six skirts cover front/rear thighs during twelve gait phases (4560 samples)",
+    "real boot calf envelope and five bend poses",
+    "all eight selected-top necklace contacts",
+    "lip projection to actual head through facial expressions",
+    "native body map and shared weighted limb skeleton",
+    "articulated fingers, mirrored hand grips and held-tool transforms",
+    "carry-mode and empty-hand swing transition continuity",
+    "new player/friend pose IDs survive album reloads"
+  ],
+  "limitations": [
+    "Desktop Chromium SwiftShader, not physical Android benchmarking",
+    "Normalised stylised gait preserves fast traversal and is not world-space foot locking",
+    "Carry/swing is an additive rig API; jungle combat/inventory/damage are future gameplay"
+  ]
+}

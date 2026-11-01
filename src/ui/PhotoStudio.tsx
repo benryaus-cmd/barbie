@@ -7,12 +7,8 @@ import { CameraControls } from '@/ui/CameraControls';
 import { Panel } from '@/ui/Panel';
 import '@/ui/social.css';
 
-const POSES: { id: PoseId; label: string; symbol: string }[] = [
-  { id: 'wave', label: 'Wave', symbol: '↗' }, { id: 'peace', label: 'Peace', symbol: 'V' },
-  { id: 'heart', label: 'Heart', symbol: '♡' }, { id: 'kiss', label: 'Kiss', symbol: '✧' },
-  { id: 'salute', label: 'Salute', symbol: '⌁' }, { id: 'curtsy', label: 'Curtsy', symbol: '⋈' },
-  { id: 'jump', label: 'Jump', symbol: '↑' }, { id: 'dance', label: 'Dance', symbol: '♪' },
-];
+import { PHOTO_POSES as POSES } from '@/game/poses';
+
 type PhotoStudioProps = {
   onClose(): void; capture(): string | null; onPose(pose: PoseId): void;
   onCompanion(id: string | null): void; followers: number; onFollowers(value: number): void;

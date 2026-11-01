@@ -19,7 +19,7 @@ for(let i=0;i<poses.length;i++) {
  avatar.setHair((['blonde','pink','updo','bob','curls'] as const)[i%5]);avatar.setShoes((['heels','sneakers','boots','sandals','platforms'] as const)[i%5]);
  avatar.setLook({...DEFAULT_LOOK,top:TOPS[i%8].id,bottom:BOTTOMS[i%8].id,topColor:TOPS[i%8].color!,bottomColor:BOTTOMS[i%8].color!,accessories:EXTRAS.map(e=>e.id)});avatar.setPose(poses[i]);
  for(let frame=0;frame<100;frame++)avatar.update(1/60,motion);
- const joints:any={};avatar.group.traverse(node=>{if(node.type==='Group')joints[node.name]=[node.rotation.x,node.rotation.y,node.rotation.z]});jointStates[poses[i]]=joints;
+ const joints:any={};avatar.group.traverse(node=>{if((node.type==='Group'||node.type==='Bone'))joints[node.name]=[node.rotation.x,node.rotation.y,node.rotation.z]});jointStates[poses[i]]=joints;
  const label=document.createElement('div');label.style.cssText=`position:absolute;left:${(i%3)*400+175}px;top:${Math.floor(i/3)*300+275}px;font:600 16px sans-serif;color:#57324d;`;label.textContent=poses[i];document.body.append(label);
 }
 renderer.render(scene,cam);
