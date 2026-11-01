@@ -8,6 +8,8 @@ import { createGarmentRig } from '@/game/character/garment-rig';
 import { createHairRig } from '@/game/character/hair-rig';
 import { createFace } from '@/game/character/face';
 import { applyCharacterSurface } from '@/game/character/surfaces';
+import { createTrouserRig } from '@/game/character/trouser-rig';
+import { createNecklaceRig } from '@/game/character/necklace-rig';
 import { createLimbSkin } from '@/game/character/limb-rig';
 import { RIDING, solveLimb } from '@/game/character/riding';
 
@@ -112,7 +114,6 @@ export function createAvatar(): Avatar {
   const legs: Array<{ hip: THREE.Group; knee: THREE.Group; ankle: THREE.Group }> = [];
   const arms: Array<{ shoulder: THREE.Group; elbow: THREE.Group; wrist: THREE.Group }> = [];
   const shoes: Record<ShoesId, THREE.Group[]> = { heels: [], sneakers: [], boots: [], sandals: [], platforms: [] };
-  const trouserParts: Record<string, THREE.Group[]> = { shorts: [], palazzo: [] };
   const bottomMaterials = Object.fromEntries(['gown','wrap','pleated','shorts','palazzo','tennis','denim-skirt','satin-mini'].map(id => [id, mat(0xec4899, id === 'shorts' || id === 'denim-skirt' ? .83 : .5)])) as Record<BottomId,Mat>;
   const peaceFingers: THREE.Group[] = [], bangles:THREE.Group[]=[];
   
@@ -123,19 +124,6 @@ export function createAvatar(): Avatar {
     oval(knee, skin, [0, 0, 0], [.048, .04, .046], 12);
     profile(knee, skin, [[0, .01], [.047, .01], [.062, -.11], [.044, -.24], [.032, -.39], [0, -.40]], .88);
     const ankle = joint(knee, 'ankle', 0, -.397); legs.push({ hip, knee, ankle });
-    for (const id of ['shorts', 'palazzo'] as const) {
-      const garment = joint(hip, id); trouserParts[id].push(garment);
-      if (id === 'shorts') {
-        profile(garment, bottomMaterials.shorts, [[.085, .013], [.091, -.10], [.085, -.235]], .94);
-        ring(garment, ivory, .085, .006, [0, -.23, 0], .94);
-      } else {
-        profile(garment, bottomMaterials.palazzo, [[.087,.012],[.092,-.1],[.109,-.41]], .94);
-        const calf = joint(knee, 'palazzo lower leg'); trouserParts[id].push(calf);
-        oval(calf,bottomMaterials.palazzo,[0,0,0],[.113,.10,.109],14);
-        profile(calf, bottomMaterials.palazzo, [[.109,.012],[.12,-.18],[.129,-.39]], .94);
-        line(calf, ivory, [[side*.08,0,.065],[side*.09,-.37,.085]],.003,5);
-      }
-    }
     for (const id of ['heels', 'sneakers', 'boots', 'sandals', 'platforms'] as ShoesId[]) {
       const shoe = joint(ankle, id); shoes[id].push(shoe);
       if (id === 'heels') {
@@ -301,9 +289,6 @@ export function createAvatar(): Avatar {
     add(tiara, new THREE.OctahedronGeometry(i === 0 ? .023 : .014), i === 0 ? pink : ivory, [i * .05, y, .153]);
   }
 
-  const necklace = joint(spine, 'heart necklace');
-  line(necklace,gold,[[-.08,.431,.06],[-.063,.376,.113],[0,.333,.143],[.063,.376,.113],[.08,.431,.06]],.005,14);
-  for (const side of [-1,1]) oval(necklace,pink,[side*.009,.328,.15],[.013,.017,.007],10).rotation.z=-side*.5;
   const hairBow = joint(head,'silk hair bow',-.16,.17,-.07);
   for(const side of [-1,1]) oval(hairBow,pale,[side*.043,0,0],[.052,.034,.018],12).rotation.z=side*.3;
   oval(hairBow,gold,[0,0,.009],[.014,.018,.012],10);
@@ -333,8 +318,8 @@ export function createAvatar(): Avatar {
   const bandPoints:Point[]=[];for(let i=0;i<=16;i++){const a=i/16*Math.PI;bandPoints.push([Math.cos(a)*.205,Math.sin(a)*.231,.025]);}
   line(headband,pale,bandPoints,.014,24);
   for(let i=1;i<12;i++){const a=i/12*Math.PI;oval(headband,ivory,[Math.cos(a)*.208,Math.sin(a)*.236,.032],[.012,.012,.012],10);}
-  const choker=joint(spine,'velvet choker');ring(choker,lensMat,.061,.012,[0,.474,0],.92);
-  add(choker,new THREE.OctahedronGeometry(.019),gold,[0,.469,.065]);
+  const choker=joint(spine,'velvet choker');ring(choker,lensMat,.071,.008,[0,.474,0],.92);
+  add(choker,new THREE.OctahedronGeometry(.019),gold,[0,.469,.080]);
 
   const skirtPivots:THREE.Group[] = [];
   const tops = {} as Record<TopId,THREE.Group>;
@@ -385,9 +370,9 @@ export function createAvatar(): Avatar {
   for(const id of ['gown','wrap','pleated','shorts','palazzo','tennis','denim-skirt','satin-mini'] as BottomId[]) {
     const bottom=joint(pelvis,`bottom ${id}`); bottoms[id]=bottom;
     const fabric=bottomMaterials[id];
-    profile(bottom,fabric,[[.18,-.105],[.183,-.035],[.149,.058]],.79);
-    ring(bottom,id==='shorts'||id==='denim-skirt'?ivory:gold,.15,.006,[0,.05,0],.79);
     if(id==='shorts'||id==='palazzo') continue;
+    profile(bottom,fabric,[[.18,-.105],[.183,-.035],[.149,.058]],.79);
+    ring(bottom,id==='denim-skirt'?ivory:gold,.15,.006,[0,.05,0],.79);
     const skirt=joint(bottom,`${id} skirt`);skirtPivots.push(skirt);
     if(id==='gown') {
       profile(skirt,fabric,[[.169,.05],[.19,-.12],[.25,-.38],[.405,-.87],[.39,-.88]],.82,.045);
@@ -420,6 +405,8 @@ export function createAvatar(): Avatar {
   for(const material of Object.values(hairMaterials)){applyCharacterSurface(material.base,'hair');applyCharacterSurface(material.highlight,'hair');}
   batch(group);
   const limbRigs=[...arms.map(arm=>createLimbSkin(arm.shoulder,arm.elbow,skin,'arm')),...legs.map(leg=>createLimbSkin(leg.hip,leg.knee,skin,'leg'))];
+  const trouserRigs=(['shorts','palazzo'] as const).map(kind=>{bottoms[kind].removeFromParent();const rig=createTrouserRig(pelvis,legs,bottomMaterials[kind],ivory,kind);bottoms[kind]=rig.root;return rig;});
+  const necklaceRig=createNecklaceRig(spine,gold,pink),necklace=necklaceRig.root;
   const facialRig=createFace(head,{skin,shade,ivory,ink,lips,blush,eyeshadow});
   const garmentRigs=skirtPivots.map(skirt=>({skirt,rig:createGarmentRig(skirt)}));
   const hairRigs=hairSways.map(sway=>({sway,rig:createHairRig(sway)}));
@@ -427,7 +414,6 @@ export function createAvatar(): Avatar {
   function sync() {
     for(const id of Object.keys(tops) as TopId[]) tops[id].visible=id===state.look.top;
     for(const id of Object.keys(bottoms) as BottomId[]) bottoms[id].visible=id===state.look.bottom;
-    for(const id of Object.keys(trouserParts)) for(const part of trouserParts[id]) part.visible=id===state.look.bottom;
     for(const id of Object.keys(hairs) as HairId[]) hairs[id].visible=id===state.hair;
     for(const id of Object.keys(shoes) as ShoesId[]) for(const shoe of shoes[id]) shoe.visible=id===state.shoes;
     topMaterials[state.look.top].color.set(state.look.topColor);
@@ -589,6 +575,8 @@ export function createAvatar(): Avatar {
         node.rotation.z=THREE.MathUtils.lerp(node.rotation.z,z,blend);
       }
       for(const limb of limbRigs)limb.update();
+      for(const trousers of trouserRigs)if(trousers.root.visible)trousers.update();
+      if(necklace.visible)necklaceRig.update(step,{...motion,phase:state.phase});
       for(const item of garmentRigs)if(item.skirt.parent?.visible)item.rig.update(step,{...motion,pose:!motion.moving&&!motion.sitting?state.pose:'idle',phase:state.phase},activeBottom!==state.look.bottom);
       activeBottom=state.look.bottom;
       for(const item of hairRigs)if(item.sway.parent?.visible)item.rig.update(step,{...motion,phase:state.phase});

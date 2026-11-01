@@ -234,16 +234,19 @@ export function createGarmentRig(skirt: THREE.Group): { update(dt: number, motio
       const strength = motion.dancing ? .035 : motion.moving ? Math.min(.022, speed * .0055) : 0;
       sway += (strength - sway) * blend;
       if (sway < 1e-8) sway = 0;
-      const walkingTarget = skirt.name.includes('gown') && motion.moving && !motion.sitting ? .24 * Math.min(1, speed / 4.5) : 0;
+      const walkingTarget = motion.moving && !motion.sitting ? .34 * Math.min(1, speed / 4.5) : 0;
       walkingFlare += (walkingTarget - walkingFlare) * blend;
       if (Math.abs(walkingFlare) < 1e-8) walkingFlare = 0;
       setBones(amounts);
       for (let i = 0; i < 4; i++) {
-        const frontAllowance = i === 0 ? walkingFlare : i === 2 ? 0 : walkingFlare * .6;
-        panels[i].rotation.x -= frontAllowance;
-        hems[i].rotation.x += frontAllowance * .7;
+        // Thighs sweep forward AND backward. Open opposite panels outward;
+        // moving both side panels forward left the rear leg without clearance.
+        const allowance = i === 0 ? walkingFlare : i === 2 ? -walkingFlare : 0;
+        panels[i].rotation.x -= allowance;
+        hems[i].rotation.x += allowance * .7;
         const wave = Math.sin(phase + i * Math.PI / 2) * sway * (1 - seated * .85);
-        panels[i].rotation.z = wave * .3; hems[i].rotation.z = wave;
+        const lateral = i === 1 ? walkingFlare * .5 : i === 3 ? -walkingFlare * .5 : 0;
+        panels[i].rotation.z = wave * .3 + lateral; hems[i].rotation.z = wave - lateral * .7;
         hems[i].rotation.x += Math.cos(phase * .9 + i) * sway * .65 * (1 - seated);
       }
       for (const mesh of meshes) for (let i = 0; i < amounts.length; i++) mesh.morphTargetInfluences![i] = amounts[i];

@@ -1,0 +1,25 @@
+{
+  "release": "Character Atelier 5.1 fit fixes",
+  "domainTests": 33,
+  "runtimeScripts": 20,
+  "typecheck": "pass",
+  "eslint": "pass",
+  "productionBuild": "pass",
+  "geometryChecks": {
+    "skirtGaitSamples": 5206,
+    "skirtSilhouettes": 6,
+    "gaitPhases": 12,
+    "pants": "hips, crotch, sewn boundaries, posed pelvis/thigh containment and trim normals",
+    "necklace": "actual eight-top raycasts, fixed anchors and bounded sway"
+  },
+  "visualChecks": {
+    "targetedViews": 56,
+    "finalLowAnglePantsRechecks": 3,
+    "runtimeErrors": []
+  },
+  "review": "No unresolved important findings; trim lighting correction verified.",
+  "limits": [
+    "Software WebGL, not physical Android benchmarking",
+    "Authored garment fit and bounded springs, not general cloth simulation"
+  ]
+}

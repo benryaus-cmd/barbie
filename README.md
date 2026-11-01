@@ -37,3 +37,5 @@ Shared photo/style orbit and pinch zoom; clean camera view; preserved character 
 ### Character Atelier
 
 Continuous elbow/knee skin, six weighted skirt silhouettes with authored riding/crouch fit, spring-bone hair, softer micro surfaces, improved faces and configurable eyes/lips. Vehicle contact points drive hands and feet. Geometry authoring is cached for reuse; Low keeps one detailed resident. See [release notes and verification](docs/character-atelier-release.md); `npm run test:characters` renders the character regression gallery.
+
+Character Atelier 5.1 repairs the sewn shorts/trouser hips and crotch, places a gently moving necklace outside all eight tops, and adds front/rear/side walking clearance to all six skirt silhouettes. `npm run test:fit` renders low-angle pants and rear/front gait views.
