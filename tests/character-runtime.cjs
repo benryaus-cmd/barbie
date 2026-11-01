@@ -1,7 +1,7 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const ts=require('typescript'),THREE=require('three');
 const root=path.resolve(__dirname,'..'),cache={};
-function load(name){if(cache[name])return cache[name];const file=path.join(root,'src',name+'.ts');const mod={exports:{}};cache[name]=mod.exports;new Function('require','module','exports',ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText)(id=>id.startsWith('@/')?load(id.slice(2)):id.startsWith('./')?load(path.posix.join(path.posix.dirname(name),id)):require(id),mod,mod.exports);return cache[name]=mod.exports;}
+function load(name){name=name.replace(/\.tsx?$/,'');if(cache[name])return cache[name];const file=path.join(root,'src',name+'.ts');const mod={exports:{}};cache[name]=mod.exports;new Function('require','module','exports',ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText)(id=>id.startsWith('@/')?load(id.slice(2)):(id.startsWith('./')||id.startsWith('../'))?load(path.posix.join(path.posix.dirname(name),id)):require(id),mod,mod.exports);return cache[name]=mod.exports;}
 const avatar=load('game/avatar').createAvatar();
 const motion={moving:false,speed:0,grounded:true,dancing:false,sitting:false};
 const all=[];avatar.group.traverse(n=>{if(n.isSkinnedMesh)all.push(n)});

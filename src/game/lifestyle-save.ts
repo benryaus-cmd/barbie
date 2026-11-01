@@ -1,3 +1,4 @@
+import {readLookStyle,EXTRA_STYLE_COLORS} from './look-style.ts';
 import type { Profile } from './profile';
 import type { HairId, ShoesId } from './types';
 import type { Look, TopId, BottomId, WearableId, MakeupId } from './lifestyle-types';
@@ -10,7 +11,7 @@ const extras:WearableId[]=['tiara','sunglasses','earrings','necklace','bow','rou
 const hairs:HairId[]=['blonde','pink','updo','bob','curls','braids','pixie','twin-buns','straight'];
 const shoes:ShoesId[]=['heels','sneakers','boots','sandals','platforms'];
 const makeup:MakeupId[]=['fresh','rose','glam','sunset','bold'];
-const freeColors=['#ec4899','#ffb3d6','#fffaf3','#b898f0','#53dbe4','#658fda','#ff9878','#493355','#98d7ad','#c52e56'];
+const freeColors=[...EXTRA_STYLE_COLORS.map(x=>x.value),'#ec4899','#ffb3d6','#fffaf3','#b898f0','#53dbe4','#658fda','#ff9878','#493355','#98d7ad','#c52e56'];
 const premiumColors=['#e8c77b','#4058ef','#c25ddb','#248c73','#a51f45','#bdc9d9','#674639','#ffc28b'];
 const preset={glam:['glam','gown'],beach:['beach','wrap'],popstar:['popstar','pleated'],casual:['casual','shorts']} as const;
 const presetColors={glam:['#ec4899','#ec4899'],beach:['#ffb3d6','#fffaf3'],popstar:['#fffaf3','#b898f0'],casual:['#fffaf3','#658fda']} as const;
@@ -30,7 +31,7 @@ export function migrateLifestyle(profile:Profile,value?:unknown):LifestyleSave {
   if(['soft','almond','wide'].includes(input.eyeStyle))look.eyeStyle=input.eyeStyle;
   if(['smile','soft','full'].includes(input.mouthStyle))look.mouthStyle=input.mouthStyle;
   if(typeof input.eyeColor==='string'&&colors.test(input.eyeColor))look.eyeColor=input.eyeColor;
-  return look;
+  return {...look,...readLookStyle(input,c=>!premiumColors.includes(c)||ownedColors.includes(c))};
  };
  const look=sanitizeLook(p.look);
  const setIds=new Set<string>();

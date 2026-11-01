@@ -1,3 +1,4 @@
+import {getPairLayout} from '../src/game/poses';
 import * as THREE from 'three';
 import { createAvatar, type AvatarMotion } from '../src/game/avatar';
 import { buildVehicles } from '../src/game/vehicles';
@@ -15,16 +16,18 @@ const floor = new THREE.Mesh(new THREE.PlaneGeometry(100,100),new THREE.MeshStan
 const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});renderer.setSize(700,800);renderer.setPixelRatio(1);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;document.body.prepend(renderer.domElement);
 const camera=new THREE.PerspectiveCamera(35,700/800,.01,100);
 const avatar=createAvatar();scene.add(avatar.group);
+let pair:string|null=null;let friend:ReturnType<typeof createAvatar>|null=null;
 const vehicles=buildVehicles();for(const rig of Object.values(vehicles)){rig.group.position.set(0,0,0);rig.group.rotation.set(0,0,0);rig.group.visible=false;scene.add(rig.group);}
 let look:Look={...DEFAULT_LOOK,accessories:[]},hair:HairId='blonde',pose:PoseId='idle',vehicle:VehicleId|null=null,view:View='full',yaw=.14,elevation=.1,label='Character visual QA';
 let motion:AvatarMotion={moving:false,speed:0,grounded:true,dancing:false,sitting:false,vehicle:null};
-function setCamera(){const facePosition=avatar.rig.bones.head.getWorldPosition(new THREE.Vector3());const target=view==='face'?facePosition:view==='hair'?facePosition.clone().add(new THREE.Vector3(0,-.10,0)):view==='detail'?new THREE.Vector3(0,1.19,0):view==='boots'?new THREE.Vector3(0,.25,0):view==='vehicle'?new THREE.Vector3(0,1.05,0):new THREE.Vector3(0,.96,0);const distance=view==='face'?.95:view==='hair'?1.55:view==='detail'?1.35:view==='boots'?1.25:view==='vehicle'?(vehicle==='scooter'?4.7:7):3.65;camera.position.copy(target).add(new THREE.Vector3(Math.sin(yaw)*Math.cos(elevation),Math.sin(elevation),Math.cos(yaw)*Math.cos(elevation)).multiplyScalar(distance));camera.lookAt(target);}
+function setCamera(){const facePosition=avatar.rig.bones.head.getWorldPosition(new THREE.Vector3());const target=view==='face'?facePosition:view==='hair'?facePosition.clone().add(new THREE.Vector3(0,-.10,0)):view==='detail'?new THREE.Vector3(0,1.19,0):view==='boots'?new THREE.Vector3(0,.25,0):view==='vehicle'?new THREE.Vector3(0,1.05,0):new THREE.Vector3(pair?-(getPairLayout(pair)?.spacing??0)/2:0,.96,0);const distance=view==='face'?.95:view==='hair'?1.55:view==='detail'?1.35:view==='boots'?1.25:view==='vehicle'?(vehicle==='scooter'?4.7:7):pair?4.3:3.65;camera.position.copy(target).add(new THREE.Vector3(Math.sin(yaw)*Math.cos(elevation),Math.sin(elevation),Math.cos(yaw)*Math.cos(elevation)).multiplyScalar(distance));camera.lookAt(target);}
 
 function render(){scene.updateMatrixWorld(true);setCamera();renderer.render(scene,camera);document.getElementById('caption')!.textContent=label;}
-function advance(frames=90,dt=1/60){for(let frame=0;frame<frames;frame++)avatar.update(dt,motion);render();}
-function configure(next:{look?:Partial<Look>;hair?:HairId;shoes?:ShoesId;pose?:PoseId;vehicle?:VehicleId|null;view?:View;yaw?:number;elevation?:number;label?:string;motion?:Partial<AvatarMotion>;frames?:number}){
+function advance(frames=90,dt=1/60){for(let frame=0;frame<frames;frame++){avatar.update(dt,motion);if(friend?.group.visible)friend.update(dt,{...motion,moving:false,speed:0});}render();}
+function configure(next:{pair?:string|null;look?:Partial<Look>;hair?:HairId;shoes?:ShoesId;pose?:PoseId;vehicle?:VehicleId|null;view?:View;yaw?:number;elevation?:number;label?:string;motion?:Partial<AvatarMotion>;frames?:number}){
+ if('pair' in next){pair=next.pair??null;const layout=getPairLayout(pair);avatar.group.rotation.y=layout?.playerYaw??0;if(layout){if(!friend){friend=createAvatar();scene.add(friend.group);friend.setHair('braids');friend.setShoes('sneakers');}friend.setLook({...look,topColor:'#71bddb',bottomColor:'#bc98e6'});friend.group.visible=true;friend.group.position.set(-layout.spacing,0,layout.depth);friend.group.rotation.y=layout.friendYaw;friend.group.scale.x=layout.mirror?-1:1;friend.setPose(layout.friendPose);avatar.setPose(layout.playerPose);}else if(friend)friend.group.visible=false;}
  if(next.shoes)avatar.setShoes(next.shoes);
- if(next.look){look={...look,...next.look};avatar.setLook(look);}if(next.hair){hair=next.hair;avatar.setHair(hair);}if(next.pose){pose=next.pose;avatar.setPose(pose);}if('vehicle' in next){vehicle=next.vehicle??null;for(const rig of Object.values(vehicles))rig.group.visible=rig.id===vehicle;avatar.group.position.set(0,vehicle?RIDING[vehicle].rootY:0,vehicle?RIDING[vehicle].rootZ:0);motion={...motion,sitting:!!vehicle,vehicle};}
+ if(next.look){look={...look,...next.look};avatar.setLook(look);}if(next.hair){hair=next.hair;avatar.setHair(hair);}if(next.pose){pose=next.pose;avatar.setPose(getPairLayout(pair)?.playerPose??pose);}if('vehicle' in next){vehicle=next.vehicle??null;for(const rig of Object.values(vehicles))rig.group.visible=rig.id===vehicle;avatar.group.position.set(0,vehicle?RIDING[vehicle].rootY:0,vehicle?RIDING[vehicle].rootZ:0);motion={...motion,sitting:!!vehicle,vehicle};}
  if(next.motion)motion={...motion,...next.motion};view=next.view??view;yaw=next.yaw??yaw;elevation=next.elevation??elevation;label=next.label??label;advance(next.frames??90);return inspect();
 }
 function inspect(){

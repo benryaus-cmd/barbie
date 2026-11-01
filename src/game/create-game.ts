@@ -40,7 +40,9 @@ export type GameHandle = {
   setPhotoCompanion(id: string | null): void;
   setPhotoGroup(ids:string[], pose:PoseId, pair:string|null):void;
   zoomCamera(delta:number):void;
-  capturePhoto(): string | null;
+  panCamera(dx:number,dy:number):void;
+  resetPhotoFraming():void;
+  capturePhoto(fullFrame?:boolean): string | null;
   setInputEnabled(enabled: boolean): void;
   setMove(x: number, y: number): void;
   rotateCamera(dx: number, dy: number): void;
@@ -87,7 +89,7 @@ const noop: GameHandle = {
   setPresentation() {},
   setLook() {}, setPose() {}, setActivity() {}, setActivityInput() {},
   setPouring() {}, setPetAction() {}, setPhotoCompanion() {}, capturePhoto() {return null;},
-  setPhotoGroup() {}, zoomCamera() {},
+  setPhotoGroup() {}, zoomCamera() {},panCamera(){},resetPhotoFraming(){},
   setInputEnabled() {},
   setMove() {},
   rotateCamera() {},
@@ -354,7 +356,9 @@ export function createGame(
     setPhotoCompanion(id) {if (!disposed) sandbox.api.setPhotoCompanion(id);},
     setPhotoGroup(ids,pose,pair) {if (!disposed) sandbox.api.setPhotoGroup(ids,pose,pair);},
     zoomCamera(delta) {if (!disposed) sandbox.api.zoomCamera(delta);},
-    capturePhoto() {
+    panCamera(dx,dy){if(!disposed)sandbox.api.panCamera(dx,dy);},
+    resetPhotoFraming(){if(!disposed)sandbox.api.resetPhotoFraming();},
+    capturePhoto(fullFrame=false) {
       if (disposed || view.renderer.getContext().isContextLost()) return null;
       try {
         // Reading in the same call as render avoids an empty WebGL drawing buffer.
@@ -362,7 +366,7 @@ export function createGame(
         sandbox.update(0);
         view.renderer.render(scene, camera);
         const sourceWidth = canvas.width;
-        const sourceHeight = Math.floor(canvas.height * .62);
+        const sourceHeight = Math.floor(canvas.height * (fullFrame?1:.62));
         if (sourceWidth < 1 || sourceHeight < 1) return null;
         const scale = Math.min(1, 512 / sourceWidth, 640 / sourceHeight);
         const output = document.createElement('canvas');

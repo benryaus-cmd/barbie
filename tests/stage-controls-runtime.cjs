@@ -19,10 +19,11 @@ function loadFile(file){
  new Function('require','module','exports',code)(id=>{
   if(id.endsWith('.css'))return {};
   if(id.startsWith('@/')){const base=sourceRoot+'/src/'+id.slice(2);return loadFile(base+(fs.existsSync(base+'.tsx')?'.tsx':'.ts'));}
+  if(id.startsWith('.')){const base=path.resolve(path.dirname(file),id);return loadFile(fs.existsSync(base)?base:base+(fs.existsSync(base+'.tsx')?'.tsx':'.ts'));}
   return localRequire(id);
  },mod,mod.exports);cache[file]=mod.exports;return mod.exports;
 }
-function load(name){return loadFile(sourceRoot+'/src/ui/'+name+'.tsx')}
+function load(name){name=name.replace(/\.tsx?$/,'');return loadFile(sourceRoot+'/src/ui/'+name+'.tsx')}
 const root=createRoot(document.getElementById('root'));
 const {WardrobeSheet}=load('WardrobeSheet');
 let selectedHair=null;

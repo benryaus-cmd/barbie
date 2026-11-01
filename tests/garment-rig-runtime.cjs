@@ -2,7 +2,7 @@ const fs=require('node:fs'),path=require('node:path'),assert=require('node:asser
 const {createRequire}=require('node:module');
 const repo=process.env.DREAMLAND_REPO||path.resolve(__dirname,'..');
 const localRequire=createRequire(repo+'/package.json'),THREE=localRequire('three'),ts=localRequire('typescript');
-const cache={};function load(name){if(cache[name])return cache[name];const file=repo+'/src/'+name+'.ts',mod={exports:{}};cache[name]=mod.exports;new Function('require','module','exports',ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText)(id=>id.startsWith('@/')?load(id.slice(2)):id.startsWith('./')?load(path.posix.join(path.posix.dirname(name),id)):localRequire(id),mod,mod.exports);return cache[name]=mod.exports;}
+const cache={};function load(name){name=name.replace(/\.tsx?$/,'');if(cache[name])return cache[name];const file=repo+'/src/'+name+'.ts',mod={exports:{}};cache[name]=mod.exports;new Function('require','module','exports',ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText)(id=>id.startsWith('@/')?load(id.slice(2)):(id.startsWith('./')||id.startsWith('../'))?load(path.posix.join(path.posix.dirname(name),id)):localRequire(id),mod,mod.exports);return cache[name]=mod.exports;}
 const filename=repo+'/src/game/character/garment-rig.ts';
 assert(fs.existsSync(filename),'weighted garment rig module must exist');
 const {createGarmentRig}=load('game/character/garment-rig');

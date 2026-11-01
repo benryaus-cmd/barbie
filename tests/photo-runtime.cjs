@@ -10,13 +10,13 @@ const dom=new JSDOM('<html><body><div id="root"></div></body></html>',{url:'http
 Object.assign(global,{window:dom.window,document:dom.window.document,HTMLElement:dom.window.HTMLElement,IS_REACT_ACT_ENVIRONMENT:true,localStorage:dom.window.localStorage});
 const {createRoot}=localRequire('react-dom/client');
 const cache={};
-function load(name){
+function load(name){name=name.replace(/\.tsx?$/,'');
  if(cache[name])return cache[name];
  const filename=sourceRoot+'/src/'+name+(name.startsWith('ui/')?'.tsx':'.ts');
  const source=fs.readFileSync(filename,'utf8');
  const code=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2020}}).outputText;
  const mod={exports:{}};
- new Function('require','module','exports',code)(id=>id.endsWith('.css')?{}:id.startsWith('@/')?load(id.slice(2)):id.startsWith('./')?load(path.posix.join(path.posix.dirname(name),id)):localRequire(id),mod,mod.exports);
+ new Function('require','module','exports',code)(id=>id.endsWith('.css')?{}:id.startsWith('@/')?load(id.slice(2)):(id.startsWith('./')||id.startsWith('../'))?load(path.posix.join(path.posix.dirname(name),id)):localRequire(id),mod,mod.exports);
  return cache[name]=mod.exports;
 }
 const timers=new Map();let seq=0;
@@ -59,8 +59,8 @@ try{
  React.act(()=>root.unmount());assert.equal(companions.at(-1),null,'leaving removes temporary companion');
  timers.clear();localStorage.clear();
  root=createRoot(document.getElementById('root'));
- const groups=[],orbits=[],zooms=[];poses=[];
- React.act(()=>root.render(React.createElement(PhotoStudio,{onClose(){},capture:()=> 'data:image/jpeg;base64,/9j/AA==',onPose:pose=>poses.push(pose),onCompanion(){},onGroup:(...args)=>groups.push(args),onOrbit:(...args)=>orbits.push(args),onZoom:value=>zooms.push(value),followers:100,onFollowers(){},look:{top:'glam',bottom:'gown',accessories:[],topColor:'#ff33aa',bottomColor:'#ffffff'},zone:'Beach'})));
+ const groups=[],orbits=[],zooms=[],captureModes=[];poses=[];
+ React.act(()=>root.render(React.createElement(PhotoStudio,{onClose(){},capture:full=>{captureModes.push(full);return 'data:image/jpeg;base64,/9j/AA=='},onPose:pose=>poses.push(pose),onCompanion(){},onGroup:(...args)=>groups.push(args),onOrbit:(...args)=>orbits.push(args),onZoom:value=>zooms.push(value),followers:100,onFollowers(){},look:{top:'glam',bottom:'gown',accessories:[],topColor:'#ff33aa',bottomColor:'#ffffff'},zone:'Beach'})));
  const companion=name=>[...document.querySelectorAll('.photo-companions button')].find(button=>button.textContent.includes(name));
  React.act(()=>companion('Ken').click());React.act(()=>companion('Barbie').click());
  assert.deepEqual(groups.at(-1),[['ken','barbie'],'wave',null]);
@@ -84,6 +84,9 @@ try{
  React.act(()=>document.querySelector('.photo-shutter').click());
  const captured=JSON.parse(localStorage.getItem('barbie-ultimate-dreamland:dreamfeed-v1')).photos[0];
  assert.deepEqual(captured.groupIds,['ken','barbie']);assert.equal(captured.companionPose,'peace');assert.equal(captured.pair,'hug');
+ React.act(()=>document.querySelector('[aria-label="Minimise photo controls"]').click());assert(!document.querySelector('.photo-studio'),'minimise removes the full panel');assert(document.querySelector('.photo-mini-shutter'),'shutter remains accessible');React.act(()=>document.querySelector('.photo-mini-shutter').click());assert.equal(captureModes.at(-1),true,'minimised shutter requests the full visible camera frame');
+ React.act(()=>document.querySelector('[aria-label="Clean screenshot view"]').click());assert(!document.querySelector('.photo-mini-bar'),'clean view removes shutter bar');assert(!document.querySelector('.camera-zoom-controls'),'clean view removes camera buttons');
+ React.act(()=>document.querySelector('[aria-label="Show photo controls"]').click());React.act(()=>document.querySelector('[aria-label="Show poses"]').click());assert(document.querySelector('.photo-studio'),'pose controls restore with selected composition');
  React.act(()=>root.unmount());assert.deepEqual(groups.at(-1),[[],'idle',null]);
  const originalCreate=document.createElement.bind(document);
  document.createElement=(tag,...args)=>{const element=originalCreate(tag,...args);if(tag==='canvas')element.getContext=()=>({fillStyle:'',font:'',textAlign:'',beginPath(){},roundRect(){},fill(){},fillText(){}});return element;};

@@ -1,3 +1,4 @@
+import {getPairLayout} from '@/game/poses';
 import { RIDING } from '@/game/character/riding';
 import * as THREE from 'three';
 import {createSteering} from '@/game/movement';
@@ -40,6 +41,8 @@ export type SandboxApi = {
   setPhotoCompanion(id: string | null): void;
   setPhotoGroup(ids:string[], pose:PoseId, pair:string|null):void;
   zoomCamera(delta:number):void;
+  panCamera(dx:number,dy:number):void;
+  resetPhotoFraming():void;
   setMove(x: number, y: number): void;
   rotateCamera(dx: number, dy: number): void;
   jump(): void;
@@ -312,7 +315,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
 
     const ride=mounted?RIDING[mounted]:null;
     avatar.group.position.set(position.x + (ride?Math.sin(facing)*ride.rootZ:0), feetY + (ride?ride.rootY:.02), position.z + (ride?Math.cos(facing)*ride.rootZ:0));
-    avatar.group.rotation.y = presentation === 'world' ? facing : presentationFacing + (presentation==='photo'&&photoPair==='hug' ? -Math.PI/2 : 0);
+    avatar.group.rotation.y = presentation === 'world' ? facing : presentationFacing + (presentation==='photo'?(getPairLayout(photoPair)?.playerYaw??0):0);
     avatar.update(step, {
       moving,
       speed: travel,
@@ -365,7 +368,7 @@ export function createSandbox(options: SandboxOptions): Sandbox {
     residents.update(step, petTarget, presentation === 'photo', options.tuning.effects && options.tuning.quality !== 'low' ? 3 : 1, presentationFacing);
     pet.update(step, petTarget, presentation === 'world' ? facing : presentationFacing, presentation === 'pet' || presentation === 'photo', presentation === 'photo' && (photoCompanion === 'pet' || photoGroup.includes('pet')), photoPair ? .92 : -.82);
     pet.root.visible = presentation !== 'photo' || (photoCompanion === 'pet' || photoGroup.includes('pet'));
-    const groupOffset = presentation === 'photo' && photoGroup.filter(id=>id!=='pet').length === 1 ? .42 : presentation === 'pet' || presentation === 'photo' && (photoCompanion === 'pet' || photoGroup.includes('pet')) ? -.28 : 0;
+    const groupOffset = presentation === 'photo' && photoGroup.filter(id=>id!=='pet').length === 1 ? (getPairLayout(photoPair)?-getPairLayout(photoPair)!.spacing/2:.42) : presentation === 'pet' || presentation === 'photo' && (photoCompanion === 'pet' || photoGroup.includes('pet')) ? -.28 : 0;
     cameraTarget.set(position.x + Math.cos(presentationFacing) * groupOffset, feetY, position.z - Math.sin(presentationFacing) * groupOffset);
     cameraRig.setWalkHeading(moving ? Math.atan2(dirX, dirZ) : null, travel, direction.follow);
     const insideDreamhouse =
@@ -470,8 +473,10 @@ export function createSandbox(options: SandboxOptions): Sandbox {
       setPouring(on) {activity.setPouring(on);},
       setPetAction(action) {pet.setAction(action); if (action === 'pat' || action === 'treat') avatar.setPose('pet');},
       setPhotoCompanion(id) {photoCompanion = id;photoGroup=id?[id]:[];photoPair=null;residents.setPhotoCompanion(id);},
-      setPhotoGroup(ids,pose,pair) {photoGroup=[...new Set(ids)].slice(0,2).sort((a,b)=>Number(a==='pet')-Number(b==='pet'));photoPair=pair;photoCompanion=photoGroup[0]||null;residents.setPhotoGroup(photoGroup,pose,pair);},
+      setPhotoGroup(ids,pose,pair) {photoGroup=[...new Set(ids)].slice(0,2).sort((a,b)=>Number(a==='pet')-Number(b==='pet'));const layout=photoGroup.some(id=>id!=='pet')?getPairLayout(pair):null;photoPair=layout?pair:null;if(layout)avatar.setPose(layout.playerPose);photoCompanion=photoGroup[0]||null;residents.setPhotoGroup(photoGroup,pose,photoPair);},
       zoomCamera(delta) {cameraRig.zoom(delta);},
+      panCamera(dx,dy){cameraRig.pan(dx,dy);},
+      resetPhotoFraming(){cameraRig.resetPhotoFraming();},
       setPresentation(mode) {
         if (activityRunning && mode === 'world') return;
         if (activityRunning) setActivity(null);

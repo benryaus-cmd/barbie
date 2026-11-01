@@ -34,7 +34,7 @@ export type PanelId =
 type SheetsProps = {
   panel: PanelId;
   savedLooks?:SavedLook[]; onSaveLook?:(name:string)=>void; onLoadLook?:(id:string)=>void; onDeleteLook?:(id:string)=>void; ownedColors?:string[]; onBuyColor?:(color:string)=>void;
-  look:Look; ownedFashion:string[]; followers:number;
+  look:Look; onLook?:(look:Look)=>void; ownedFashion:string[]; followers:number;
   onFashion:(slot:'top'|'bottom'|'accessory',id:string)=>void;
   onColor:(slot:'top'|'bottom',color:string)=>void;
   onPose:(pose:PoseId)=>void; onCapture:()=>void;
@@ -61,7 +61,7 @@ type SheetsProps = {
 };
 
 export function Sheets({
-  panel, savedLooks,onSaveLook,onLoadLook,onDeleteLook,ownedColors,onBuyColor, look, ownedFashion, followers, onFashion, onColor, onPose, onCapture,
+  panel, savedLooks,onSaveLook,onLoadLook,onDeleteLook,ownedColors,onBuyColor, look, onLook, ownedFashion, followers, onFashion, onColor, onPose, onCapture,
   points,
   earned,
   notice,
@@ -89,7 +89,7 @@ export function Sheets({
       <WardrobeSheet
         title={panel === 'boutique' ? 'Fashion Avenue Boutique' : 'Walk-in Closet'}
         savedLooks={savedLooks} onSaveLook={onSaveLook} onLoadLook={onLoadLook} onDeleteLook={onDeleteLook} ownedColors={ownedColors} onBuyColor={onBuyColor}
-        look={look} ownedFashion={ownedFashion} followers={followers} onFashion={onFashion} onColor={onColor}
+        look={look} onLook={onLook} ownedFashion={ownedFashion} followers={followers} onFashion={onFashion} onColor={onColor}
         outfit={outfit}
         hair={hair}
         accessory={accessory}

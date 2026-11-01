@@ -3,6 +3,7 @@ import { createAvatar } from '@/game/avatar';
 import type { HairId, OutfitId } from '@/game/types';
 import type { Look, PoseId } from '@/game/lifestyle-types';
 import { RESIDENTS } from '@/game/resident-data';
+import { getPairLayout } from '@/game/poses';
 
 const HOMES = [
   { x: -2.8, y: .91, z: -25.8, pool: true },
@@ -194,6 +195,7 @@ export function createResidents(initialBudget=1) {
   let pair: string | null = null;
   function update(dt:number, player:THREE.Vector3, photo:boolean, detailedBudget = 3, presentationFacing = 0) {
     const step = Math.min(Math.max(dt,0),.1);
+    const layout=getPairLayout(pair),primary=photoIds.find(id=>id!=='pet');
     clock+=step;
     for (let i=0;i<people.length;i++) {
       const person=people[i];
@@ -248,25 +250,24 @@ export function createResidents(initialBudget=1) {
         slot.shadeMaterials.forEach(material => material.color.setHex(SKINS[index]).multiplyScalar(.83));
       }
       slot.avatar.group.visible = true;
-      const paired = chosen && !!pair && photoIds.find(id=>id!=='pet')===person.info.id;
-      slot.avatar.group.scale.x = paired && pair !== 'hug' ? -1 : 1;
+      const paired = chosen && !!layout && primary===person.info.id;
+      slot.avatar.group.scale.x = paired && layout!.mirror ? -1 : 1;
       slot.avatar.group.position.set(0, person.home.pool && !chosen ? -.82 : 0, 0);
-      slot.avatar.setPose(chosen ? (pair && photoIds.find(id=>id!=='pet')===person.info.id ? pair as PoseId : photoPose) : person.nearby && !person.home.pool && (clock+index)%8<2.2 ? 'wave' : 'idle');
+      slot.avatar.setPose(chosen ? (paired ? layout!.friendPose : photoPose) : person.nearby && !person.home.pool && (clock+index)%8<2.2 ? 'wave' : 'idle');
       slot.avatar.update(dt, {moving:!chosen&&person.speed>0,speed:person.speed,grounded:true,dancing:false,sitting:person.home.pool&&!chosen});
     }
     for (let i=0;i<people.length;i++) {
       const person=people[i], chosen=photo && photoIds.includes(person.info.id);
       const {group,home}=person;
       const groupIndex = photoIds.indexOf(person.info.id);
-      const primary = photoIds.find(id=>id!=='pet');
-      const offset = pair ? person.info.id === primary ? -1 : 1 : groupIndex === 0 ? 1 : -1;
-      const paired = chosen && !!pair && photoIds.find(id=>id!=='pet')===person.info.id;
-      const localX=offset*(paired ? .62 : .92), localZ=paired ? -.04 : .05;
+      const offset = layout ? person.info.id === primary ? -1 : 1 : groupIndex === 0 ? 1 : -1;
+      const paired = chosen && !!layout && primary===person.info.id;
+      const localX=offset*(paired ? layout!.spacing : .92), localZ=paired ? layout!.depth : .05;
       const cosine=Math.cos(presentationFacing), sine=Math.sin(presentationFacing);
       // Match the raised runway deck if a resident ever occupies its footprint.
       if(!home.pool)person.position.y=person.position.x>-51.7&&person.position.x< -40.3&&person.position.z>17.8&&person.position.z<26.2?1.22:home.y;
       group.position.set(chosen?player.x+cosine*localX+sine*localZ:person.position.x,chosen?player.y:person.position.y,chosen?player.z-sine*localX+cosine*localZ:person.position.z);
-      group.rotation.y=chosen?presentationFacing+(paired && pair === 'hug' ? Math.PI/2 : -.1):home.pool?Math.sin(clock*.25+i)*.2:person.heading;
+      group.rotation.y=chosen?presentationFacing+(paired ? layout!.friendYaw : -.1):home.pool?Math.sin(clock*.25+i)*.2:person.heading;
       const distance=group.position.distanceTo(player);
       group.visible=chosen || distance<45;
       person.body.visible=!detailed.has(person);
@@ -274,10 +275,11 @@ export function createResidents(initialBudget=1) {
       person.label.visible=!photo && distance<15;
       if (!group.visible) continue;
       // A photo companion stands beside the doll even if normally floating.
-      if(person.male) person.body.scale.x = paired && pair !== 'hug' ? -1.05 : 1.05;
+      if(person.male) person.body.scale.x = paired && layout!.mirror ? -1.05 : 1.05;
+      person.body.rotation.z=0;
       person.body.position.y=chosen?0:home.pool?-.82:person.speed>0?Math.abs(Math.sin(person.stride))*.025:Math.sin(clock*1.5+i)*.012;
       person.floatDecor.visible=!chosen;
-      person.legs.forEach((leg,index)=>{leg.rotation.x=home.pool&&!chosen?-1.25:!chosen&&person.speed>0?Math.sin(person.stride+index*Math.PI)*.4:0;leg.rotation.z=0;});
+      person.legs.forEach((leg,index)=>{leg.scale.set(1,1,1);leg.rotation.set(home.pool&&!chosen?-1.25:!chosen&&person.speed>0?Math.sin(person.stride+index*Math.PI)*.4:0,0,0);});
       if(home.pool && !chosen) {group.position.y+=Math.sin(clock*1.3+i)*.07;group.rotation.z=Math.sin(clock*.9+i)*.035;}
       else group.rotation.z=0;
       person.arms[0].rotation.z=.1+Math.sin(clock*1.6+i)*.04;
@@ -286,7 +288,7 @@ export function createResidents(initialBudget=1) {
       person.arms[1].rotation.x=chosen?-1.2:home.pool?-.5:person.speed>0?Math.sin(person.stride)*.3:0;
       if (!chosen && !home.pool && person.nearby && (clock+i)%8<2.2) person.arms[1].rotation.set(-.6,0,-2.3-Math.sin(clock*4)*.12);
       if (person.male && chosen) {
-        const selectedPose=paired ? pair : photoPose;
+        const selectedPose=paired ? layout!.friendPose : photoPose;
         person.legs.forEach(leg=>{leg.rotation.z=0;});
         if (selectedPose==='wave' || selectedPose==='peace' || selectedPose==='salute') {person.arms[1].rotation.set(-.6,0,-2.3-Math.sin(clock*4)*.1);}
         else if (selectedPose==='half-heart') {person.arms[0].rotation.set(-.2,0,2.5);person.arms[1].rotation.set(0,0,-.45);}
@@ -297,13 +299,28 @@ export function createResidents(initialBudget=1) {
         else if (selectedPose==='curtsy') {person.legs[1].rotation.x=.35;person.arms[0].rotation.set(0,0,.45);person.arms[1].rotation.set(0,0,-.45);}
         else if (selectedPose==='jump') {person.body.position.y=Math.max(0,Math.sin(clock*3))*.2;person.arms[0].rotation.set(-.2,0,2.5);person.arms[1].rotation.set(-.2,0,-2.5);}
         else if (selectedPose==='dance' || selectedPose==='spin') {person.arms[0].rotation.set(-.4,0,.9+Math.sin(clock*3)*.3);person.arms[1].rotation.set(-.6,0,-.9);person.legs[0].rotation.z=.12;}
+        else if (selectedPose==='chin-frame') {person.arms[0].rotation.set(-.65,0,2.65);person.arms[1].rotation.set(-.65,0,-2.65);}
+        else if (selectedPose==='hair-touch') {person.arms[0].rotation.set(0,0,.18);person.arms[1].rotation.set(.24,0,-2.8);}
+        else if (selectedPose==='crossed-arms' || selectedPose==='back-to-back') {person.arms[0].rotation.set(-.3,0,1.9);person.arms[1].rotation.set(-.4,0,-1.9);person.legs[1].rotation.x=-.14;}
+        else if (selectedPose==='leg-pop') {person.arms[0].rotation.set(-.1,0,.18);person.arms[1].rotation.set(-.3,0,-.55);person.legs[1].rotation.set(.7,0,-.10);}
+        else if (selectedPose==='kneel') {
+          // The inexpensive custom body has rigid limbs: tuck the existing leg
+          // silhouettes under the seated hips, retaining their floor contact.
+          person.body.position.y=-.45;person.legs.forEach(leg=>{leg.rotation.x=-.45;leg.scale.y=.49;});
+          person.arms[0].rotation.set(-.5,0,.12);person.arms[1].rotation.set(-.5,0,-.12);
+        }
+        else if (selectedPose==='side-sit') {person.body.position.y=-.77;person.legs.forEach(leg=>{leg.rotation.set(-1.48,0,.65);leg.scale.y=.72;});person.arms[0].rotation.set(.04,0,-.22);person.arms[1].rotation.set(-.8,0,-.2);}
+        else if (selectedPose==='linked-arms') {person.arms[0].rotation.set(-.25,0,.55);person.arms[1].rotation.set(0,0,-.25);}
+        else if (selectedPose==='high-five') {person.arms[0].rotation.set(-.05,0,-2.95);person.arms[1].rotation.set(0,0,-.2);}
+        else if (selectedPose==='shoulder-lean') {person.body.rotation.z=-.08;person.arms[0].rotation.set(-.3,0,.15);person.arms[1].rotation.set(-.3,0,-.15);}
+        else if (selectedPose==='editorial') {person.body.rotation.z=.055;person.arms[0].rotation.set(-.35,0,.55);person.arms[1].rotation.set(-.45,0,-1.6);person.legs[1].rotation.x=-.16;}
         else {person.arms[0].rotation.set(0,0,.1);person.arms[1].rotation.set(0,0,-.1);}
       }
     }
   }
   return {
     root, update,
-    setPhotoGroup(ids:string[], pose:PoseId | 'idle' = 'wave', paired:string | null = null) {photoIds=[...new Set(ids.filter(id=>id==='pet'||RESIDENTS.some(person=>person.id===id)))].slice(0,2);photoPose=pose;pair=['hug','arm-around','half-heart'].includes(paired ?? '')?paired:null;},
+    setPhotoGroup(ids:string[], pose:PoseId | 'idle' = 'wave', paired:string | null = null) {photoIds=[...new Set(ids.filter(id=>id==='pet'||RESIDENTS.some(person=>person.id===id)))].slice(0,2);photoPose=pose;pair=getPairLayout(paired)?paired:null;},
     setPhotoCompanion(id:string|null) {photoIds=RESIDENTS.some(person=>person.id===id)?[id!]:[];photoPose='wave';pair=null;},
     nearest(x:number,y:number,z:number) {
       let best:typeof people[number]|null=null, distance=2.7;

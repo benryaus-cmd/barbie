@@ -57,10 +57,10 @@ for(const change of ['translation','rotation']) {
  assert(sample.read().some((p,i)=>p.y<-.3&&p.distanceTo(before[i])>.001),`independent world ${change} excites hair`);
 }
 // Exercise the real authored nine styles, including batching and head scale/bind matrices.
-const modules={};function load(name) {
+const modules={};function load(name) {name=name.replace(/\.tsx?$/,'');
  if(modules[name])return modules[name];const file=repo+'/src/'+name+'.ts',entry={exports:{}};
  const code=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
- new Function('require','module','exports',code)(id=>id.startsWith('@/')?load(id.slice(2)):id.startsWith('./')?load(path.posix.join(path.posix.dirname(name),id)):localRequire(id),entry,entry.exports);
+ new Function('require','module','exports',code)(id=>id.startsWith('@/')?load(id.slice(2)):(id.startsWith('./')||id.startsWith('../'))?load(path.posix.join(path.posix.dirname(name),id)):localRequire(id),entry,entry.exports);
  return modules[name]=entry.exports;
 }
 const avatar=load('game/avatar').createAvatar(),styles=['blonde','pink','updo','bob','curls','braids','pixie','twin-buns','straight'];

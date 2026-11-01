@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { solveLimb } from './riding';
 import type { HandGesture } from './hand-rig';
+import { FLOOR_POSE_SUPPORT } from '../poses';
 
 type Rotation = [number, number, number];
 export type MotionInput = {
@@ -29,8 +30,8 @@ export function createMotionController() {
   const euler=new THREE.Euler(),qa=new THREE.Quaternion(),qb=new THREE.Quaternion();
   const pelvisInverse=new THREE.Quaternion(),origin=new THREE.Vector3(),target=new THREE.Vector3(),hint=new THREE.Vector3(),direction=new THREE.Vector3();
   const toolQ=new THREE.Quaternion(),wristQ=new THREE.Quaternion(),chainQ=new THREE.Quaternion(),gripOffset=new THREE.Vector3(),gripPoint=new THREE.Vector3();
-  let clock=0,phase=0,pace=0,photoWeight=0,turn=0,lastHeading:number|undefined;
-  let heldMode='none',heldTransition=1,hasPrevious=false,inputArmSpace=0;
+  let clock=0,phase=0,venuePhase=0,pace=0,photoWeight=0,turn=0,lastHeading:number|undefined;
+  let heldMode='none',heldTransition=1,hasPrevious=false,inputArmSpace=0,inputSole=.09;
   const set=(f:MotionFrame,key:string,x=0,y=0,z=0)=>{const r=f.rotations[key];r[0]=x;r[1]=y;r[2]=z;};
   const blendRotation=(to:Rotation,a:Rotation,b:Rotation,w:number)=>{
     qa.setFromEuler(euler.set(...a));qb.setFromEuler(euler.set(...b));euler.setFromQuaternion(qa.slerp(qb,w));to[0]=euler.x;to[1]=euler.y;to[2]=euler.z;
@@ -59,13 +60,71 @@ export function createMotionController() {
     const rotation=new THREE.Euler().setFromQuaternion(chain.invert().multiply(palmQ));
     set(f,p+'Hand',rotation.x,rotation.y,rotation.z);
   };
+  const plantFoot=(f:MotionFrame,i:number,point:Rotation,bend:Rotation=[0,0,1])=>{
+    const side=i?1:-1,p=i?'right':'left';
+    pelvisInverse.setFromEuler(euler.set(...f.rotations.pelvis)).invert();
+    origin.set(side*.108,-.025,0);target.set(...point).sub(direction.set(0,f.pelvisY,0)).applyQuaternion(pelvisInverse);
+    hint.set(...bend).applyQuaternion(pelvisInverse);direction.set(0,-1,0).applyQuaternion(pelvisInverse);
+    const qs=solveLimb(origin,target,hint,.425,.397,direction);
+    for(let j=0;j<3;j++){euler.setFromQuaternion(qs[j]);set(f,p+['UpperLeg','LowerLeg','Foot'][j],euler.x,euler.y,euler.z);}
+  };
+  const supportedPelvis=(f:MotionFrame,contacts:Rotation[])=>{
+    // Use the same almost extended reach as the walking stance. A fixed low
+    // photo pelvis bends every supporting knee and pushes thighs through fitted
+    // upper skirts, even when the pose itself only changes the arms.
+    pelvisInverse.setFromEuler(euler.set(...f.rotations.pelvis));
+    f.pelvisY=Infinity;
+    for(let i=0;i<contacts.length;i++){
+      const point=contacts[i];origin.set((i?1:-1)*.108,-.025,0).applyQuaternion(pelvisInverse);
+      const horizontal=(point[0]-origin.x)**2+(point[2]-origin.z)**2;
+      f.pelvisY=Math.min(f.pelvisY,point[1]-origin.y+Math.sqrt(Math.max(.0001,.821**2-horizontal)));
+    }
+  };
+  const standingFeet=(f:MotionFrame,left:Rotation=[-.108,inputSole,0],right:Rotation=[.108,inputSole,0])=>{
+    supportedPelvis(f,[left,right]);plantFoot(f,0,left);plantFoot(f,1,right);
+  };
+  const floorPose=(f:MotionFrame,name:keyof typeof FLOOR_POSE_SUPPORT)=>{
+    const support=FLOOR_POSE_SUPPORT[name];f.pelvisY=support.pelvisY+(inputSole-.09);set(f,'pelvis');
+    for(let i=0;i<2;i++){
+      const p=i?'right':'left';
+      qa.setFromUnitVectors(direction.set(0,-1,0),target.fromArray(support.thigh).normalize());
+      euler.setFromQuaternion(qa);set(f,p+'UpperLeg',euler.x,euler.y,euler.z);
+      qb.setFromUnitVectors(direction.set(0,-1,0),target.fromArray(support.shin).normalize()).premultiply(qa.clone().invert());
+      euler.setFromQuaternion(qb);set(f,p+'LowerLeg',euler.x,euler.y,euler.z);
+      euler.setFromQuaternion(qa.multiply(qb).invert());set(f,p+'Foot',euler.x,euler.y,euler.z);
+    }
+  };
+  const foldedArms=(f:MotionFrame)=>{
+    reach(f,0,[.15,.22,.19],[-.34,.05,.17],[.8,.2,0]);
+    reach(f,1,[-.15,.28,.21],[.34,.10,.21],[-.8,.2,0]);
+  };
   function photoPose(selected:string,base:MotionFrame) {
     photo.pelvisY=base.pelvisY;for(const k of keys)photo.rotations[k].splice(0,3,...base.rotations[k]);
     photo.hands.left='relaxed';photo.hands.right='relaxed';
     const pulse=Math.sin(clock*2.4),breath=Math.sin(clock*1.35)*.012;
     set(photo,'pelvis',0,0,-.025);set(photo,'waist',breath,0,.025);set(photo,'head',breath,.06,-.045);
     for(let i=0;i<2;i++)relaxedArm(photo,i,0,clamp(inputArmSpace,0,.065));
-    if(selected==='wave') {
+    if(selected==='venue-dance') {
+      // The dancefloor's original alternating groove is its own routine. Photo
+      // Dance keeps its held editorial silhouette and never replaces this layer.
+      const t=venuePhase;
+      set(photo,'pelvis',0,Math.sin(t)*.14,Math.sin(t)*.065);
+      set(photo,'waist',0,-Math.sin(t)*.23,-Math.sin(t)*.08);
+      set(photo,'head',Math.sin(clock*1.4)*.026,Math.sin(t*.5)*.14,Math.sin(t)*.07);
+      let floor=Infinity;
+      for(let i=0;i<2;i++) {
+        const side=i?1:-1,p=i?'right':'left',wave=Math.sin(t+i*Math.PI),hip=wave*.19,knee=.13+Math.max(0,-wave)*.35;
+        set(photo,p+'UpperLeg',hip,0,side*.012);set(photo,p+'LowerLeg',knee);
+        qa.setFromEuler(euler.set(...photo.rotations[p+'UpperLeg']));qb.setFromEuler(euler.set(knee,0,0));
+        target.set(side*.108,-.025,0).add(new THREE.Vector3(0,-.425,0).applyQuaternion(qa)).add(new THREE.Vector3(0,-.397,0).applyQuaternion(qa.multiply(qb)));
+        pelvisInverse.setFromEuler(euler.set(...photo.rotations.pelvis));target.applyQuaternion(pelvisInverse);floor=Math.min(floor,target.y);
+        euler.setFromQuaternion(pelvisInverse.multiply(qa).invert());set(photo,p+'Foot',euler.x,euler.y,euler.z);
+        arm(photo,i,-1.1+Math.sin(t+i*1.9)*.7,0,-side*(.6+Math.sin(t*.5+i)*.3),-.8+Math.sin(t+i)*.5,-side*.23,0,Math.sin(t+i)*.3,side*.045);
+      }
+      // Preserve the old bob while grounding its lowest contact in the current
+      // shoe height. The positive half is a small intentional dance bounce.
+      photo.pelvisY=inputSole-floor+Math.max(0,Math.sin(t*2)*.018);
+    } else if(selected==='wave') {
       reach(photo,1,[.38,.71,.06],[.25,-.05,.04],[pulse*.2,1,0]);set(photo,'head',0,-.12,-.11);photo.hands.right='open';
     } else if(selected==='peace') {
       reach(photo,1,[.29,.60,.16],[.3,-.1,.02],[.12,1,0]);handOnHip(photo,0);set(photo,'head',-.04,-.1,-.16);photo.hands.right='peace';
@@ -116,11 +175,46 @@ export function createMotionController() {
       reach(photo,1,[.46,.49,.31],[.3,-.1,.1],[.8,.22,.5]);handOnHip(photo,0);set(photo,'head',-.025,.24,-.03);set(photo,'waist',0,.10,0);photo.hands.right='point';
     } else if(selected==='stretch') {
       reach(photo,0,[-.17,.84,.035],[-.4,.2,0],[.3,1,0]);reach(photo,1,[.17,.84,.035],[.4,.2,0],[-.3,1,0]);set(photo,'waist',-.08,0,.065);set(photo,'head',-.10,0,-.04);photo.hands.left=photo.hands.right='open';
+    } else if(selected==='chin-frame') {
+      set(photo,'pelvis',0,.04,-.025);set(photo,'waist',-.025,0,.025);set(photo,'head',.07,0,-.07);
+      reach(photo,0,[-.10,.385,.19],[-.37,.11,.08],[.8,.55,0]);reach(photo,1,[.10,.385,.19],[.37,.11,.08],[-.8,.55,0]);
+      standingFeet(photo,[-.11,inputSole,0],[.12,inputSole,.07]);photo.hands.left=photo.hands.right='open';
+    } else if(selected==='hair-touch') {
+      set(photo,'pelvis',0,-.08,.035);set(photo,'waist',-.02,.10,-.045);set(photo,'head',-.04,-.12,-.12);
+      reach(photo,1,[.17,.79,-.035],[.45,.38,-.06],[0,.8,-.3]);handOnHip(photo,0);
+      standingFeet(photo,[-.12,inputSole,.045],[.13,inputSole,-.04]);photo.hands.right='open';
+    } else if(selected==='crossed-arms' || selected==='back-to-back') {
+      set(photo,'pelvis',0,selected==='back-to-back'?.04:-.10,-.035);set(photo,'waist',-.025,.12,.035);set(photo,'head',-.045,-.16,.025);foldedArms(photo);
+      standingFeet(photo,[-.12,inputSole,0],[.065,inputSole,.075]);
+    } else if(selected==='leg-pop') {
+      set(photo,'pelvis',0,.08,-.045);set(photo,'waist',-.025,-.10,.04);set(photo,'head',-.035,-.08,-.12);handOnHip(photo,1);
+      reach(photo,0,[-.30,.16,.16],[-.40,-.12,.04],[0,-1,0]);
+      supportedPelvis(photo,[[-.09,inputSole,0]]);plantFoot(photo,0,[-.09,inputSole,0]);plantFoot(photo,1,[.13,.36+inputSole,-.26],[.03,-.1,1]);
+    } else if(selected==='kneel') {
+      floorPose(photo,'kneel');set(photo,'waist',.08,0,0);set(photo,'head',-.02,-.10,-.055);
+      reach(photo,0,[-.12,-.16,.20],[-.34,-.1,.10],[0,-.8,.5]);reach(photo,1,[.12,-.16,.20],[.34,-.1,.10],[0,-.8,.5]);
+    } else if(selected==='side-sit') {
+      floorPose(photo,'side-sit');set(photo,'waist',-.025,-.13,-.06);set(photo,'head',-.04,.10,-.10);
+      reach(photo,0,[-.355,-.12,.09],[-.4,-.1,.12],[0,0,1]);reach(photo,1,[.20,-.01,.25],[.36,-.1,.10],[-.7,-.5,0]);photo.hands.left='open';
+    } else if(selected==='linked-arms') {
+      set(photo,'pelvis',0,0,-.015);set(photo,'waist',0,0,.015);set(photo,'head',-.03,-.10,-.08);
+      reach(photo,0,[-.27,.13,.07],[-.49,-.07,.12],[.8,.15,0]);handOnHip(photo,1);standingFeet(photo);
+    } else if(selected==='high-five') {
+      set(photo,'pelvis',0,0,-.015);set(photo,'waist',-.025,-.08,.015);set(photo,'head',-.10,-.23,-.06);
+      reach(photo,0,[-.33,.76,.08],[-.42,.28,.03],[0,1,0]);handOnHip(photo,1);standingFeet(photo);photo.hands.left='open';
+    } else if(selected==='shoulder-lean') {
+      set(photo,'pelvis',0,-.025,-.06);set(photo,'waist',.015,0,-.12);set(photo,'head',.07,.08,-.23);
+      reach(photo,1,[.27,.11,.12],[.35,-.1,.04],[0,-1,0]);reach(photo,0,[-.08,.06,.19],[-.3,-.1,.05],[.4,-1,0]);
+      standingFeet(photo,[-.10,inputSole,.10],[.13,inputSole,0]);
+    } else if(selected==='editorial') {
+      set(photo,'pelvis',0,.16,.08);set(photo,'waist',-.055,-.20,-.13);set(photo,'head',-.05,-.20,.07);
+      handOnHip(photo,0);reach(photo,1,[-.08,.26,.21],[.38,.03,.19],[-.8,.1,0]);standingFeet(photo,[-.15,inputSole,-.03],[.10,inputSole,.14]);
     }
   }
 
   return {update(dt:number,input:MotionInput):MotionFrame {
     const step=Number.isFinite(dt)?clamp(dt,0,.05):0;clock+=step;
+    if(input.dancing)venuePhase=(venuePhase+step*6.8)% (TAU*2);
     const speed=Number.isFinite(input.speed)?clamp(input.speed/4.5,0,1):0;
     const goal=input.moving&&input.grounded&&!input.sitting?speed:0;
     pace+=(goal-pace)*(1-Math.exp(-step*(goal>pace?5.5:9)));
@@ -130,6 +224,7 @@ export function createMotionController() {
     if(Number.isFinite(input.heading)){if(lastHeading!==undefined&&step>0){const delta=Math.atan2(Math.sin(input.heading!-lastHeading),Math.cos(input.heading!-lastHeading));turnGoal=clamp(delta/step,-2,2)*.025*pace;}lastHeading=input.heading;}
     turn+=(turnGoal-turn)*(1-Math.exp(-step*5));
     const sole=Number.isFinite(input.soleHeight)?clamp(input.soleHeight!,.04,.16):.09;
+    inputSole=sole;
     inputArmSpace=Number.isFinite(input.armSpace)?clamp(input.armSpace!,0,.065):0;
     const breath=Math.sin(clock*1.35),sway=Math.sin(clock*.54+.4);
     out.pelvisY=.936+(sole-.09);
@@ -173,8 +268,8 @@ export function createMotionController() {
       out.pelvisY=1.015;set(out,'pelvis');set(out,'waist',.09);
       for(let i=0;i<2;i++){const p=i?'right':'left',s=i?1:-1;set(out,p+'UpperLeg',-1.4,0,s*.035);set(out,p+'LowerLeg',1.38);set(out,p+'Foot',-.12);arm(out,i,-.72,0,s*.18,-.6);}
     }
-    const selected=input.dancing?'dance':input.pose||'idle';
-    const active=selected!=='idle'&&!input.moving&&!input.sitting&&input.grounded;
+    const selected=input.dancing?'venue-dance':input.pose||'idle';
+    const active=(input.dancing||selected!=='idle'&&!input.moving)&&!input.sitting&&input.grounded;
     photoWeight+=((active?1:0)-photoWeight)*(1-Math.exp(-step*11));
     if(active) {
       photoPose(selected,out);

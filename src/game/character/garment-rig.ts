@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { RIDING, solveLimb } from './riding';
+import { FLOOR_POSE_SUPPORT } from '../poses';
+import { createMotionController } from './motion-controller';
 
 export type GarmentMotion = {
   sitting: boolean; moving: boolean; speed: number; dancing: boolean;
@@ -8,6 +10,13 @@ export type GarmentMotion = {
 
 const WAIST = .05, KNEE_DEPTH = .5;
 const authoredGeometry = new Map<string, THREE.BufferGeometry>();
+// Author the small standing clearances from the same solved legs as the body.
+// This runs once, never in the frame loop, and remains shoe-height independent.
+const standingDirections = ['hair-touch','crossed-arms','leg-pop'].map(name=>{
+  const controller=createMotionController();let frame=controller.update(0,{moving:false,speed:0,grounded:true,dancing:false,sitting:false,pose:name});
+  for(let i=0;i<90;i++)frame=controller.update(1/30,{moving:false,speed:0,grounded:true,dancing:false,sitting:false,pose:name});
+  return {name,directions:['left','right'].map(side=>new THREE.Vector3(0,-1,0).applyEuler(new THREE.Euler(...frame.rotations[side+'UpperLeg'])))};
+});
 /** Four independent 32-bit streams include every baked attribute byte, index,
  * attribute layout and draw group. Names alone cannot identify fixture/NPC meshes. */
 function geometrySignature(geometry: THREE.BufferGeometry, name: string) {
@@ -95,7 +104,7 @@ function subdivide(source: THREE.BufferGeometry): THREE.BufferGeometry {
 /** GPU skinning plus authored seated/crouch correctives; no per-frame vertex walk.
  * All fabric, seams, buttons and hem trims receive the same coordinate field. */
 export function createGarmentRig(skirt: THREE.Group): { update(dt: number, motion: GarmentMotion, snap?: boolean): void } {
-  type Drape = { name: string; directions: THREE.Vector3[] };
+  type Drape = { name: string; directions: THREE.Vector3[]; shin?:THREE.Vector3; floorY?:number; lateral?:boolean; standing?:boolean };
   const drapes: Drape[] = Object.entries(RIDING).map(([name, ride]) => ({ name, directions: [-1, 1].map((side, i) => {
     const origin = new THREE.Vector3(side * .108, -.025, 0);
     const foot = new THREE.Vector3(...ride.feet[i]).sub(new THREE.Vector3(0, ride.rootY + 1.015, ride.rootZ));
@@ -105,6 +114,10 @@ export function createGarmentRig(skirt: THREE.Group): { update(dt: number, motio
   for (const [name, angles] of [['pet', [[-.72, -.13], [-.35, .1]]], ['surf', [[-.48, -.28], [-.45, .28]]], ['curtsy', [[-.2, -.08], [.32, .08]]]] as const) {
     drapes.push({ name, directions: angles.map(([x, z]) => new THREE.Vector3(0, -1, 0).applyEuler(new THREE.Euler(x, 0, z))) });
   }
+  for(const [name,support] of Object.entries(FLOOR_POSE_SUPPORT)) {
+    drapes.push({name,directions:[-1,1].map(()=>new THREE.Vector3(...support.thigh).normalize()),shin:new THREE.Vector3(...support.shin).normalize(),floorY:.025-support.pelvisY,lateral:name==='side-sit'});
+  }
+  for(const support of standingDirections)drapes.push({...support,standing:true});
   const root = new THREE.Bone(); root.name = 'dress.waist'; root.position.y = WAIST;
   const bones: THREE.Bone[] = [root], panels: THREE.Bone[] = [], hems: THREE.Bone[] = [];
   for (const name of ['front', 'right', 'back', 'left']) {
@@ -152,6 +165,7 @@ export function createGarmentRig(skirt: THREE.Group): { update(dt: number, motio
   const skeleton = new THREE.Skeleton(bones);
   for (const mesh of meshes) mesh.bind(skeleton);
   const angleFor = (drape: Drape, panel: number) => {
+    if(drape.standing)return 0;
     const angles = drape.directions.map(v => Math.atan2(v.z, -v.y));
     return (panel === 1 ? angles[1] : panel === 3 ? angles[0] : (angles[0] + angles[1]) / 2) * .7;
   };
@@ -164,22 +178,41 @@ export function createGarmentRig(skirt: THREE.Group): { update(dt: number, motio
   const seatedPosition = (p: THREE.Vector3, out: THREE.Vector3, drape: Drape) => {
     const depth = WAIST - p.y, influence = smooth(.012, .115, depth);
     if (depth <= .012) return out.copy(p);
+    if(drape.standing){
+      // Loft only the fitted upper skirt around the two actual thigh paths.
+      // Keep its waist, height and hem style; a few millimetres of allowance at
+      // the outer hips prevent the leg-pop's raised thigh cutting a side slit.
+      const radius=Math.hypot(p.x,p.z);if(radius<1e-6)return out.copy(p);
+      const nx=p.x/radius,nz=p.z/radius;let expanded=radius;
+      for(let i=0;i<2;i++){
+        const leg=drape.directions[i],along=(p.y+.025)/leg.y;
+        if(along<0||along>.36)continue;
+        const x=(i?1:-1)*.108+along*leg.x,z=along*leg.z,projection=x*nx+z*nz;
+        const section=.091/Math.max(.6,-leg.y),perpendicular=x*x+z*z-projection*projection;
+        if(perpendicular<section*section)expanded=Math.max(expanded,projection+Math.sqrt(section*section-perpendicular));
+      }
+      const scale=THREE.MathUtils.lerp(radius,expanded,influence)/radius;
+      return out.set(p.x*scale,p.y,p.z*scale);
+    }
     const across = smooth(-.10, .10, p.x), left = drape.directions[0], right = drape.directions[1];
     const directionY = THREE.MathUtils.lerp(left.y, right.y, across), directionZ = THREE.MathUtils.lerp(left.z, right.z, across);
     const directionX = THREE.MathUtils.lerp(left.x, right.x, across);
-    const axial = Math.max(0, depth - .075), upper = Math.min(axial, .425), trailing = Math.max(0, axial - .425);
+    const axial = Math.max(0, depth - (drape.lateral ? .025 : .075)), upper = Math.min(axial, .425), trailing = Math.max(0, axial - .425);
     const bend = Math.atan2(directionZ, -directionY), normalBend = bend * (1 - smooth(.35, .49, axial));
     const radius = Math.max(.001, Math.hypot(p.x, p.z / .82));
     // Loft the outer hips around the actual two thigh paths. This early width
     // expansion closes the side wedge without moving the top waistband.
-    const width = Math.max(radius, .215) + Math.abs(directionX) * upper;
-    const x = p.x / radius * width;
+    const width = Math.max(radius, .215) + (drape.lateral?0:Math.abs(directionX) * upper);
+    const x = p.x / radius * width + (drape.lateral?directionX*upper+(drape.shin?.x||0)*trailing:0);
     const compression = .80 + .10 * smooth(.35, .58, axial);
     // A seated skirt has an oblate section over the thighs. Unbounded source
     // radius would turn wide pleated hems into fins above the waistband.
     const section = THREE.MathUtils.clamp(p.z * compression, -.13, .10);
-    out.set(THREE.MathUtils.lerp(p.x, x, smooth(.012, .07, depth)), -.025 + upper * directionY - trailing + section * Math.sin(normalBend), upper * directionZ + section * Math.cos(normalBend));
+    out.set(THREE.MathUtils.lerp(p.x, x, smooth(.012, .07, depth)), -.025 + upper * directionY + trailing*(drape.shin?.y??-1) + section * Math.sin(normalBend), upper * directionZ + trailing*(drape.shin?.z||0) + section * Math.cos(normalBend));
     out.y = THREE.MathUtils.lerp(p.y, out.y, influence); out.z = THREE.MathUtils.lerp(p.z, out.z, influence);
+    // Floor poses fold the long hem beside the shins. They retain the same
+    // weighted surface and trims without dropping a gown through the floor.
+    if(drape.floorY!==undefined)out.y=Math.max(drape.floorY,out.y);
     return out;
   };
   // Solve the corrective in bind coordinates against the fully posed skin blend,

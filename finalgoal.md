@@ -50,3 +50,8 @@ Judge the result from actual close-up and riding renders. Numerical finiteness a
 ## Character motion foundation 6
 
 Polish the existing body rather than introducing different sizes: sew shirt appliques onto actual bodices, reproject moving lips to the head, fit jewellery to the selected top and enclose calves in ankle-weighted boots. Use a canonical native-bone map shared by limb skin, articulated fingers, gentle breathing/weight shift, grounded local walk contacts and softened pose/action transitions. Keep fast island traversal; do not claim world-space foot locking. Add confident, over-shoulder, cheer, sweet, pointing and stretch poses to player/friend photo choices. Expose consistent hand sockets, one/two-hand carries and a one-shot swing for future island equipment, with equipment/gameplay authored separately. Preserve the wardrobe, all nine hairstyles, saves and mobile UI. Render side profiles and actual moving cloth before release.
+
+
+## Fashion Studio 7
+
+Multiply looks through independently coloured accessories, fabric finish/print/accent and primary/secondary hair layouts. Keep existing item ownership and save keys. Add reference-inspired solo/duo photo compositions, including supported floor poses with garment coverage; retain the corrected6.1walk and restore the older venue dance independently of photo Dance. Camera pan and minimised/clean controls must match actual saved capture bounds. Verify real materials and mobile UI before shipping the pinned update.

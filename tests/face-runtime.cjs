@@ -3,11 +3,11 @@ const path=require('node:path');
 const assert=require('node:assert/strict');
 const repo=process.env.DREAMLAND_REPO||path.resolve(__dirname,'..');
 const ts=require('typescript'),THREE=require('three');
-function load(name){
+function load(name){name=name.replace(/\.tsx?$/,'');
  const file=path.join(repo,'src/game/character',name+'.ts');
  assert(fs.existsSync(file),`${name} module exists`);
  const code=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
- const mod={exports:{}};new Function('require','module','exports',code)(id=>id.startsWith('./')?load(id.slice(2)):require(id),mod,mod.exports);return mod.exports;
+ const mod={exports:{}};new Function('require','module','exports',code)(id=>(id.startsWith('./')||id.startsWith('../'))?load(id.slice(2)):require(id),mod,mod.exports);return mod.exports;
 }
 const {createFace}=load('face');
 const {applyCharacterSurface}=load('surfaces');

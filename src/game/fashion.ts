@@ -1,3 +1,4 @@
+import {EXTRA_STYLE_COLORS} from './look-style.ts';
 import type { HairId, OutfitId } from '@/game/types';
 import type { BottomId, Look, TopId, WearableId, MakeupId } from '@/game/lifestyle-types';
 
@@ -37,6 +38,7 @@ export const EXTRAS:FashionItem<WearableId>[] = [
   {id:'bracelets',label:'Rainbow bangles',price:25,color:'#98d7ad'},
 ];
 export const COLORS:{label:string;value:string;price?:number}[] = [
+  ...EXTRA_STYLE_COLORS,
   {label:'Rose',value:'#ec4899'}, {label:'Blush',value:'#ffb3d6'},
   {label:'Pearl',value:'#fffaf3'}, {label:'Lilac',value:'#b898f0'},
   {label:'Lagoon',value:'#53dbe4'}, {label:'Denim',value:'#658fda'},
@@ -54,7 +56,7 @@ export function presetLook(outfit:OutfitId,beauty?:Look):Look {
     popstar:['popstar','pleated','#fffaf3','#b898f0'],casual:['casual','shorts','#fffaf3','#658fda'],
   };
   const [top,bottom,topColor,bottomColor] = combinations[outfit];
-  return {top,bottom,topColor,bottomColor,accessories:[],...(beauty?{hairColor:beauty.hairColor,makeup:beauty.makeup,eyeStyle:beauty.eyeStyle,mouthStyle:beauty.mouthStyle,eyeColor:beauty.eyeColor}:{})};
+  return {top,bottom,topColor,bottomColor,accessories:[],...(beauty?{hairColor:beauty.hairColor,hairSecondaryColor:beauty.hairSecondaryColor,hairBlend:beauty.hairBlend,accessoryColors:beauty.accessoryColors,makeup:beauty.makeup,eyeStyle:beauty.eyeStyle,mouthStyle:beauty.mouthStyle,eyeColor:beauty.eyeColor}:{})};
 }
 
 export const HAIRSTYLES:{id:HairId;label:string;emoji:string}[] = [
@@ -65,6 +67,7 @@ export const HAIRSTYLES:{id:HairId;label:string;emoji:string}[] = [
  {id:'straight',label:'Silk cascade',emoji:'✨'},
 ];
 export const HAIR_COLORS = [
+ {label:'Jet black',value:'#14131e'},{label:'Snow white',value:'#ffffff'},{label:'Cobalt',value:'#4058ef'},{label:'Crimson',value:'#be2145'},{label:'Lime',value:'#a9dc61'},{label:'Hot pink',value:'#ed278e'},{label:'Periwinkle',value:'#8b9dee'},{label:'Silver',value:'#b9c7d6'},
  {label:'Golden blonde',value:'#eec86b'}, {label:'Espresso',value:'#412a39'},
  {label:'Chestnut',value:'#69412f'}, {label:'Copper',value:'#b86c43'},
  {label:'Bubblegum',value:'#f378b7'}, {label:'Lavender',value:'#b69ae4'},

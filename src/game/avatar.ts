@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { AccessoryId, HairId, OutfitId, ShoesId, VehicleId } from '@/game/types';
 import { PALETTE } from '@/game/palette';
-import type { BottomId, Look, PoseId, TopId } from '@/game/lifestyle-types';
+import type { BottomId, Look, PoseId, TopId, WearableId } from '@/game/lifestyle-types';
 import { DEFAULT_LOOK, presetLook, MAKEUP_LOOKS } from '@/game/fashion';
 import { createGarmentRig } from '@/game/character/garment-rig';
 import { createHairRig } from '@/game/character/hair-rig';
@@ -17,6 +17,7 @@ import { createHandRig } from '@/game/character/hand-rig';
 import { createBootRig } from '@/game/character/boot-rig';
 import { createMotionController } from '@/game/character/motion-controller';
 import { createSurfaceMap, conformToSurface, type SurfaceMap } from '@/game/character/surface-map';
+import { isolateAccessoryMaterials, setFabricStyle, setHairDye, stampStyleCoordinates } from '@/game/character/style-materials';
 
 export type AvatarMotion = { moving: boolean; speed: number; grounded: boolean; dancing: boolean; sitting: boolean; vehicle?:VehicleId|null };
 export type Avatar = {
@@ -187,6 +188,7 @@ export function createAvatar(): Avatar {
   const hairMaterials={} as Record<HairId,{base:Mat;highlight:Mat;natural:number}>;
   function makeHair(color: number, style: HairId) {
     const holder = joint(head, `hair ${style}`), base = mat(color, .48, .04);
+    base.name=`hair ${style} base`;
     const highlight = mat(new THREE.Color(color).lerp(new THREE.Color(0xfff2d8), .09).getHex(), .44, .06);
     highlight.name='hair fine highlights';
     hairMaterials[style]={base,highlight,natural:color};
@@ -407,6 +409,24 @@ export function createAvatar(): Avatar {
       for(let i=0;i<3;i++) oval(skirt,ivory,[.14,-.03-i*.055,.132],[.008,.008,.005],8);
     }
   }
+  // Isolate before batch: jewellery originally reused gold/pink/lilac from shoes
+  // and clothes, and would otherwise be merged into their rigid-node material.
+  const accessoryDyes:Partial<Record<WearableId,(color?:string)=>void>>={
+    tiara:isolateAccessoryMaterials([tiara],'tiara'),
+    sunglasses:isolateAccessoryMaterials([sunglasses],'sunglasses',[lensMat]),
+    earrings:isolateAccessoryMaterials(earrings,'earrings'),
+    bow:isolateAccessoryMaterials([hairBow],'bow'),
+    'round-shades':isolateAccessoryMaterials([roundShades],'round-shades',[aqua]),
+    'star-shades':isolateAccessoryMaterials([starShades],'star-shades',[lensMat]),
+    sunhat:isolateAccessoryMaterials([sunhat],'sunhat'),
+    beret:isolateAccessoryMaterials([beret],'beret'),
+    headband:isolateAccessoryMaterials([headband],'headband'),
+    choker:isolateAccessoryMaterials([choker],'choker'),
+    bracelets:isolateAccessoryMaterials(bangles,'bracelets'),
+  };
+  const hairBounds=Object.fromEntries(Object.entries(hairs).map(([id,holder])=>[id,stampStyleCoordinates(holder)])) as Record<HairId,THREE.Vector2>;
+  for(const top of Object.values(tops))stampStyleCoordinates(top);
+  for(const bottom of Object.values(bottoms))stampStyleCoordinates(bottom);
   applyCharacterSurface(skin,'skin');applyCharacterSurface(shade,'skin');
   for(const [id,material] of Object.entries(topMaterials))applyCharacterSurface(material,id==='denim'?'denim':id==='casual'||id==='sport'?'cotton':'satin');
   for(const [id,material] of Object.entries(bottomMaterials))applyCharacterSurface(material,id==='denim-skirt'||id==='shorts'?'denim':id==='tennis'?'cotton':'satin');
@@ -416,8 +436,17 @@ export function createAvatar(): Avatar {
   const bodyRig=createBodyRig({hips:pelvis,spine,neck,head,leftUpperArm:arms[0].shoulder,leftLowerArm:arms[0].elbow,leftHand:arms[0].wrist,rightUpperArm:arms[1].shoulder,rightLowerArm:arms[1].elbow,rightHand:arms[1].wrist,leftUpperLeg:legs[0].hip,leftLowerLeg:legs[0].knee,leftFoot:legs[0].ankle,rightUpperLeg:legs[1].hip,rightLowerLeg:legs[1].knee,rightFoot:legs[1].ankle},{left:handRigs[0],right:handRigs[1]});
   const limbRigs=[...arms.map(arm=>createLimbSkin(arm.shoulder,arm.elbow,skin,'arm',bodyRig.skeleton)),...legs.map(leg=>createLimbSkin(leg.hip,leg.knee,skin,'leg',bodyRig.skeleton))];
   const bootRigs=legs.map(leg=>{const rig=createBootRig(leg.knee,leg.ankle,{fabric:lilac,trim:gold,lining:ivory});shoes.boots.push(rig.root);return rig;});
+  for(const material of Object.values(bottomMaterials))material.userData.fabricSource=material.uuid;
   const trouserRigs=(['shorts','palazzo'] as const).map(kind=>{bottoms[kind].removeFromParent();const rig=createTrouserRig(pelvis,legs,bottomMaterials[kind],ivory,kind);bottoms[kind]=rig.root;return rig;});
+  for(const trousers of trouserRigs)stampStyleCoordinates(trousers.root);
+  // Read the render mesh after rig creation so cloned rig materials receive edits.
+  const renderedBottomMaterials=Object.fromEntries(Object.entries(bottoms).map(([id,root])=>{
+    const source=bottomMaterials[id as BottomId],materials=new Set<Mat>([source]);
+    root.traverse(node=>{if(node instanceof THREE.Mesh)for(const material of Array.isArray(node.material)?node.material:[node.material])if(material===source||material.userData.fabricSource===source.uuid)materials.add(material as Mat);});
+    return [id,[...materials]];
+  })) as Record<BottomId,Mat[]>;
   const necklaceRig=createNecklaceRig(spine,gold,pink),necklace=necklaceRig.root;
+  accessoryDyes.necklace=isolateAccessoryMaterials([necklace],'necklace');
   const facialRig=createFace(head,{skin,shade,ivory,ink,lips,blush,eyeshadow});
   const garmentRigs=skirtPivots.map(skirt=>({skirt,rig:createGarmentRig(skirt)}));
   const hairRigs=hairSways.map(sway=>({sway,rig:createHairRig(sway)}));
@@ -429,8 +458,9 @@ export function createAvatar(): Avatar {
     for(const id of Object.keys(bottoms) as BottomId[]) bottoms[id].visible=id===state.look.bottom;
     for(const id of Object.keys(hairs) as HairId[]) hairs[id].visible=id===state.hair;
     for(const id of Object.keys(shoes) as ShoesId[]) for(const shoe of shoes[id]) shoe.visible=id===state.shoes;
-    topMaterials[state.look.top].color.set(state.look.topColor);
-    bottomMaterials[state.look.bottom].color.set(state.look.bottomColor);
+    setFabricStyle(topMaterials[state.look.top],{color:state.look.topColor,finish:state.look.topFinish,pattern:state.look.topPattern,accent:state.look.topAccent});
+    for(const material of renderedBottomMaterials[state.look.bottom])setFabricStyle(material,{color:state.look.bottomColor,finish:state.look.bottomFinish,pattern:state.look.bottomPattern,accent:state.look.bottomAccent});
+    for(const [id,recolour] of Object.entries(accessoryDyes))recolour(state.look.accessoryColors?.[id as WearableId]);
     sunglasses.visible=state.look.accessories.includes('sunglasses'); tiara.visible=state.look.accessories.includes('tiara');
     necklace.visible=state.look.accessories.includes('necklace'); hairBow.visible=state.look.accessories.includes('bow');
     for(const part of earrings) part.visible=state.look.accessories.includes('earrings');
@@ -440,6 +470,7 @@ export function createAvatar(): Avatar {
     for(const [id,materials] of Object.entries(hairMaterials)) {
       const color=new THREE.Color(state.look.hairColor||materials.natural);
       materials.base.color.copy(color);materials.highlight.color.copy(color).lerp(new THREE.Color(0xfff2d8),.09);
+      for(const material of [materials.base,materials.highlight])setHairDye(material,{secondary:state.look.hairSecondaryColor,blend:state.look.hairBlend,bounds:hairBounds[id as HairId]});
       hairs[id as HairId].userData.color=color.getStyle();
     }
     const makeup=MAKEUP_LOOKS.find(item=>item.id===(state.look.makeup||'rose'))||MAKEUP_LOOKS[1];

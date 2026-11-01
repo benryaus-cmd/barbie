@@ -14,11 +14,11 @@ test('saved looks retain beauty, hair and shoes with bounded sanitized names and
  assert.equal(malformed.savedLooks.length,1);assert.equal(malformed.savedLooks[0].name,'Night');assert.equal(malformed.savedLooks[0].hair,'pink');assert.equal(malformed.savedLooks[0].shoes,'boots');assert.equal(malformed.savedLooks[0].look.makeup,undefined);assert.equal(malformed.savedLooks[0].look.hairColor,undefined);
 });
 test('existing ten colors migrate free while premium palette ownership persists and gates saved colors',()=>{
- const original=migrateLifestyle(legacy);assert.equal(original.ownedColors.length,10);assert.deepEqual(original.savedLooks,[]);
+ const original=migrateLifestyle(legacy);assert.equal(original.ownedColors.length,18);assert.deepEqual(original.savedLooks,[]);
  const look={top:'glam',bottom:'gown',topColor:'#e8c77b',bottomColor:'#4058ef',accessories:[]};
  const locked=migrateLifestyle(legacy,{look});assert.equal(locked.look.topColor,'#fffaf3');assert.equal(locked.look.bottomColor,'#b898f0');
  const unlocked=migrateLifestyle(legacy,{look,ownedColors:['#E8C77B','#4058ef','#e8c77b','not-a-color']});
- assert.equal(unlocked.ownedColors.length,12);assert.equal(unlocked.look.topColor,'#e8c77b');assert.equal(unlocked.look.bottomColor,'#4058ef');
+ assert.equal(unlocked.ownedColors.length,20);assert.equal(unlocked.look.topColor,'#e8c77b');assert.equal(unlocked.look.bottomColor,'#4058ef');
  const memory=new Map();globalThis.localStorage={setItem:(k,v)=>memory.set(k,v),getItem:k=>memory.get(k)};assert(saveLifestyle(unlocked));assert.deepEqual(loadLifestyle(legacy),unlocked);
 });
 test('face features survive active and saved looks, with unknown options discarded',()=>{

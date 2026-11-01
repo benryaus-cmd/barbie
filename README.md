@@ -46,3 +46,9 @@ Character Atelier 5.1 repairs the sewn shorts/trouser hips and crotch, places a 
 Native mapped body bones, articulated fingers, fitted knee/ankle boots and a layered walk/idle/pose controller now support the current doll. Shirt appliques and animated lips follow the actual underlying mesh; necklaces fit the selected top. Six additional emotes reach both player and friend photo choices. Additive grip/carry/swing hooks prepare the same avatar for future equipment. See [rig API and limits](docs/avatar-rig-v6.md). No jungle gameplay is added to this island.
 
 Natural Walk & Hip Poses 6.1 corrects the crouched leg alignment, elbow direction and relaxed arm width; improves thigh depth and hip-pose palm contact. See [correction and checks](docs/walk-alignment-v6-1.md).
+
+## Fashion Studio 7
+
+Independent colours for all12extras,26 clothing colours (18free), original/matte/satin/gloss/metallic/sparkle finishes and solid/stripe/dot/gingham/star/petal prints with accent colours. Sixteen hair colours can combine as highlights, ombré or split dye across all9styles. Personal sets and photos preserve the new optional fields without rewriting old reward identities.
+
+Six new solo poses and five new duo compositions include grounded floor poses and posed garment corrections. Photo mode supports bounded pan, minimise/restore, clean screenshot view and full-frame minimised captures. Venue dancing restores the older choreography separately from the photo Dance pose. See [verification](docs/fashion-studio-v7-verification.json).

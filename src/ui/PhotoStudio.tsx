@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Camera, Check, Heart, Image, MessageCircle, PawPrint, Send, Sparkles, Trash2, UserRound, Users, X } from 'lucide-react';
+import { Camera, Check, Minimize2, Maximize2, Eye, EyeOff, Heart, Image, MessageCircle, PawPrint, Send, Sparkles, Trash2, UserRound, Users, X } from 'lucide-react';
 import type { Look, PoseId } from '@/game/lifestyle-types';
 import { RESIDENTS } from '@/game/resident-data';
 import { addPhoto, captionPhoto, deletePhoto, followerTier, isPhotoImage, loadSocial, MAX_PHOTOS, publishPhoto, saveSocial, togglePhotoLike, type SocialState, type StoredPhoto } from '@/game/social';
@@ -7,17 +7,17 @@ import { CameraControls } from '@/ui/CameraControls';
 import { Panel } from '@/ui/Panel';
 import '@/ui/social.css';
 
-import { PHOTO_POSES as POSES } from '@/game/poses';
+import { PHOTO_POSES as POSES,PAIR_POSES } from '@/game/poses';
 
 type PhotoStudioProps = {
-  onClose(): void; capture(): string | null; onPose(pose: PoseId): void;
+  onClose(): void; capture(fullFrame?:boolean): string | null; onPose(pose: PoseId): void;
   onCompanion(id: string | null): void; followers: number; onFollowers(value: number): void;
   look: Look; zone: string; initialCompanion?: string | null;
   onGroup?(ids: string[], pose: PoseId, pair: string | null): void;
-  onOrbit?(dx: number, dy: number): void; onZoom?(delta: number): void;
+  onOrbit?(dx: number, dy: number): void; onZoom?(delta: number): void; onPan?(dx:number,dy:number):void; onResetFrame?():void;
 };
 
-export function PhotoStudio({ onClose, capture, onPose, onCompanion, followers, onFollowers, look, zone, initialCompanion = null, onGroup, onOrbit, onZoom }: PhotoStudioProps) {
+export function PhotoStudio({ onClose, capture, onPose, onCompanion, followers, onFollowers, look, zone, initialCompanion = null, onGroup, onOrbit, onZoom,onPan,onResetFrame }: PhotoStudioProps) {
   const [social, setSocial] = useState<SocialState>(() => { const saved = loadSocial(); return { ...saved, followers: Math.max(saved.followers, followers) }; });
   const [pose, setPose] = useState<PoseId>('peace');
   const [group, setGroup] = useState<string[]>(initialCompanion ? [initialCompanion] : []);
@@ -28,6 +28,7 @@ export function PhotoStudio({ onClose, capture, onPose, onCompanion, followers, 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [status, setStatus] = useState(initialCompanion === 'pet' ? 'Mochi is joining your photo. You stay in the shot.' : 'You stay in the shot. Invite up to two co-stars.');
   const [flash, setFlash] = useState(false);
+  const [minimised,setMinimised]=useState(false),[cleanView,setCleanView]=useState(false);
   const initialCallbacks = useRef({ onPose, onCompanion, onGroup, initialCompanion });
   const tier = followerTier(social.followers);
   const hasResident = group.some(id => id !== 'pet');
@@ -48,7 +49,7 @@ export function PhotoStudio({ onClose, capture, onPose, onCompanion, followers, 
     setStatus(!saved.persisted ? 'Saved for this visit. Your device could not keep a permanent copy.' : saved.trimmed ? 'Saved! Older photos were cleared to make room.' : message ?? 'Saved to your album.');
   };
   const shoot = () => {
-    const image = capture();
+    const image = capture(minimised||cleanView);
     if (!isPhotoImage(image)) { setStatus('The camera is getting ready. Try another shot in a moment.'); return; }
     const groupNames = group.map(id => id === 'pet' ? 'your pet' : RESIDENTS.find(resident => resident.id === id)?.name ?? id);
     const next = addPhoto(social, { image, pose: pair as PoseId || pose, companionId: group[0] ?? null, companionName: groupNames.join(' & ') || null, groupIds: group, groupNames, companionPose, pair, zone, look });
@@ -78,9 +79,11 @@ export function PhotoStudio({ onClose, capture, onPose, onCompanion, followers, 
 
   return <>
     {flash ? <div className="camera-flash" aria-hidden="true" /> : null}
-    {view === 'camera' ? <CameraControls onOrbit={onOrbit} onZoom={onZoom}/>:null}
-    <div className="photo-studio">
-      <Panel title="Photo studio" subtitle={`${zone} · ${social.followers} followers · ${tier.multiplier}× points`} onClose={onClose} variant="stage">
+    {view === 'camera' ? <CameraControls onOrbit={onOrbit} onZoom={onZoom} onPan={onPan} onResetFrame={onResetFrame} hideControls={cleanView} className={minimised||cleanView?'photo-camera-expanded':''}/>:null}
+    {cleanView&&view==='camera'?<button type="button" className="photo-clean-restore" aria-label="Show photo controls" onClick={()=>setCleanView(false)}><Eye size={16}/></button>:null}
+    {minimised&&view==='camera'&&!cleanView?<div className="photo-mini-bar" aria-label="Minimised photo controls"><button type="button" aria-label="Show poses" onClick={()=>setMinimised(false)}><Maximize2 size={17}/><span>Poses</span></button><button type="button" className="photo-mini-shutter" onClick={shoot}><Camera size={19}/>Take photo</button><button type="button" aria-label="Clean screenshot view" onClick={()=>setCleanView(true)}><EyeOff size={18}/></button><button type="button" aria-label="Close photo studio" onClick={onClose}><X size={18}/></button><span className="sr-only" role="status">{status}</span></div>:null}
+    {!((minimised||cleanView)&&view==='camera')?<div className="photo-studio">
+      <Panel title="Photo studio" subtitle={`${zone} · ${social.followers} followers · ${tier.multiplier}× points`} onClose={onClose} variant="stage" headerActions={<button className="photo-minimise" type="button" aria-label="Minimise photo controls" onClick={()=>{setPoseMenu(null);setMinimised(true);}}><Minimize2 size={18}/></button>}>
         <div className="photo-composition"><span><UserRound size={12}/>You <Check size={11}/></span><strong>+ {group.length}/2 co-stars</strong><small>You are always in the photo</small></div>
         <div className="photo-pose-strip" aria-label="Your photo pose">
           {POSES.map(option => <button key={option.id} type="button" className="photo-pose" aria-pressed={!pair && pose === option.id} onClick={() => choosePose(option.id)}><span aria-hidden="true">{option.symbol}</span><small>{option.label}</small></button>)}
@@ -90,7 +93,7 @@ export function PhotoStudio({ onClose, capture, onPose, onCompanion, followers, 
           <button type="button" aria-pressed={group.includes('pet')} onClick={() => chooseCompanion('pet')}><PawPrint size={13} />My pet</button>
           {RESIDENTS.map(resident => <button key={resident.id} type="button" aria-pressed={group.includes(resident.id)} onClick={() => chooseCompanion(resident.id)}><span className="resident-dot" style={{ background: resident.color }} />{resident.name}</button>)}
         </div>
-        {hasResident ? <div className="photo-group-poses"><label>Friends’ pose<button type="button" aria-label="Friends’ independent pose" aria-expanded={poseMenu==='friends'} onClick={()=>setPoseMenu(poseMenu==='friends'?null:'friends')}>{POSES.find(p=>p.id===companionPose)?.label||'Relaxed'} ▾</button></label><label>Together pose<button type="button" aria-label="Paired pose" aria-expanded={poseMenu==='pair'} onClick={()=>setPoseMenu(poseMenu==='pair'?null:'pair')}>{pair==='hug'?'Hug':pair==='arm-around'?'Arm around':pair==='half-heart'?'Half heart':'Independent'} ▾</button></label></div> : null}
+        {hasResident ? <div className="photo-group-poses"><label>Friends’ pose<button type="button" aria-label="Friends’ independent pose" aria-expanded={poseMenu==='friends'} onClick={()=>setPoseMenu(poseMenu==='friends'?null:'friends')}>{POSES.find(p=>p.id===companionPose)?.label||'Relaxed'} ▾</button></label><label>Together pose<button type="button" aria-label="Paired pose" aria-expanded={poseMenu==='pair'} onClick={()=>setPoseMenu(poseMenu==='pair'?null:'pair')}>{PAIR_POSES.find(p=>p.id===pair)?.label||'Independent'} ▾</button></label></div> : null}
         <div className="photo-camera-actions">
           <button className="photo-library-button" type="button" onClick={() => openView('album')}><Image size={19} /><span>Album · {social.photos.length}</span></button>
           <button className="photo-shutter" type="button" onClick={shoot}><Camera size={20} />Take photo</button>
@@ -98,8 +101,8 @@ export function PhotoStudio({ onClose, capture, onPose, onCompanion, followers, 
         </div>
         <p className="photo-status" role="status">{status}</p>
       </Panel>
-    </div>
-    {poseMenu&&view==='camera'?<div className="photo-pose-menu" role="dialog" aria-label={poseMenu==='friends'?'Choose friends’ pose':'Choose paired pose'}><header><strong>{poseMenu==='friends'?'Friends’ pose':'Together pose'}</strong><button type="button" aria-label="Close pose choices" onClick={()=>setPoseMenu(null)}><X size={16}/></button></header><div>{(poseMenu==='friends'?[{id:'idle',label:'Relaxed'},...POSES]:[{id:'',label:'Independent'},{id:'hug',label:'Hug'},{id:'arm-around',label:'Arm around'},{id:'half-heart',label:'Half heart'}]).map(option=><button type="button" key={option.id} aria-label={`${poseMenu==='friends'?'Friend':'Pair'} pose: ${option.label}`} aria-pressed={poseMenu==='friends'?companionPose===option.id:(pair||'')===option.id} onClick={()=>{if(poseMenu==='friends'){const next=option.id as PoseId;setCompanionPose(next);setPair(null);onPose(pose);applyGroup(group,next,null);}else choosePair(option.id);setPoseMenu(null);}}>{option.label}</button>)}</div></div>:null}
+    </div>:null}
+    {poseMenu&&view==='camera'?<div className="photo-pose-menu" role="dialog" aria-label={poseMenu==='friends'?'Choose friends’ pose':'Choose paired pose'}><header><strong>{poseMenu==='friends'?'Friends’ pose':'Together pose'}</strong><button type="button" aria-label="Close pose choices" onClick={()=>setPoseMenu(null)}><X size={16}/></button></header><div>{(poseMenu==='friends'?[{id:'idle',label:'Relaxed'},...POSES]:[{id:'',label:'Independent'},...PAIR_POSES]).map(option=><button type="button" key={option.id} aria-label={`${poseMenu==='friends'?'Friend':'Pair'} pose: ${option.label}`} aria-pressed={poseMenu==='friends'?companionPose===option.id:(pair||'')===option.id} onClick={()=>{if(poseMenu==='friends'){const next=option.id as PoseId;setCompanionPose(next);setPair(null);onPose(pose);applyGroup(group,next,null);}else choosePair(option.id);setPoseMenu(null);}}>{option.label}</button>)}</div></div>:null}
     {view !== 'camera' ? <div className="photo-browser"><Panel title={view === 'album' ? 'Your photo album' : 'DreamFeed'} subtitle="Fictional friends · offline play · photos stay on this device" onClose={() => { setView('camera'); setSelectedId(null); }}>
       <div className="photo-browser-nav" role="tablist" aria-label="Photo collection"><button type="button" role="tab" aria-selected={view === 'album'} onClick={() => openView('album')}><Image size={15} />Album <span>{social.photos.length}/{MAX_PHOTOS}</span></button><button type="button" role="tab" aria-selected={view === 'feed'} onClick={() => openView('feed')}><Sparkles size={15} />DreamFeed</button><span className="photo-follower-count"><Users size={14} />{social.followers}</span></div>
       <div className="photo-follower-card"><Users size={23}/><div><strong>{social.followers.toLocaleString()} followers</strong><span>{tier.label} · {tier.multiplier}× activity points</span></div><small>{tier.next ? `${tier.next-social.followers} to next tier` : 'Top tier unlocked'}</small><progress aria-label="Follower milestone progress" max={tier.next ?? 500} value={Math.min(social.followers,tier.next ?? 500)} /></div>

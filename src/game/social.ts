@@ -1,3 +1,4 @@
+import {readLookStyle,lookStyleIdentity} from './look-style.ts';
 import type { Look, PoseId } from './lifestyle-types';
 
 export const SOCIAL_KEY = 'barbie-ultimate-dreamland:dreamfeed-v1';
@@ -5,8 +6,8 @@ export const MAX_PHOTOS = 12;
 export const MAX_SIGNATURES = 512;
 const MAX_IMAGE_LENGTH = 300_000;
 const MAX_FOLLOWERS = 20_000;
-const POSES: readonly string[] = ['idle', 'wave', 'peace', 'heart', 'kiss', 'spin', 'dance', 'pet', 'surf', 'salute', 'curtsy', 'jump', 'hug', 'arm-around', 'half-heart', 'confident', 'look-back', 'cheer', 'shy', 'point', 'stretch'];
-const PAIRS = ['hug', 'arm-around', 'half-heart', 'confident', 'look-back', 'cheer', 'shy', 'point', 'stretch'];
+const POSES: readonly string[] = ['idle', 'wave', 'peace', 'heart', 'kiss', 'spin', 'dance', 'pet', 'surf', 'salute', 'curtsy', 'jump', 'hug', 'arm-around', 'half-heart', 'confident', 'look-back', 'cheer', 'shy', 'point', 'stretch','chin-frame','hair-touch','crossed-arms','leg-pop','kneel','side-sit','back-to-back','linked-arms','high-five','shoulder-lean','editorial'];
+const PAIRS = ['hug','arm-around','half-heart','back-to-back','linked-arms','high-five','shoulder-lean','editorial'];
 export const FOLLOWER_TIERS = [
   { minimum: 0, label: 'New face', multiplier: 1 }, { minimum: 40, label: 'Rising creator', multiplier: 1.1 },
   { minimum: 100, label: 'Local favourite', multiplier: 1.2 }, { minimum: 250, label: 'DreamFeed star', multiplier: 1.35 },
@@ -47,6 +48,7 @@ export function photoSignature(input: Omit<PhotoInput, 'image' | 'companionName'
   if (group.groupIds.length && (group.companionPose !== 'wave' || group.pair)) identity.push(group.companionPose, group.pair);
   if (group.pair) identity.push(group.groupIds.find(id=>id!=='pet'));
   if (look.hairColor || look.makeup && look.makeup !== 'fresh') identity.push(look.hairColor?.toLowerCase() ?? null, look.makeup ?? 'fresh');
+  const style=lookStyleIdentity(look);if(style)identity.push(style);
   return JSON.stringify(identity);
 }
 function readLook(value: unknown): Look | null {
@@ -56,12 +58,12 @@ function readLook(value: unknown): Look | null {
   const bottoms = ['gown','wrap','pleated','shorts','palazzo','tennis','denim-skirt','satin-mini'];
   const extras = ['tiara','sunglasses','earrings','necklace','bow','round-shades','star-shades','sunhat','beret','headband','choker','bracelets'];
   if (!tops.includes(String(v.top)) || !bottoms.includes(String(v.bottom)) || !Array.isArray(v.accessories) || typeof v.topColor !== 'string' || typeof v.bottomColor !== 'string') return null;
-  return { top: v.top as Look['top'], bottom: v.bottom as Look['bottom'], accessories: [...new Set(v.accessories.filter(x => extras.includes(x)))].slice(0, 12) as Look['accessories'], topColor: v.topColor.slice(0, 30), bottomColor: v.bottomColor.slice(0, 30), ...(typeof v.hairColor === 'string' && /^#[0-9a-f]{6}$/i.test(v.hairColor) ? {hairColor: v.hairColor.toLowerCase()} : {}), ...(['fresh','rose','glam','sunset','bold'].includes(String(v.makeup)) ? {makeup:v.makeup as Look['makeup']} : {}), ...(['soft','almond','wide'].includes(String(v.eyeStyle)) ? {eyeStyle:v.eyeStyle as Look['eyeStyle']} : {}), ...(['smile','soft','full'].includes(String(v.mouthStyle)) ? {mouthStyle:v.mouthStyle as Look['mouthStyle']} : {}), ...(typeof v.eyeColor==='string' && /^#[0-9a-f]{6}$/i.test(v.eyeColor) ? {eyeColor:v.eyeColor.toLowerCase()} : {}) };
+  return { ...readLookStyle(v), top: v.top as Look['top'], bottom: v.bottom as Look['bottom'], accessories: [...new Set(v.accessories.filter(x => extras.includes(x)))].slice(0, 12) as Look['accessories'], topColor: v.topColor.slice(0, 30), bottomColor: v.bottomColor.slice(0, 30), ...(typeof v.hairColor === 'string' && /^#[0-9a-f]{6}$/i.test(v.hairColor) ? {hairColor: v.hairColor.toLowerCase()} : {}), ...(['fresh','rose','glam','sunset','bold'].includes(String(v.makeup)) ? {makeup:v.makeup as Look['makeup']} : {}), ...(['soft','almond','wide'].includes(String(v.eyeStyle)) ? {eyeStyle:v.eyeStyle as Look['eyeStyle']} : {}), ...(['smile','soft','full'].includes(String(v.mouthStyle)) ? {mouthStyle:v.mouthStyle as Look['mouthStyle']} : {}), ...(typeof v.eyeColor==='string' && /^#[0-9a-f]{6}$/i.test(v.eyeColor) ? {eyeColor:v.eyeColor.toLowerCase()} : {}) };
 }
 export function sanitizeSocial(value: unknown): SocialState {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return blank();
   const v = value as Record<string, unknown>;
-  const signatures = Array.isArray(v.rewardedSignatures) ? [...new Set(v.rewardedSignatures.filter(x => typeof x === 'string' && x.length <= 700))].slice(0, MAX_SIGNATURES) as string[] : [];
+  const signatures = Array.isArray(v.rewardedSignatures) ? [...new Set(v.rewardedSignatures.filter(x => typeof x === 'string' && x.length <= 1500))].slice(0, MAX_SIGNATURES) as string[] : [];
   const photos: StoredPhoto[] = [];
   if (Array.isArray(v.photos)) for (const item of v.photos.slice(0, MAX_PHOTOS)) {
     if (!item || typeof item !== 'object' || !isPhotoImage(item.image)) continue;

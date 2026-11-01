@@ -1,0 +1,49 @@
+{
+  "release": "Fashion Studio 7",
+  "unitTests": 36,
+  "runtimeSuites": 29,
+  "typecheck": "pass",
+  "lint": "pass",
+  "productionBuild": "pass",
+  "WebGL": {
+    "galleryRenders": 34,
+    "errors": [],
+    "additionalCorrectedStandingRenders": 3,
+    "inspected": [
+      "five fabric finishes and five prints",
+      "all three two-tone layouts on waves/bob/braids",
+      "independent coloured earrings/choker/Starlet frames",
+      "six solo and five duo compositions",
+      "corrected thigh coverage in new standing poses",
+      "distinct venue and photo dances"
+    ]
+  },
+  "portraitUI": {
+    "viewport": "360x520 embedded",
+    "passed": true,
+    "checks": [
+      "studio-style"
+    ],
+    "errors": [],
+    "assertions": [
+      "fabric finish/print/accent persist",
+      "independent extra colours persist",
+      "primary/secondary hair and split layout persist",
+      "new solo/duo menu callbacks",
+      "pan changes actual camera position and reset restores it",
+      "minimised controls remain below70px",
+      "clean mode hides pose/shutter/zoom controls",
+      "minimised shutter saves full portrait JPEG rather than old62%crop",
+      "photo stores style fields and paired pose"
+    ]
+  },
+  "reviewFixes": [
+    "new standing pose thigh clipping corrected using reachable support and authored skirt clearance",
+    "minimised capture bounds corrected to full camera canvas"
+  ],
+  "limits": [
+    "Desktop Chromium SwiftShader, not physical Android performance benchmarking",
+    "Procedural mobile fabric/hair styling and authored pose correctives, not cloth simulation",
+    "Ken uses approximated new poses on his existing rigid custom build"
+  ]
+}

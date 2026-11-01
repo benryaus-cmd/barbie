@@ -10,6 +10,8 @@ export type CameraRig = {
   setWalkHeading(heading: number | null, speed?: number, allowFollow?: boolean): void;
   /** Positive wheel/pinch delta zooms out; negative delta zooms in. */
   zoom(delta: number): void;
+  pan(dx:number,dy:number):void;
+  resetPhotoFraming():void;
   /** cutaway is only used when the renderer removes presentation occluders. */
   update(dt: number, target: THREE.Vector3, zoomOut: boolean, indoor: boolean, cutaway?: boolean): void;
   reset(): void;
@@ -50,6 +52,8 @@ export function createCameraRig(
   const desired = new THREE.Vector3();
   const offset = new THREE.Vector3();
   const lookAt = new THREE.Vector3();
+  const photoPan=new THREE.Vector2(),panOffset=new THREE.Vector3();
+  let presentationBaseYaw=0;
   const rayDirection = new THREE.Vector3();
   const previousTarget = new THREE.Vector3();
 
@@ -121,6 +125,7 @@ export function createCameraRig(
       if (presentation === mode) return;
       presentation = mode;
       presentationYaw = Number.isFinite(facing) ? facing : 0;
+      presentationBaseYaw=presentationYaw;photoPan.set(0,0);
       photoPitch = 0.26;
       photoZoom = 1;
       clearFollowProgress();
@@ -153,6 +158,12 @@ export function createCameraRig(
       if (!Number.isFinite(delta) || (presentation !== 'photo' && presentation !== 'style')) return;
       photoZoom = THREE.MathUtils.clamp(photoZoom * Math.exp(delta * 0.0015), 0.58, 1.9);
     },
+    pan(dx,dy){
+      if(presentation!=='photo'||!Number.isFinite(dx)||!Number.isFinite(dy))return;
+      photoPan.x=THREE.MathUtils.clamp(photoPan.x-dx*.0035*photoZoom,-1.1,1.1);
+      photoPan.y=THREE.MathUtils.clamp(photoPan.y+dy*.0035*photoZoom,-1,1);
+    },
+    resetPhotoFraming(){photoPan.set(0,0);photoZoom=1;photoPitch=.26;presentationYaw=presentationBaseYaw;},
     getYaw() {
       return yaw;
     },
@@ -173,6 +184,10 @@ export function createCameraRig(
           );
         } else {
           desired.set(target.x + Math.sin(presentationYaw) * dist, target.y + 1.4, target.z + Math.cos(presentationYaw) * dist);
+        }
+        if(presentation==='photo'){
+          panOffset.set(Math.cos(presentationYaw)*photoPan.x-Math.sin(presentationYaw)*Math.sin(photoPitch)*photoPan.y,Math.cos(photoPitch)*photoPan.y,-Math.sin(presentationYaw)*photoPan.x-Math.cos(presentationYaw)*Math.sin(photoPitch)*photoPan.y);
+          desired.add(panOffset);lookAt.add(panOffset);
         }
         if (!cutaway) keepCameraClear(desired);
         const clearDistance = desired.distanceTo(lookAt);
@@ -251,7 +266,7 @@ export function createCameraRig(
       hasPreviousTarget = false;
       pitch = 0.3;
       presentation = 'world';
-      presentationYaw = 0;
+      presentationYaw = 0;photoPan.set(0,0);presentationBaseYaw=0;
       photoPitch = 0.26;
       photoZoom = 1;
       currentDistance = distance;

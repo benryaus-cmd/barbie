@@ -1,11 +1,11 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {createRequire}=require('node:module'),repo=process.env.DREAMLAND_REPO||path.resolve(__dirname,'..'),localRequire=createRequire(repo+'/package.json');
 const THREE=localRequire('three'),ts=localRequire('typescript'),modules={};
-function load(name){
+function load(name){name=name.replace(/\.tsx?$/,'');
  if(modules[name])return modules[name];
  const entry={exports:{}},file=repo+'/src/'+name+'.ts';modules[name]=entry.exports;
  const source=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
- new Function('require','module','exports',source)(id=>id.startsWith('@/')?load(id.slice(2)):id.startsWith('./')?load(path.posix.join(path.posix.dirname(name),id)):localRequire(id),entry,entry.exports);
+ new Function('require','module','exports',source)(id=>id.startsWith('@/')?load(id.slice(2)):(id.startsWith('./')||id.startsWith('../'))?load(path.posix.join(path.posix.dirname(name),id)):localRequire(id),entry,entry.exports);
  return modules[name]=entry.exports;
 }
 const {createNecklaceRig}=load('game/character/necklace-rig'),{createSurfaceMap}=load('game/character/surface-map');

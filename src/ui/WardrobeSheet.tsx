@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Check, Crown, Footprints, Glasses, Heart, LockKeyhole, Scissors, Shirt, Sparkles, BookmarkPlus, Trash2 } from 'lucide-react';
 import type { AccessoryId, HairId, OutfitId, ShoesId } from '@/game/types';
-import type { Look } from '@/game/lifestyle-types';
+import {FabricOptions,AccessoryColors} from './StyleOptions';
+import type { Look,WearableId } from '@/game/lifestyle-types';
 import { BOTTOMS, COLORS, EXTRAS, TOPS, HAIRSTYLES } from '@/game/fashion';
 import type { SavedLook } from '@/game/lifestyle-save';
 import { ChoiceRow, Panel } from '@/ui/Panel';
@@ -12,7 +13,7 @@ type WardrobeSheetProps = {
   unlocked:OutfitId[]; points:number; notice:string|null;
   onOutfit:(id:OutfitId)=>void; onHair:(id:HairId)=>void;
   onAccessory:(id:AccessoryId)=>void; onShoes:(id:ShoesId)=>void; onClose:()=>void;
-  look:Look; ownedFashion:string[]; followers:number;
+  look:Look; onLook?:(look:Look)=>void; ownedFashion:string[]; followers:number;
   onFashion:(slot:'top'|'bottom'|'accessory',id:string)=>void;
   onColor:(slot:'top'|'bottom',color:string)=>void;
   savedLooks?:SavedLook[]; onSaveLook?:(name:string)=>void; onLoadLook?:(id:string)=>void; onDeleteLook?:(id:string)=>void;
@@ -30,8 +31,9 @@ const SHOES = [
   {id:'platforms',label:'Lilac platforms',emoji:'👡'},
 ];
 const CATEGORIES=['Tops','Bottoms','Extras','Hair','Shoes','Sets'] as const;
-export function WardrobeSheet({title,outfit,hair,shoes,unlocked,points,notice,onOutfit,onHair,onShoes,onClose,look,ownedFashion,followers,onFashion,onColor,savedLooks=[],onSaveLook,onLoadLook,onDeleteLook,ownedColors=[],onBuyColor}:WardrobeSheetProps) {
+export function WardrobeSheet({title,outfit,hair,shoes,unlocked,points,notice,onOutfit,onHair,onShoes,onClose,look,onLook,ownedFashion,followers,onFashion,onColor,savedLooks=[],onSaveLook,onLoadLook,onDeleteLook,ownedColors=[],onBuyColor}:WardrobeSheetProps) {
   const [setName,setSetName]=useState('');
+  const [extraTarget,setExtraTarget]=useState<WearableId>('earrings');
   const [category,setCategory]=useState<typeof CATEGORIES[number]>('Tops');
   const slot=category==='Tops'?'top':category==='Bottoms'?'bottom':'accessory';
   const catalog=slot==='top'?TOPS:slot==='bottom'?BOTTOMS:EXTRAS;
@@ -57,12 +59,14 @@ export function WardrobeSheet({title,outfit,hair,shoes,unlocked,points,notice,on
             </button>;
           })}
         </div>
-        {slot==='top'||slot==='bottom'?<section className="fashion-colors" aria-label={`${category} color`}><div className="fashion-section-heading"><h3>{category==='Tops'?'Top':'Bottom'} color</h3><span>10 free · collectible colors</span></div><div className="fashion-color-row">{COLORS.map(color=>{
+        {slot==='top'||slot==='bottom'?<section className="fashion-colors" aria-label={`${category} color`}><div className="fashion-section-heading"><h3>{category==='Tops'?'Top':'Bottom'} color</h3><span>18 free · collectible colours</span></div><div className="fashion-color-row">{COLORS.map(color=>{
           const owned=!color.price||ownedColors.includes(color.value);
           const active=look[slot==='top'?'topColor':'bottomColor'].toLowerCase()===color.value.toLowerCase();
           return <button key={color.value} type="button" title={`${color.label}${owned?'':` · ${color.price} points`}`} aria-label={`${color.label} ${slot} color${owned?'':`, ${color.price} points to unlock`}`} aria-pressed={active} className={owned?'':'color-locked'} onClick={()=>owned?onColor(slot,color.value):onBuyColor?.(color.value)} style={{backgroundColor:color.value}}>{active?<Check size={15}/>:!owned?<LockKeyhole size={10}/>:null}</button>;
         })}</div></section>:<p className="fashion-tip">Tap an extra to put it on or take it off. Mix hats, shades, jewelry and bows to finish your look.</p>}
       </>:null}
+      {onLook&&(category==='Tops'||category==='Bottoms')?<FabricOptions slot={slot as 'top'|'bottom'} look={look} onLook={onLook} ownedColors={ownedColors} onBuyColor={onBuyColor}/>:null}
+      {onLook&&category==='Extras'?<AccessoryColors target={extraTarget} onTarget={setExtraTarget} look={look} onLook={onLook} ownedColors={ownedColors} onBuyColor={onBuyColor}/>:null}
       {category==='Sets'?<><ChoiceRow title="Complete looks · choose then customize" items={OUTFITS} activeId={outfit} unlockedIds={unlocked} points={points} onSelect={id=>onOutfit(id as OutfitId)}/><p className="fashion-tip">A set changes your top and bottom together. Open Tops or Bottoms to make the look your own.</p>
         {onSaveLook?<section className="saved-look-section"><div className="fashion-section-heading"><h3>Your saved looks</h3><span>{savedLooks.length} / 8 sets</span></div>
           <form className="save-look-form" onSubmit={event=>{event.preventDefault();if(savedLooks.length<8){onSaveLook(setName.trim()||`Dream look ${savedLooks.length+1}`);setSetName('');}}}><input aria-label="Name your look" maxLength={32} placeholder="Name this look…" value={setName} onChange={event=>setSetName(event.target.value)}/><button type="submit" disabled={savedLooks.length>=8}><BookmarkPlus size={14}/> Save look</button></form>
