@@ -1,4 +1,6 @@
-APPLY BARBIE CHARACTER MOTION FOUNDATION 6 — SOURCE 0f982a3 — 100 GAME FILES
+APPLY BARBIE NATURAL WALK & HIP POSE FIX 6.1 — SOURCE 754e670 — 100 GAME FILES
+
+This correction fixes the crouched/forward-knee walk, backward-looking elbow bend and overly wide gym-bro arms. Supporting legs now extend naturally through mid-stance, arm swing opposes the same-side leg, and relaxed arms hang close to the body with a small allowance only for wide skirts. Thigh/knee depth is slightly fuller. Peace/kiss/confident/over-shoulder and other hip-hand poses now plant their palms at the hip instead of hovering in space. Preserve all previous v6 rig, pose, clothing and save improvements.
 
 Use Node at Vite BUILD TIME to apply this exact manifest to the EXISTING project paths. This is a local importer config edit followed by the normal Vite build. Node performs the HTTP requests, verification, staging and direct source writes DURING THAT BUILD. Do not ask the conversational model to retrieve/transcribe the remote files or rebuild the already-finished game.
 
@@ -12,21 +14,21 @@ Set the EXISTING github-import.config.json to this active request, keeping unrel
   "mode": "manifest",
   "repository": "benryaus-cmd/barbie",
   "branch": "main",
-  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/c5aed7e2cfafdc42d6ae12edcd2c7a2e0d928fe7/aippy-import-manifest.json",
-  "manifestSha256": "013101f143c47c90e3e4da4079ab61fdc5d2bbfcedbae8f62a0e9e53ac194c9b",
-  "sourceCommit": "0f982a3ce42f3c722a1da807bad8d4fbcb556e2c",
-  "requestId": "barbie-motion-0f982a3-v6"
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/546c04caa72e2e319c56bd7e1eea6235a3e27f1e/aippy-import-manifest.json",
+  "manifestSha256": "d907938413d5dc4256e357ab94ddc6fef7aa8044752a4e199445dc80b44dd483",
+  "sourceCommit": "754e670a752c5f11e3cbda1b455c4b4c445ec247",
+  "requestId": "barbie-walk-754e670-v6-1"
 }
 ```
 
 Manifest URL:
-https://raw.githubusercontent.com/benryaus-cmd/barbie/c5aed7e2cfafdc42d6ae12edcd2c7a2e0d928fe7/aippy-import-manifest.json
+https://raw.githubusercontent.com/benryaus-cmd/barbie/546c04caa72e2e319c56bd7e1eea6235a3e27f1e/aippy-import-manifest.json
 Expected manifest SHA-256:
-013101f143c47c90e3e4da4079ab61fdc5d2bbfcedbae8f62a0e9e53ac194c9b
+d907938413d5dc4256e357ab94ddc6fef7aa8044752a4e199445dc80b44dd483
 Exact game source commit:
-0f982a3ce42f3c722a1da807bad8d4fbcb556e2c
+754e670a752c5f11e3cbda1b455c4b4c445ec247
 Request ID:
-barbie-motion-0f982a3-v6
+barbie-walk-754e670-v6-1
 
 Run the normal project build now. Use ONLY the pinned manifest, never current main or a recursive tree selector. Verify manifest bytes before parsing, schemaVersion:1, repository and exact sourceCommit. The awaited config hook must finish all 100 verified game downloads before later plugins scan sources or Vite compiles. Validate every safe src/public destination, exact commit URL, byte size and SHA-256. Preserve binary bytes, bounded concurrency/retry, staging, backup, promotion and rollback. Await all in-flight workers before cleaning up on error. Never compile a partially fetched source update.
 
@@ -50,9 +52,9 @@ Apply the supplied source exactly. Retain all previous fashion, nine hairstyles,
 AFTER THE ACTUAL BUILD:
 Report build result and receipt manifest URL/hash, exact sourceCommit, requestId, and verified file count. All 100 game entries must match; the receipt may additionally list the asset merge/wrapper. Confirm these hashes:
 - src/App.tsx: 067fabdae3eec530308f700deba435c24cebebafee6604d56491283519b38605
-- src/game/avatar.ts: 843fba50442c6a0ac727c7b83dfaac6a30957659abd68519322a4ff2d796e925
+- src/game/avatar.ts: bc1fb8d66b0067495a1e2bacd3ad92bb2b392e75c99685c92317c94bd15429b8
 - src/game/character/body-rig.ts: 7869b175e388e52e528f0be57a5c73769414ccdaeb567a773735950c07d9e035
-- src/game/character/motion-controller.ts: c4199473d8ddfc15ae358fb5725742fdb4922723c35e6326dde772665f975afc
+- src/game/character/motion-controller.ts: a2bb79c83679bd926fa9c2c816990901876e9e3b20f7e976e9cffc713ff9a777
 - src/game/character/hand-rig.ts: ee04cfab46ef54ebea330293221f5289bd7ff9b9c67f2ee6a6215761a95a08a9
 - src/game/character/boot-rig.ts: c05035ef2b1b79c19efc875ad1293b714f89c978ec47facab889cb9a49797298
 - src/game/character/surface-map.ts: 25f1b1ebad8ae847561de258bb1155979018f23586d63d3767d8e082f3f5564e
@@ -61,5 +63,7 @@ Report build result and receipt manifest URL/hash, exact sourceCommit, requestId
 - src/game/poses.ts: 2e6786dc22f8a93341dbc0d94fb903c27808ed3dd017a4f5adf4e268d8ecb0dc
 - src/ui/PhotoStudio.tsx: 9768e700eccf8ddbc72c3d7d557d6ff9faecf74cd19fa652ee3c0c0bc33624bf
 - src/ui/Sheets.tsx: a01d5cb1c2106fb47033103f21b0bcaf10690193dce0b2bcc98a75a939c20656
+
+Watch a complete walking cycle from front, side and rear, including starts/stops. Inspect idle knees under the hips, normal forward elbow flexion and relaxed arm width. Check hip-hand contact in Peace, Kiss, Confident and Over shoulder.
 
 Check all ten manifest asset values reached the real registry and an unrelated existing key survived if one existed. In a short portrait game frame, check shirt/necklace/lips from front AND side, boots standing/walking/dancing/seated, both gait directions in all skirts, new emote callbacks and saved photo poses, and that all nine hairstyles and previous controls remain. Confirm settings/secret ZIP utility still works. Holding/swinging is an API foundation demonstrated by local QA, not a new visible combat mode. Report any actual failure; do not generate replacement game files or claim success merely because the config was edited.

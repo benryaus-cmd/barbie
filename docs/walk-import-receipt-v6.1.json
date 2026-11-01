@@ -1,0 +1,525 @@
+{
+  "requestId": "barbie-walk-754e670-v6-1",
+  "manifestUrl": "https://raw.githubusercontent.com/benryaus-cmd/barbie/546c04caa72e2e319c56bd7e1eea6235a3e27f1e/aippy-import-manifest.json",
+  "manifestSha256": "d907938413d5dc4256e357ab94ddc6fef7aa8044752a4e199445dc80b44dd483",
+  "sourceCommit": "754e670a752c5f11e3cbda1b455c4b4c445ec247",
+  "completedAt": "2026-11-01T09:30:06.761Z",
+  "files": [
+    {
+      "destination": "public/robots.txt",
+      "sha256": "a3d27b3ca5ce32341fa9f96f01169b521b1657c05d1860c45d1e53a6258e9e8b",
+      "size": 160
+    },
+    {
+      "destination": "src/App.tsx",
+      "sha256": "067fabdae3eec530308f700deba435c24cebebafee6604d56491283519b38605",
+      "size": 20757
+    },
+    {
+      "destination": "src/collection.css",
+      "sha256": "9cfe7fb467d72cc31f8dffa1e4cb4d04a461bb7406d9008d890f04a55ca4d04a",
+      "size": 3632
+    },
+    {
+      "destination": "src/components/GameView.tsx",
+      "sha256": "a4e0954060b27601a75223e7dbf3a60d4421c6f503dccf60d2860d8a0ac17e1d",
+      "size": 3613
+    },
+    {
+      "destination": "src/components/SettingsModal.tsx",
+      "sha256": "2f38e5d0993078ae2fc46843e2a534184d3ecf007a462d6683ae3669b06d0589",
+      "size": 9258
+    },
+    {
+      "destination": "src/components/settings.css",
+      "sha256": "fc3c7789d1255208a5fc2a14b5e16889f1a0f5765fd5d6cdeccadab446944e6c",
+      "size": 3623
+    },
+    {
+      "destination": "src/config/tweaksConfig.json",
+      "sha256": "8ead84b7428e827efe0fd1d3630985791bcd9f8350557d99b43d7225b288bdd9",
+      "size": 862
+    },
+    {
+      "destination": "src/core/loop.ts",
+      "sha256": "5381b34e78842376db017b77f0f26f111bdabf6f1ce0e13a75926aaa53ecaea8",
+      "size": 2416
+    },
+    {
+      "destination": "src/core/pointer.ts",
+      "sha256": "81fb49488ddb15a22ad4cd6186725929fc3f7a88d1b799c2a3dc6b4f18f78076",
+      "size": 2413
+    },
+    {
+      "destination": "src/core/release-root.ts",
+      "sha256": "c123246e059e1c9687a6754c543da759ffc42912c6edd2a5abc2e85c1f272653",
+      "size": 1194
+    },
+    {
+      "destination": "src/core/renderer.ts",
+      "sha256": "10c3dafc43b3e62e9ebdee56b989fe040da44c2e1b648f022ea9a63590e1e73d",
+      "size": 2855
+    },
+    {
+      "destination": "src/core/scope.ts",
+      "sha256": "d0fd7774e266471678e8dc2cbe3cebc7e9b7681944da00d0589c999f7a213a0c",
+      "size": 1857
+    },
+    {
+      "destination": "src/game/activity-model.ts",
+      "sha256": "11db314b395f8430ccbe9da9ce731649cd4b9dba1bc6606ef2136769e7895926",
+      "size": 15161
+    },
+    {
+      "destination": "src/game/activity-stage.ts",
+      "sha256": "8662c27d1f66111d55e4c92435053b681e6a2d195280dcf7d4b67a5fb97150b8",
+      "size": 28903
+    },
+    {
+      "destination": "src/game/avatar.ts",
+      "sha256": "bc1fb8d66b0067495a1e2bacd3ad92bb2b392e75c99685c92317c94bd15429b8",
+      "size": 35187
+    },
+    {
+      "destination": "src/game/builder.ts",
+      "sha256": "d33415ab6966f5e74e1dffcabcc724bc0aef7661581394ac57e9aa64124eca19",
+      "size": 2531
+    },
+    {
+      "destination": "src/game/camera.ts",
+      "sha256": "930c2bd57c65dc06fd06bce20e6929a000b6c739a8949e01874377774a89e1ab",
+      "size": 10382
+    },
+    {
+      "destination": "src/game/card-collection.ts",
+      "sha256": "f06a3f3d5a9aebf17a2558dc398190380d99016c033493953c8469794419aa19",
+      "size": 2930
+    },
+    {
+      "destination": "src/game/card-pickups.ts",
+      "sha256": "88f4b3f0a3ceb35e3f97d0752077edd1df65ab5f15574d41ac3e71842e0ec481",
+      "size": 6950
+    },
+    {
+      "destination": "src/game/character/body-rig.ts",
+      "sha256": "7869b175e388e52e528f0be57a5c73769414ccdaeb567a773735950c07d9e035",
+      "size": 1852
+    },
+    {
+      "destination": "src/game/character/boot-rig.ts",
+      "sha256": "c05035ef2b1b79c19efc875ad1293b714f89c978ec47facab889cb9a49797298",
+      "size": 6206
+    },
+    {
+      "destination": "src/game/character/face.ts",
+      "sha256": "ebf9d45e21fb50e150d682aadaaf782a63828ad0f6e657fd71a18fd922818880",
+      "size": 16926
+    },
+    {
+      "destination": "src/game/character/garment-rig.ts",
+      "sha256": "7fd8b7c9a16cd8c05d3eea7241aebe0dfa63375d0f1946de0e7432ca5faf1957",
+      "size": 15545
+    },
+    {
+      "destination": "src/game/character/hair-rig.ts",
+      "sha256": "0494acfe01729f7d14b8823435e9611e88f5b767d7c6598c72048f64aca07529",
+      "size": 10170
+    },
+    {
+      "destination": "src/game/character/hand-rig.ts",
+      "sha256": "ee04cfab46ef54ebea330293221f5289bd7ff9b9c67f2ee6a6215761a95a08a9",
+      "size": 7600
+    },
+    {
+      "destination": "src/game/character/limb-rig.ts",
+      "sha256": "8344c63dd81e92b1cf828a9cc8e83ebff5fec66634c05d70d83f0bee2df5b954",
+      "size": 2840
+    },
+    {
+      "destination": "src/game/character/motion-controller.ts",
+      "sha256": "a2bb79c83679bd926fa9c2c816990901876e9e3b20f7e976e9cffc713ff9a777",
+      "size": 17435
+    },
+    {
+      "destination": "src/game/character/necklace-rig.ts",
+      "sha256": "6ad0e5a613a6cf35df1ea216476d0ab928acc89ddc13f76bee3ff10e4c2c83d1",
+      "size": 9450
+    },
+    {
+      "destination": "src/game/character/riding.ts",
+      "sha256": "01977a5f7e2737d16c2533d17423a579b792a15b2b0c4c981c8944b8b7f804c4",
+      "size": 1977
+    },
+    {
+      "destination": "src/game/character/surface-map.ts",
+      "sha256": "25f1b1ebad8ae847561de258bb1155979018f23586d63d3767d8e082f3f5564e",
+      "size": 6867
+    },
+    {
+      "destination": "src/game/character/surfaces.ts",
+      "sha256": "2b67adf10115e7efc0779f150ea4244795d42b9ab3b5d89e7a96a4a41e00d7ff",
+      "size": 2244
+    },
+    {
+      "destination": "src/game/character/trouser-rig.ts",
+      "sha256": "17d29a9953cabb75958260ac7496e3fee2fe82ec6d859a95f338192d13c136d4",
+      "size": 7478
+    },
+    {
+      "destination": "src/game/create-game.ts",
+      "sha256": "77ddd093509e20b81712720641edd2cfc332c0669a915ad06eafb32ae6a66d5d",
+      "size": 14522
+    },
+    {
+      "destination": "src/game/fashion.ts",
+      "sha256": "ec2b91cd2577b5c2273a14e1bdb69088d024ee9e9861d1accf288672f0d03be7",
+      "size": 5856
+    },
+    {
+      "destination": "src/game/lifestyle-save.ts",
+      "sha256": "d3e9c768dc7f347cae95e6d336e8b09c78f76b0958c20826e04817449a55707b",
+      "size": 5553
+    },
+    {
+      "destination": "src/game/lifestyle-types.ts",
+      "sha256": "a6f3cc76dd8fe7391b18f864c5f61382de71873c924e5a929d5ec170449eb66a",
+      "size": 1392
+    },
+    {
+      "destination": "src/game/movement.ts",
+      "sha256": "898eb47053271362d052e15ea122c872be0f51fa553b82fe1496bf2a8966a7b0",
+      "size": 780
+    },
+    {
+      "destination": "src/game/palette.ts",
+      "sha256": "b2a5bfe96c8590f9c408e929cace9e42d67a8ca62e930f00d12cef6bc55f9820",
+      "size": 1507
+    },
+    {
+      "destination": "src/game/particles.ts",
+      "sha256": "38959f5af7fae196b768d9ac53d8385f818c198a1769e041641332ecb680b1b9",
+      "size": 3859
+    },
+    {
+      "destination": "src/game/pet-companion.ts",
+      "sha256": "f3fecac31201bb4dd1fb08be560fcfd6e34567f37960d2916fbf8afdb5297a7b",
+      "size": 7199
+    },
+    {
+      "destination": "src/game/physics.ts",
+      "sha256": "afc249ade46c0a22cdbec887692bd478e463b77e6457e0a2fe6d2311784f3d2a",
+      "size": 4672
+    },
+    {
+      "destination": "src/game/poses.ts",
+      "sha256": "2e6786dc22f8a93341dbc0d94fb903c27808ed3dd017a4f5adf4e268d8ecb0dc",
+      "size": 817
+    },
+    {
+      "destination": "src/game/preferences.ts",
+      "sha256": "98dbfb66e49b18db8fc8adb470952d401dcb95bc8e34e390cc177d07575870d3",
+      "size": 1272
+    },
+    {
+      "destination": "src/game/profile.ts",
+      "sha256": "eef86fb8790a9a3b7598d7d06fd8fe849b4e0d39e54bb58c5f4820935610b9c1",
+      "size": 1929
+    },
+    {
+      "destination": "src/game/resident-data.ts",
+      "sha256": "5da61513835557b7fdfe081555cdaaf75d320c9bf0b9f4b8d87f09a0319e974b",
+      "size": 1435
+    },
+    {
+      "destination": "src/game/residents.ts",
+      "sha256": "82808063012036b99458b547c9e701f6f24b9402abe81e1ec1cc2ea4c1b91b68",
+      "size": 22107
+    },
+    {
+      "destination": "src/game/sandbox.ts",
+      "sha256": "2565715a4fccd3caa5f451f3c1e85746f65c5f6b503f1e4a2a05fd46533dc821",
+      "size": 21691
+    },
+    {
+      "destination": "src/game/social.ts",
+      "sha256": "9a55c437b026391f53ce8a2779a6a7fd6c8288ebf0bc2c1e8dbc5d35b39ba1f7",
+      "size": 11654
+    },
+    {
+      "destination": "src/game/spots.ts",
+      "sha256": "1d9b4152c22f808f229f884d600ea13e5153d3cc365f397b209b4af17ea1f36e",
+      "size": 4911
+    },
+    {
+      "destination": "src/game/tokens.ts",
+      "sha256": "e3a714ca11e9acaf811cc93bfc431428fa45281a8eea145abce7e7b98f978527",
+      "size": 2776
+    },
+    {
+      "destination": "src/game/types.ts",
+      "sha256": "d476ce8c7907bc8e99125ca8a0ab4ef59c986304c5eaadbe8d01350c85f6e34d",
+      "size": 1624
+    },
+    {
+      "destination": "src/game/vehicles.ts",
+      "sha256": "6fdb5e2825d177bc615a4e5a1c689db542f620a2fa9ac1338ab6ab0973c33f58",
+      "size": 6999
+    },
+    {
+      "destination": "src/game/world/ambience.ts",
+      "sha256": "a16af80a2e037ee4528be9a6691a2bb8989bbb8f9dd3f8abb55a8812da992e35",
+      "size": 5543
+    },
+    {
+      "destination": "src/game/world/avenue.ts",
+      "sha256": "6fa73f2a567d4082b563abb4c30de142d1228ce9c56cca6955da0b9cd9308927",
+      "size": 3647
+    },
+    {
+      "destination": "src/game/world/beach.ts",
+      "sha256": "401571e68c0b157dbb972028a2260ae574e8409bcb96846bf15fcbd8618154b2",
+      "size": 3826
+    },
+    {
+      "destination": "src/game/world/dreamhouse.ts",
+      "sha256": "6c8e00c96cd389b10b70452b168f1e40b78138e8a3b566070bc27a10ba9f756d",
+      "size": 15111
+    },
+    {
+      "destination": "src/game/world/ground.ts",
+      "sha256": "4c41d8c66f7909224f1f13e6beb645ece389ff803362e967094529bbee147342",
+      "size": 324
+    },
+    {
+      "destination": "src/game/world/index.ts",
+      "sha256": "a9622b660e21a035c3524aad3b30e08ed65f42bf5b488a426b8da33902866afa",
+      "size": 6306
+    },
+    {
+      "destination": "src/game/world/materials.ts",
+      "sha256": "1091dd40c7c904120b298258e043b76d448c637bd4b29a5efbc4c0183b64eba9",
+      "size": 2675
+    },
+    {
+      "destination": "src/game/world/props.ts",
+      "sha256": "b52cc110d213c28bb1f8e788205de3c3ab80dac0d14dde639928babc1d61b9c8",
+      "size": 4356
+    },
+    {
+      "destination": "src/game/world/salon.ts",
+      "sha256": "aaa78fe19afd95caa01b20296bc540c89308af354ec25994945ad6d251b9fc23",
+      "size": 3323
+    },
+    {
+      "destination": "src/game/world/stations.ts",
+      "sha256": "77943246521de39cd5c4150bea285a6f120e6b891134fefb70396f139266bd72",
+      "size": 10456
+    },
+    {
+      "destination": "src/game/world/terrain.ts",
+      "sha256": "a67dce2c079c04339fba9e9fcf922083ed6dd4e29eb72e5a7c803cafcf6a20a4",
+      "size": 4681
+    },
+    {
+      "destination": "src/game/world/vistas.ts",
+      "sha256": "41de07ec05d9c99a728711c2f84821453ee75c587a168bbd3c58c96fd3131c09",
+      "size": 8038
+    },
+    {
+      "destination": "src/hooks/useSfx.ts",
+      "sha256": "476a9457c4dcc323e39906f1148359fd918b8f7903ff7f606c71f6ad9611fe22",
+      "size": 3522
+    },
+    {
+      "destination": "src/index.css",
+      "sha256": "c6e411d298ba0b686ca026eb5c6f6525f7312a7b5196aaf78a9c82d4ba60f501",
+      "size": 27028
+    },
+    {
+      "destination": "src/tailwind.config.aippy.json",
+      "sha256": "6d9fb10a9b9a9083173ff067a00392812ed39485f238d043a67cfdf6b3a5fa9d",
+      "size": 65
+    },
+    {
+      "destination": "src/ui/ActionButtons.tsx",
+      "sha256": "33a9854390637304159a481c89606e5705b814d7b421d290baa92ae2f1b563bb",
+      "size": 1336
+    },
+    {
+      "destination": "src/ui/ActivityPanel.tsx",
+      "sha256": "a29468441c37d8180ca84889dd1036c28ee47248b8a5fa43cc97660a83d043ea",
+      "size": 9070
+    },
+    {
+      "destination": "src/ui/BeautyStudio.tsx",
+      "sha256": "664a85aedeb63ac2ec08f801b8e4e146ca2d8ecaf968bc487001d16eb43ef6df",
+      "size": 4770
+    },
+    {
+      "destination": "src/ui/CameraControls.tsx",
+      "sha256": "77a8a2213c1b09aff318dae48555d6965105fa6f73291b1ac5dfb63898788162",
+      "size": 4403
+    },
+    {
+      "destination": "src/ui/CardAlbum.tsx",
+      "sha256": "328e77dd623e49445cf7535462f7a0e419da57faf3e3d6f2eaad5e9ab643ba72",
+      "size": 5008
+    },
+    {
+      "destination": "src/ui/Celebration.tsx",
+      "sha256": "fd0cac728e8d98d3bdbec0c8c531216331aed89e2656f24bd2f863177869530d",
+      "size": 1443
+    },
+    {
+      "destination": "src/ui/DanceTilesGame.tsx",
+      "sha256": "89b6affb2dfea8ee33a30064e7be36b005610e6d32ec79f12d1cf6e73c199a6b",
+      "size": 3654
+    },
+    {
+      "destination": "src/ui/DiscoveryCard.tsx",
+      "sha256": "c61c88d90687ca70fe3cd0616c664f36076507fe05618bb81c8e0b9c645057a2",
+      "size": 1173
+    },
+    {
+      "destination": "src/ui/DjGame.tsx",
+      "sha256": "e154b63057384910e9704155c26c95a4a6c4e49567afc017f694fa2cd4b937b9",
+      "size": 3017
+    },
+    {
+      "destination": "src/ui/Hud.tsx",
+      "sha256": "167bb856c4f5e4970155fd65aab9215f0e5dde971bd6b0be35fd43a7a0c32d88",
+      "size": 2635
+    },
+    {
+      "destination": "src/ui/Joystick.tsx",
+      "sha256": "11d0fa944d737741b72e4dfd64efe398ec0e8946f2aa4783f1152b27aab38ed7",
+      "size": 3512
+    },
+    {
+      "destination": "src/ui/KitchenGame.tsx",
+      "sha256": "1679d9d3f0687eadc504f848ad38cb0dca97c8770d5b9fb1347e393ddc8abdb7",
+      "size": 4807
+    },
+    {
+      "destination": "src/ui/LeaderboardSheet.tsx",
+      "sha256": "42eebc9fee07e5aa183d687458c8604512d82049bc2f3933f0ce4611d9d7a45c",
+      "size": 2294
+    },
+    {
+      "destination": "src/ui/LifestylePanels.tsx",
+      "sha256": "5bbde1c36dfbc31014c455dcdc7ce8a40d883636973d01c8b5fbe7fb38119d7a",
+      "size": 7643
+    },
+    {
+      "destination": "src/ui/MoodPanel.tsx",
+      "sha256": "3f3518803229a60573eb370d018a40356a1d24ea985364308de5be39dd195a6c",
+      "size": 2512
+    },
+    {
+      "destination": "src/ui/Panel.tsx",
+      "sha256": "c5819ab1ee939a5daf0d3fcb0d0a0a8be8c4a246139ff3acb4a73193d8a67151",
+      "size": 2872
+    },
+    {
+      "destination": "src/ui/PetGame.tsx",
+      "sha256": "748a8c12e9ab874876a6e8d578b07ea131fd2b42eae79607c25cc7b95d6e77b0",
+      "size": 4085
+    },
+    {
+      "destination": "src/ui/PhotoGame.tsx",
+      "sha256": "1473c5d3af1a8d6d662741e87afe26d15d188ffc6f52d31d784313f2fca63a5d",
+      "size": 4042
+    },
+    {
+      "destination": "src/ui/PhotoStudio.tsx",
+      "sha256": "9768e700eccf8ddbc72c3d7d557d6ff9faecf74cd19fa652ee3c0c0bc33624bf",
+      "size": 15175
+    },
+    {
+      "destination": "src/ui/RunwayGame.tsx",
+      "sha256": "285b2ca8f42d98edcbd45547a39193bb13dbecccf0bca5ab9f3b6f792182ef2a",
+      "size": 3437
+    },
+    {
+      "destination": "src/ui/Sheets.tsx",
+      "sha256": "a01d5cb1c2106fb47033103f21b0bcaf10690193dce0b2bcc98a75a939c20656",
+      "size": 5204
+    },
+    {
+      "destination": "src/ui/SlideGame.tsx",
+      "sha256": "3bea08b861715739ba1d3fb8dd6ad52fa7d3f596d18ec38ec5339a1a058c395a",
+      "size": 5819
+    },
+    {
+      "destination": "src/ui/StartScreen.tsx",
+      "sha256": "32815b5318804dfd24dd6176cd74b7ad591564b5952c8006f9b481eb217c1fc1",
+      "size": 3269
+    },
+    {
+      "destination": "src/ui/SurfGame.tsx",
+      "sha256": "533aa9e6d532aee7245110400ca410813be1ca8c20f48f9b052ecc7c7ede1e53",
+      "size": 4578
+    },
+    {
+      "destination": "src/ui/VolleyGame.tsx",
+      "sha256": "283301ef3fed97093d0354e4c0d5b16ee59394d791b5863ea501f36128a1c33a",
+      "size": 4710
+    },
+    {
+      "destination": "src/ui/WardrobeSheet.tsx",
+      "sha256": "87ca9e5dba2f525c04742fc6334e38b4c9700bb086c9e6169557a98c7ff0be4a",
+      "size": 8228
+    },
+    {
+      "destination": "src/ui/activities.css",
+      "sha256": "fc19b714bc76a6c9bbc9f5272e340247f4166d8ec72e78fc9f20943a8424ec18",
+      "size": 4263
+    },
+    {
+      "destination": "src/ui/beauty.css",
+      "sha256": "caf96acfcc904c329bd7587ee5ee186c3b05114f28c4e2855ed7eaa44de89423",
+      "size": 4720
+    },
+    {
+      "destination": "src/ui/camera-controls.css",
+      "sha256": "b096006d4cece142b87315552fc0bdba298339282d5cfe9cf5f9b9d8bd2fc693",
+      "size": 755
+    },
+    {
+      "destination": "src/ui/fashion.css",
+      "sha256": "f5cddb2b5cd20480783b16c2270831c630b7224f7d67053a26a31607f203375e",
+      "size": 4883
+    },
+    {
+      "destination": "src/ui/lifestyle.css",
+      "sha256": "2cb2d293a1309080e3ae3f02d5c993bb0e67bf127920edaedf449936da6e0d96",
+      "size": 3381
+    },
+    {
+      "destination": "src/ui/social.css",
+      "sha256": "bedd276f842a634c9a2722d058645eb094f907e7f9fbff473c886ee7e559ecc1",
+      "size": 11827
+    },
+    {
+      "destination": "src/vite-env.d.ts",
+      "sha256": "ab26036a183d2a6c7447b58e3791a5c570b92ad39aac431de7398ba41e969def",
+      "size": 214
+    },
+    {
+      "destination": "src/config/assets.json",
+      "sha256": "542af183d5c330278a251fbd34d0629bf8383fe23bc5e1b3bce10d30b391a9c2",
+      "size": 1171
+    },
+    {
+      "destination": "src/config/assets.ts",
+      "sha256": "5c9fb076a7e24b56ca78718f4699083e12e19e6ce2ec504dca5909b51cb28a23",
+      "size": 377
+    }
+  ],
+  "protected": [
+    "src/main.tsx",
+    "src/dev/**",
+    "src/types/**",
+    "hidden viewer"
+  ]
+}
